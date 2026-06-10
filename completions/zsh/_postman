@@ -1,0 +1,502 @@
+#compdef postman
+# Zsh completion for Postman CLI (postman v1.35.2)
+# https://github.com/yokawasa/postman-cli-completion
+
+_postman() {
+  local context state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '(-v --version)'{-v,--version}'[output the version number]' \
+    '--silent[silence all terminal output]' \
+    '--color[enable/disable colored output]:mode:(auto on off)' \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_commands' \
+    '*::arg:->args'
+
+  case $state in
+    args)
+      case $words[1] in
+        login)        _postman_login ;;
+        logout)       _postman_logout ;;
+        collection)   _postman_collection ;;
+        api)          _postman_api ;;
+        runner)       _postman_runner ;;
+        spec)         _postman_spec ;;
+        monitor)      _postman_monitor ;;
+        workspace)    _postman_workspace ;;
+        performance)  _postman_performance ;;
+        flows|fl)     _postman_flows ;;
+        request)      _postman_request ;;
+        sdk)          _postman_sdk ;;
+        mock)         _postman_mock ;;
+        application|app) _postman_application ;;
+        simulate)     _postman_simulate ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_commands() {
+  local -a commands
+  commands=(
+    'login:Authenticate with Postman'
+    'logout:Delete the stored Postman API key'
+    'collection:Run and test Postman collections'
+    'api:Publish and test APIs (US region only)'
+    'runner:Run runners on your own environments'
+    'spec:Lint and validate Specifications'
+    'monitor:Invoke a monitor run and display results'
+    'workspace:Manage workspace resources'
+    'performance:Manage performance tests on collections'
+    'flows:Manage and interact with flows'
+    'fl:Alias for flows'
+    'request:Send HTTP requests from the command line'
+    'sdk:Generate and manage SDKs'
+    'mock:Run and manage local mock servers'
+    'application:Application-level commands (init, test)'
+    'app:Alias for application'
+    'simulate:Start mock servers with simulated failures'
+  )
+  _describe -t commands 'postman command' commands
+}
+
+_postman_login() {
+  _arguments \
+    '--alias[Specify the alias of the API key]:alias' \
+    '--with-api-key[Specify the API key directly]:apikey' \
+    '--region[Specify the region for authentication]:region:(us eu)' \
+    '--verbose[Show detailed error information]' \
+    '(-h --help)'{-h,--help}'[display help]'
+}
+
+_postman_logout() {
+  _arguments \
+    '--alias[Specify the alias of the API key]:alias' \
+    '(-h --help)'{-h,--help}'[display help]'
+}
+
+_postman_collection() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_collection_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        migrate) _postman_collection_migrate ;;
+        lint)    _postman_collection_lint ;;
+        run)     _postman_collection_run ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_collection_commands() {
+  local -a sub
+  sub=(
+    'migrate:Migrate a v2.1 collection to the v3 format'
+    'lint:Run linting on a local v3 collection'
+    'run:Initiate a Postman collection run'
+  )
+  _describe -t commands 'collection command' sub
+}
+
+_postman_collection_migrate() {
+  _arguments \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '*:path:_files -g "*.(json|JSON)"'
+}
+
+_postman_collection_lint() {
+  _arguments \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '*:path:_files -g "*.(json|JSON)"'
+}
+
+_postman_collection_run() {
+  _arguments \
+    '(-e --environment)'{-e,--environment}'[Postman Environment ID or path]:path:_files -g "*.(json|JSON)"' \
+    '(-g --globals)'{-g,--globals}'[Postman Globals file path]:path:_files -g "*.(json|JSON)"' \
+    '(-r --reporters)'{-r,--reporters}'[Reporters to use]:reporter:(cli json junit html)' \
+    '--reporter-json-export[Path to save JSON report]:path:_files' \
+    '--reporter-junit-export[Path to save JUnit report]:path:_files' \
+    '--reporter-html-export[Path to save HTML report]:path:_files' \
+    '--reporter-json-structure[Generate JSON report using a specific schema]:schema:(newman)' \
+    '--reporter-json-omitRequestBodies[Remove request bodies from JSON report]' \
+    '--reporter-json-omitResponseBodies[Remove response bodies from JSON report]' \
+    '--reporter-json-omitHeaders[Remove headers from JSON report]' \
+    '--reporter-json-omitAllHeadersAndBody[Remove headers and bodies from JSON report]' \
+    '--reporter-html-omitRequestBodies[Remove request bodies from HTML report]' \
+    '--reporter-html-omitResponseBodies[Remove response bodies from HTML report]' \
+    '--reporter-html-omitHeaders[Remove headers from HTML report]' \
+    '--reporter-html-omitAllHeadersAndBody[Remove headers and bodies from HTML report]' \
+    '(-n --iteration-count)'{-n,--iteration-count}'[Number of iterations to run]:n' \
+    '(-d --iteration-data)'{-d,--iteration-data}'[Path to iteration data (JSON or CSV)]:path:_files -g "*.(json|csv|JSON|CSV)"' \
+    '-i[Specify request/folder id, name, or path]:id' \
+    '--global-var[Specify a global variable key=value]:kv' \
+    '--env-var[Specify an environment variable key=value]:kv' \
+    '--integration-id[Specify the integration id for the report]:id' \
+    '--postman-api-key[Postman API key]:apikey' \
+    '--alias[Specify the alias of the API key]:alias' \
+    '--bail[Stop run on error]:modifiers' \
+    '--ignore-redirects[Do not follow 3XX redirects]' \
+    '(-x --suppress-exit-code)'{-x,--suppress-exit-code}'[Override default exit code]' \
+    '--silent[Suppress CLI output]' \
+    '--disable-unicode[Replace Unicode symbols with plain text]' \
+    '--delay-request[Delay between requests in ms]:n' \
+    '--timeout[Timeout for collection run in ms]:n' \
+    '--timeout-request[Timeout for requests in ms]:n' \
+    '--timeout-script[Timeout for scripts in ms]:n' \
+    '--working-dir[Path to the working directory]:path:_files -/' \
+    '--no-insecure-file-read[Prevent reading files outside the working directory]' \
+    '(-k --insecure)'{-k,--insecure}'[Disable SSL validations]' \
+    '--ssl-client-cert-list[Path to client cert configurations (JSON)]:path:_files -g "*.(json|JSON)"' \
+    '--ssl-client-cert[Path to client certificate (PEM)]:path:_files -g "*.(pem|crt|cer|PEM|CRT|CER)"' \
+    '--ssl-client-key[Path to client cert private key]:path:_files -g "*.(pem|key|PEM|KEY)"' \
+    '--ssl-client-passphrase[Client cert passphrase]:passphrase' \
+    '--ssl-extra-ca-certs[Additional trusted CA certs (PEM)]:path:_files -g "*.(pem|crt|cer|PEM|CRT|CER)"' \
+    '--cookie-jar[Path to a custom cookie jar]:path:_files -g "*.(json|JSON)"' \
+    '--export-cookie-jar[Path to export the cookie jar]:path:_files' \
+    '--verbose[Show detailed run information]' \
+    '--mock[Start a mock server from manifest file]:path:_files -g "*.(json|JSON)"' \
+    '--simulate[Start mock with fault-injection scenarios]:path:_files -g "*.(sim.yaml|sim.yml|yaml|yml|YAML|YML)"' \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '*:collectionId or path:_files -g "*.(json|JSON)"'
+}
+
+_postman_api() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_api_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        lint)    _arguments '(-h --help)'{-h,--help}'[display help]' '*:apiId or path:_files' ;;
+        publish) _arguments '(-h --help)'{-h,--help}'[display help]' '*:apiId:' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_api_commands() {
+  local -a sub
+  sub=(
+    'lint:Run linting on the schema of the given API'
+    'publish:Publish a version of an API'
+  )
+  _describe -t commands 'api command' sub
+}
+
+_postman_runner() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_runner_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        start) _postman_runner_start ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_runner_commands() {
+  local -a sub
+  sub=('start:Start a runner')
+  _describe -t commands 'runner command' sub
+}
+
+_postman_runner_start() {
+  _arguments \
+    '--id[Runner ID]:id' \
+    '--key[Runner secret key]:key' \
+    '--region[Region (us or eu)]:region:(us eu)' \
+    '--proxy[External proxy URL]:url' \
+    '--egress-proxy[Enable built-in egress proxy]' \
+    '--egress-proxy-authz-url[Custom egress proxy auth service URL]:url' \
+    '--ssl-extra-ca-certs[Additional trusted CA certs (PEM)]:path:_files -g "*.(pem|crt|PEM|CRT)"' \
+    '--metrics[Enable the metrics server]' \
+    '--metrics-port[Port for the metrics server]:port' \
+    '(-h --help)'{-h,--help}'[display help]'
+}
+
+_postman_spec() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_spec_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        lint) _arguments '(-h --help)'{-h,--help}'[display help]' '*:spec:_files -g "*.(yaml|yml|json|YAML|YML|JSON)"' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_spec_commands() {
+  local -a sub
+  sub=('lint:Run linting on the given specification')
+  _describe -t commands 'spec command' sub
+}
+
+_postman_monitor() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_monitor_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        run) _arguments '(-h --help)'{-h,--help}'[display help]' '*:monitorId:' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_monitor_commands() {
+  local -a sub
+  sub=('run:Invoke a monitor run and display results')
+  _describe -t commands 'monitor command' sub
+}
+
+_postman_workspace() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_workspace_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        prepare|push) _arguments '(-h --help)'{-h,--help}'[display help]' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_workspace_commands() {
+  local -a sub
+  sub=(
+    'prepare:Prepare local collections and environments for push'
+    'push:Push local changes to Postman workspace'
+  )
+  _describe -t commands 'workspace command' sub
+}
+
+_postman_performance() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_performance_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        run) _postman_performance_run ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_performance_commands() {
+  local -a sub
+  sub=('run:Run a performance test on a collection')
+  _describe -t commands 'performance command' sub
+}
+
+_postman_performance_run() {
+  _arguments \
+    '(-e --environment)'{-e,--environment}'[Postman Environment ID]:id' \
+    '(-g --globals)'{-g,--globals}'[Postman Globals ID]:id' \
+    '--vu-count[Number of virtual users]:n' \
+    '(-d --duration)'{-d,--duration}'[Duration in minutes]:n' \
+    '(-p --load-profile)'{-p,--load-profile}'[Load profile]:profile:(fixed ramp-up spike peak)' \
+    '--data-file[Path to JSON or CSV data file]:path:_files -g "*.(json|csv|JSON|CSV)"' \
+    '--postman-api-key[Postman API key]:apikey' \
+    '--pass-if[Pass condition (e.g. less_than(p95,500))]:condition' \
+    '--persist-metrics[Persist run results to cloud]' \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '*:collectionId:'
+}
+
+_postman_flows() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_flows_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        list)      _arguments '(-h --help)'{-h,--help}'[display help]' '--workspace[Workspace ID]:id' '--filter[Filter expression]:filter' '--sort[Sort field]:sort' ;;
+        trigger)   _arguments '(-h --help)'{-h,--help}'[display help]' '*:flowId:' ;;
+        deploy)    _arguments '(-h --help)'{-h,--help}'[display help]' '*:flowId:' ;;
+        run)       _arguments '(-h --help)'{-h,--help}'[display help]' '*:path:_files -g "*.(json|JSON)"' ;;
+        update)    _arguments '(-h --help)'{-h,--help}'[display help]' '*:flowId:' ;;
+        list-runs) _arguments '(-h --help)'{-h,--help}'[display help]' ;;
+        get-run)   _arguments '(-h --help)'{-h,--help}'[display help]' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_flows_commands() {
+  local -a sub
+  sub=(
+    'list:List all flows'
+    'trigger:Trigger a deployed flow'
+    'deploy:Deploy a flow'
+    'run:Run a single flow from a file'
+    'update:Update settings for a deployed flow'
+    'list-runs:List run history for a deployed flow'
+    'get-run:Analyze a specific flow run'
+  )
+  _describe -t commands 'flows command' sub
+}
+
+_postman_request() {
+  _arguments \
+    '*'{-H,--header}'[HTTP header in key:value format]:header' \
+    '(-d --body)'{-d,--body}'[Request body content]:body' \
+    '*'{-f,--form}'[multipart/form-data field key=value]:field' \
+    '(-e --environment)'{-e,--environment}'[Postman Environment UUID or file path]:path:_files -g "*.(json|JSON)"' \
+    '--timeout[Request timeout in ms]:n' \
+    '--redirects-ignore[Do not follow 3XX redirects]' \
+    '--redirects-max[Maximum number of redirects]:n' \
+    '--redirects-follow-method[Preserve original HTTP method on redirect]' \
+    '--redirects-remove-referrer[Remove Referer header on redirects]' \
+    '--retry[Number of retry attempts]:n' \
+    '--retry-delay[Delay between retries in ms]:ms' \
+    '--script-pre-request[Pre-request script (inline or @filepath)]:script' \
+    '--script-post-request[Post-request script (inline or @filepath)]:script' \
+    '(-o --output)'{-o,--output}'[Save response to JSON file]:path:_files' \
+    '--verbose[Show detailed request/response information]' \
+    '--response-only[Suppress all output except response body]' \
+    '--debug[Debug mode]' \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1:method or url:(GET POST PUT DELETE PATCH HEAD OPTIONS)' \
+    '2:url:'
+}
+
+_postman_sdk() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_sdk_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        init)            _arguments '(-h --help)'{-h,--help}'[display help]' ;;
+        generate|build)  _arguments '(-h --help)'{-h,--help}'[display help]' '(-l --languages)'{-l,--languages}'[Target languages]:lang' '(-o --output)'{-o,--output}'[Output directory]:path:_files -/' '--all[Generate all languages]' '*:idOrPath:_files' ;;
+        track)           _arguments '(-h --help)'{-h,--help}'[display help]' ;;
+        list|ls)         _arguments '(-h --help)'{-h,--help}'[display help]' '*:id:' ;;
+        fetch|get)       _arguments '(-h --help)'{-h,--help}'[display help]' '*:buildId:' ;;
+        connect)         _arguments '(-h --help)'{-h,--help}'[display help]' '1:provider:(github gitlab bitbucket)' '2:id:' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_sdk_commands() {
+  local -a sub
+  sub=(
+    'init:Create or update .postman/config.json with an SDK stub'
+    'generate:Generate a new SDK from a Postman collection or spec'
+    'build:Alias for generate'
+    'track:Enable change tracking for a generated SDK'
+    'list:List SDK builds'
+    'ls:Alias for list'
+    'fetch:Download SDKs from a build'
+    'get:Alias for fetch'
+    'connect:Connect a collection or spec to a Git repo'
+  )
+  _describe -t commands 'sdk command' sub
+}
+
+_postman_mock() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_mock_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        run) _arguments '(-h --help)'{-h,--help}'[display help]' '*:manifestPath:_files -g "*.(json|JSON)"' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_mock_commands() {
+  local -a sub
+  sub=('run:Start a local mock server given a manifest file')
+  _describe -t commands 'mock command' sub
+}
+
+_postman_application() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_application_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        init|test) _arguments '(-h --help)'{-h,--help}'[display help]' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_application_commands() {
+  local -a sub
+  sub=(
+    'init:Initialise a postman.config.cjs file'
+    'test:Run a command and match captured traffic against collections'
+  )
+  _describe -t commands 'application command' sub
+}
+
+_postman_simulate() {
+  local context state state_descr line
+  typeset -A opt_args
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[display help]' \
+    '1: :_postman_simulate_commands' \
+    '*::arg:->args'
+  case $state in
+    args)
+      case $words[1] in
+        run) _arguments '(-h --help)'{-h,--help}'[display help]' '*:filepath:_files -g "*.(yaml|yml|json|YAML|YML|JSON)"' ;;
+      esac
+      ;;
+  esac
+}
+
+_postman_simulate_commands() {
+  local -a sub
+  sub=('run:Start mocks with fault-injection scenarios from a .sim.yaml file')
+  _describe -t commands 'simulate command' sub
+}
