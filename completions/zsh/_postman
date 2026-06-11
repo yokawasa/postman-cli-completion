@@ -1,4 +1,5 @@
 #compdef postman
+compdef _postman postman
 # Zsh completion for Postman CLI (postman v1.35.2)
 # https://github.com/yokawasa/postman-cli-completion
 
@@ -500,3 +501,12 @@ _postman_simulate_commands() {
   sub=('run:Start mocks with fault-injection scenarios from a .sim.yaml file')
   _describe -t commands 'simulate command' sub
 }
+
+# When loaded via fpath + compinit, the file body becomes the function body of
+# `_postman`. In that case `funcstack[1]` is `_postman` and we must actually
+# invoke the completion. When sourced directly, this is a no-op — `_postman`
+# is registered via `compdef` at the top of this file and called later by the
+# completion system on TAB.
+if [ "$funcstack[1]" = "_postman" ]; then
+    _postman
+fi

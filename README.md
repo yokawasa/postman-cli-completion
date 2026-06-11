@@ -33,6 +33,8 @@ Or, for a quick test in the current shell:
 source ~/.postman-cli-completion/completions/zsh/_postman
 ```
 
+> **Note:** `compinit` must already be initialised in your shell for `source` to register the completion. Most zsh setups (oh-my-zsh, prezto, or a plain `.zshrc` that runs `autoload -Uz compinit && compinit`) do this automatically. If `postman <TAB>` still does nothing after sourcing, run `autoload -Uz compinit && compinit` first and try again.
+
 ### bash
 
 Add to `~/.bashrc` (or `~/.bash_profile` on macOS):
