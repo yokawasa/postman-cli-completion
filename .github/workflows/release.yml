@@ -1,0 +1,46 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+    paths: ["spec/commands.json"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version from spec
+        id: ver
+        run: |
+          V=$(node -p "require('./spec/commands.json').postmanCliVersion")
+          echo "tag=v$V"     >> "$GITHUB_OUTPUT"
+          echo "version=$V"  >> "$GITHUB_OUTPUT"
+
+      - name: Check whether the tag already exists
+        id: exists
+        run: |
+          if git rev-parse "refs/tags/${{ steps.ver.outputs.tag }}" >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tag and release
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag ${{ steps.ver.outputs.tag }}
+          git push origin ${{ steps.ver.outputs.tag }}
+          gh release create ${{ steps.ver.outputs.tag }} \
+            --title "${{ steps.ver.outputs.tag }}" \
+            --notes "Updated to support Postman CLI ${{ steps.ver.outputs.tag }}." \
+            completions/zsh/_postman \
+            completions/bash/postman.bash \
+            completions/fish/postman.fish
