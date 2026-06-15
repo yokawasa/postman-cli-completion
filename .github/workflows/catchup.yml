@@ -1,0 +1,84 @@
+name: catchup
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # daily 00:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  catchup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check latest Postman CLI
+        id: check
+        run: |
+          LATEST=$(npm view postman-cli version)
+          CURRENT=$(node -p "require('./spec/commands.json').postmanCliVersion")
+          echo "latest=$LATEST"   >> "$GITHUB_OUTPUT"
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "outdated=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Postman CLI @ latest
+        if: steps.check.outputs.outdated == 'true'
+        run: npm install -g postman-cli@${{ steps.check.outputs.latest }}
+
+      - name: Install zsh and fish for linting
+        if: steps.check.outputs.outdated == 'true'
+        run: sudo apt-get update && sudo apt-get install -y zsh fish shellcheck
+
+      - name: Introspect new spec
+        if: steps.check.outputs.outdated == 'true'
+        run: node scripts/introspect.mjs --out spec/commands.json.new
+
+      - name: Validate diff
+        if: steps.check.outputs.outdated == 'true'
+        run: node scripts/validate-diff.mjs spec/commands.json spec/commands.json.new
+
+      - name: Promote spec + regenerate completions
+        if: steps.check.outputs.outdated == 'true'
+        run: |
+          mv spec/commands.json.new spec/commands.json
+          node scripts/generate.mjs
+
+      - name: Lint completion scripts
+        if: steps.check.outputs.outdated == 'true'
+        run: |
+          shellcheck completions/bash/postman.bash
+          zsh -n completions/zsh/_postman
+          fish -n completions/fish/postman.fish
+
+      - name: Run tests
+        if: steps.check.outputs.outdated == 'true'
+        run: npm test
+
+      - name: Create pull request
+        if: steps.check.outputs.outdated == 'true'
+        id: pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: catchup/postman-cli-${{ steps.check.outputs.latest }}
+          commit-message: "chore: catch up to Postman CLI v${{ steps.check.outputs.latest }}"
+          title: "chore: catch up to Postman CLI v${{ steps.check.outputs.latest }}"
+          body: |
+            Automated catch-up: v${{ steps.check.outputs.current }} → v${{ steps.check.outputs.latest }}
+
+            Produced by `.github/workflows/catchup.yml`.
+            Once required checks pass, this PR will auto-merge and trigger a release.
+          labels: automated,catchup
+
+      - name: Enable auto-merge
+        if: steps.pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --squash --auto ${{ steps.pr.outputs.pull-request-number }}
