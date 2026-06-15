@@ -1,6 +1,6 @@
 {
   "postmanCliVersion": "1.35.2",
-  "introspectedAt": "2026-06-15T15:23:53Z",
+  "introspectedAt": "2026-06-15T15:55:28Z",
   "global": {
     "flags": [
       {
@@ -540,27 +540,6 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
-            },
-            {
-              "long": "--release-notes",
-              "valueType": "string",
-              "valueName": "br",
-              "description": ""
-            },
-            {
-              "long": "--collections",
-              "valueType": "file",
-              "valueName": "collectionId2>\\",
-              "patterns": [
-                "*.json"
-              ],
-              "description": ""
-            },
-            {
-              "long": "--api-definition",
-              "valueType": "string",
-              "valueName": "apiDefinitionId",
-              "description": ""
             }
           ]
         }
@@ -1808,7 +1787,7 @@
             {
               "long": "--help",
               "short": "-h",
-              "description": "display help for command postman mock run ./manifest.json --environment ./postman/environments/dev.yaml"
+              "description": "display help for command"
             }
           ]
         }

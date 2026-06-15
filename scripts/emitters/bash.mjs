@@ -8,6 +8,8 @@ const HEADER = (version) => `# Bash completion for Postman CLI (postman v${versi
 # Or copy into /usr/local/etc/bash_completion.d/ (Homebrew) or
 # /etc/bash_completion.d/ (Linux).
 
+# shellcheck shell=bash disable=SC2207
+
 _postman_filematch() {
   local cur="$2"
   COMPREPLY=( $(compgen -f -X "$1" -- "$cur") )
@@ -25,9 +27,7 @@ function flagTokens(flag) {
 }
 
 function allFlagsStr(cmd) {
-  const parts = (cmd.flags || []).map(flagTokens).filter(Boolean);
-  parts.push("-h --help");
-  return parts.join(" ");
+  return (cmd.flags || []).map(flagTokens).filter(Boolean).join(" ");
 }
 
 function valueFlags(cmd) {
@@ -101,10 +101,11 @@ function emitDispatcher(cmd, path) {
   const name = fnName(path);
   const subs = cmd.subcommands || [];
   const subNames = subs.flatMap((s) => [s.name, ...(s.aliases || [])]).join(" ");
+  const ownFlagsStr = allFlagsStr(cmd) || "-h --help";
   const lines = [`${name}() {`];
   lines.push(`  if [[ -z "$subcmd" ]]; then`);
   lines.push(`    if [[ "$cur" == -* ]]; then`);
-  lines.push(`      COMPREPLY=( $(compgen -W "-h --help" -- "$cur") )`);
+  lines.push(`      COMPREPLY=( $(compgen -W "${ownFlagsStr}" -- "$cur") )`);
   lines.push(`    else`);
   lines.push(`      COMPREPLY=( $(compgen -W "${subNames}" -- "$cur") )`);
   lines.push(`    fi`);
@@ -139,7 +140,7 @@ function emitMain(spec) {
 
   const lines = [
     `_postman() {`,
-    `  local cur prev words cword`,
+    `  local cur prev`,
     `  COMPREPLY=()`,
     `  cur="\${COMP_WORDS[COMP_CWORD]}"`,
     `  prev="\${COMP_WORDS[COMP_CWORD-1]}"`,
@@ -147,13 +148,13 @@ function emitMain(spec) {
     `  local top_commands="${topNames}"`,
     `  local global_flags="${globals}"`,
     ``,
-    `  local i cmd="" subcmd="" cmd_idx=0 subcmd_idx=0`,
+    `  local i cmd="" subcmd=""`,
     `  for ((i=1; i<COMP_CWORD; i++)); do`,
     `    case "\${COMP_WORDS[i]}" in -*) continue ;; esac`,
     `    if [[ -z "$cmd" ]]; then`,
-    `      cmd="\${COMP_WORDS[i]}"; cmd_idx=$i`,
+    `      cmd="\${COMP_WORDS[i]}"`,
     `    elif [[ -z "$subcmd" ]]; then`,
-    `      subcmd="\${COMP_WORDS[i]}"; subcmd_idx=$i`,
+    `      subcmd="\${COMP_WORDS[i]}"`,
     `      break`,
     `    fi`,
     `  done`,

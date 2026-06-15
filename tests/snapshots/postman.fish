@@ -130,9 +130,6 @@ complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcomm
 complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcommand_from publish' -l do-not-poll -d 'Specify whether or not to poll for completion status of the publish action.'
 complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcommand_from publish' -s x -l suppress-exit-code -d 'Specify whether or not to override the default exit code for the current run.'
 complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcommand_from publish' -s h -l help -d 'display help for command'
-complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcommand_from publish' -l release-notes -x
-complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcommand_from publish' -l collections -r
-complete -c postman -n '__fish_seen_subcommand_from api; and __fish_seen_subcommand_from publish' -l api-definition -x
 
 # ---------- runner ----------
 complete -c postman -n '__postman_using_subcommand runner start' -a start -d 'Start a runner'
@@ -379,7 +376,7 @@ complete -c postman -n '__fish_seen_subcommand_from mock' -s h -l help -d 'displ
 # ---------- mock run ----------
 complete -c postman -n '__fish_seen_subcommand_from mock; and __fish_seen_subcommand_from run' -s e -l environment -d 'Path to an environment file (JSON or YAML) for pm.environment' -r
 complete -c postman -n '__fish_seen_subcommand_from mock; and __fish_seen_subcommand_from run' -s g -l globals -d 'Path to a globals file (JSON or YAML) for pm.globals' -r
-complete -c postman -n '__fish_seen_subcommand_from mock; and __fish_seen_subcommand_from run' -s h -l help -d 'display help for command postman mock run ./manifest.json --environment ./postman/environments/dev.yaml'
+complete -c postman -n '__fish_seen_subcommand_from mock; and __fish_seen_subcommand_from run' -s h -l help -d 'display help for command'
 
 # ---------- application ----------
 complete -c postman -n '__postman_using_subcommand application init test' -a init -d 'Initialise a postman.config.cjs file with target collections, environment, and test command.'

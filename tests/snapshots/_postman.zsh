@@ -217,9 +217,6 @@ _postman_api_publish() {
     '--do-not-poll[Specify whether or not to poll for completion status of the publish action.]' \
     '(-x --suppress-exit-code)'{-x,--suppress-exit-code}'[Specify whether or not to override the default exit code for the current run.]' \
     '(-h --help)'{-h,--help}'[display help for command]' \
-    '--release-notes[]:br' \
-    '--collections[]:collectionId2>\:_files -g "*.(json)"' \
-    '--api-definition[]:apiDefinitionId' \
     '*:apiId:'
 }
 
@@ -711,7 +708,7 @@ _postman_mock_run() {
   _arguments \
     '(-e --environment)'{-e,--environment}'[Path to an environment file (JSON or YAML) for pm.environment]:path:_files -g "*.(json)"' \
     '(-g --globals)'{-g,--globals}'[Path to a globals file (JSON or YAML) for pm.globals]:path:_files -g "*.(json)"' \
-    '(-h --help)'{-h,--help}'[display help for command postman mock run ./manifest.json --environment ./postman/environments/dev.yaml]' \
+    '(-h --help)'{-h,--help}'[display help for command]' \
     '*:manifestPath:'
 }
 

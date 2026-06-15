@@ -8,6 +8,8 @@
 # Or copy into /usr/local/etc/bash_completion.d/ (Homebrew) or
 # /etc/bash_completion.d/ (Linux).
 
+# shellcheck shell=bash disable=SC2207
+
 _postman_filematch() {
   local cur="$2"
   COMPREPLY=( $(compgen -f -X "$1" -- "$cur") )
@@ -15,7 +17,7 @@ _postman_filematch() {
 }
 
 _postman() {
-  local cur prev words cword
+  local cur prev
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
@@ -23,13 +25,13 @@ _postman() {
   local top_commands="login logout collection api runner spec monitor workspace performance flows fl request sdk mock application app simulate"
   local global_flags="-v --version --silent --color -h --help -h --help"
 
-  local i cmd="" subcmd="" cmd_idx=0 subcmd_idx=0
+  local i cmd="" subcmd=""
   for ((i=1; i<COMP_CWORD; i++)); do
     case "${COMP_WORDS[i]}" in -*) continue ;; esac
     if [[ -z "$cmd" ]]; then
-      cmd="${COMP_WORDS[i]}"; cmd_idx=$i
+      cmd="${COMP_WORDS[i]}"
     elif [[ -z "$subcmd" ]]; then
-      subcmd="${COMP_WORDS[i]}"; subcmd_idx=$i
+      subcmd="${COMP_WORDS[i]}"
       break
     fi
   done
@@ -64,7 +66,7 @@ _postman() {
 
 _postman_login() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--alias --with-api-key --region --verbose -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--alias --with-api-key --region --verbose -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -76,7 +78,7 @@ _postman_login() {
 
 _postman_logout() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--alias -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--alias -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -101,7 +103,7 @@ _postman_collection() {
 
 _postman_collection_migrate() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-o --output -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-o --output -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -114,7 +116,7 @@ _postman_collection_migrate() {
 
 _postman_collection_lint() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-f --fail-severity -r --reporter -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-f --fail-severity -r --reporter -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -124,7 +126,7 @@ _postman_collection_lint() {
 
 _postman_collection_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-e --environment -g --globals -r --reporters --reporter-json-structure -n --iteration-count -d --iteration-data -i --global-var --env-var --integration-id --postman-api-key --alias --bail --ignore-redirects -x --suppress-exit-code --silent --disable-unicode --delay-request --timeout --timeout-request --timeout-script --working-dir --no-insecure-file-read -k --insecure --ssl-client-cert-list --ssl-client-cert --ssl-client-key --ssl-client-passphrase --ssl-extra-ca-certs --cookie-jar --export-cookie-jar --verbose --mock --simulate -h --help --reporter-json-export --reporter-junit-export --reporter-html-export --reporter-json-omitRequestBodies --reporter-html-omitRequestBodies --reporter-json-omitResponseBodies --reporter-html-omitResponseBodies --reporter-json-omitHeaders --reporter-html-omitHeaders --reporter-json-omitAllHeadersAndBody --reporter-html-omitAllHeadersAndBody -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-e --environment -g --globals -r --reporters --reporter-json-structure -n --iteration-count -d --iteration-data -i --global-var --env-var --integration-id --postman-api-key --alias --bail --ignore-redirects -x --suppress-exit-code --silent --disable-unicode --delay-request --timeout --timeout-request --timeout-script --working-dir --no-insecure-file-read -k --insecure --ssl-client-cert-list --ssl-client-cert --ssl-client-key --ssl-client-passphrase --ssl-extra-ca-certs --cookie-jar --export-cookie-jar --verbose --mock --simulate -h --help --reporter-json-export --reporter-junit-export --reporter-html-export --reporter-json-omitRequestBodies --reporter-html-omitRequestBodies --reporter-json-omitResponseBodies --reporter-html-omitResponseBodies --reporter-json-omitHeaders --reporter-html-omitHeaders --reporter-json-omitAllHeadersAndBody --reporter-html-omitAllHeadersAndBody" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -200,7 +202,7 @@ _postman_api() {
 
 _postman_api_lint() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--integration-id -f --fail-severity -x --suppress-exit-code -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--integration-id -f --fail-severity -x --suppress-exit-code -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -209,13 +211,10 @@ _postman_api_lint() {
 
 _postman_api_publish() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--name --release-notes --collections --api-definition --do-not-poll -x --suppress-exit-code -h --help --release-notes --collections --api-definition -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--name --release-notes --collections --api-definition --do-not-poll -x --suppress-exit-code -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
-    --collections)
-      _postman_filematch '!*.@(json)' "$cur"
-      return 0 ;;
     --collections)
       _postman_filematch '!*.@(json)' "$cur"
       return 0 ;;
@@ -238,7 +237,7 @@ _postman_runner() {
 
 _postman_runner_start() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--id --key --region --proxy --egress-proxy --egress-proxy-authz-url --ssl-extra-ca-certs --metrics --metrics-port -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--id --key --region --proxy --egress-proxy --egress-proxy-authz-url --ssl-extra-ca-certs --metrics --metrics-port -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -267,7 +266,7 @@ _postman_spec() {
 
 _postman_spec_lint() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-f --fail-severity -o --output --workspace-id -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-f --fail-severity -o --output --workspace-id -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -290,7 +289,7 @@ _postman_monitor() {
 
 _postman_monitor_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-x --suppress-exit-code -t --timeout -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-x --suppress-exit-code -t --timeout -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -314,7 +313,7 @@ _postman_workspace() {
 
 _postman_workspace_prepare() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--collections-dir --environments-dir -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--collections-dir --environments-dir -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -329,7 +328,7 @@ _postman_workspace_prepare() {
 
 _postman_workspace_push() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--collections-dir --environments-dir --no-prepare -y --yes -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--collections-dir --environments-dir --no-prepare -y --yes -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -358,7 +357,7 @@ _postman_performance() {
 
 _postman_performance_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-e --environment -g --globals --vu-count -d --duration -p --load-profile --data-file --postman-api-key --pass-if --persist-metrics -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-e --environment -g --globals --vu-count -d --duration -p --load-profile --data-file --postman-api-key --pass-if --persist-metrics -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -391,7 +390,7 @@ _postman_flows() {
 
 _postman_flows_list() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-w --workspace -p --paginate -f --filter -s --sort --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-w --workspace -p --paginate -f --filter -s --sort --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -400,7 +399,7 @@ _postman_flows_list() {
 
 _postman_flows_trigger() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-i --input -f --input-file -q --query --headers -n --dry-run --show-secrets -r --result -s --scenario --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-i --input -f --input-file -q --query --headers -n --dry-run --show-secrets -r --result -s --scenario --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -421,7 +420,7 @@ _postman_flows_trigger() {
 
 _postman_flows_deploy() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-p --path -t --timeout -a --auth --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-p --path -t --timeout -a --auth --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -433,7 +432,7 @@ _postman_flows_deploy() {
 
 _postman_flows_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-i --input -f --input-file -s --scenario -e --environment --working-dir --verbose --no-truncate --output -x --suppress-exit-code --workspace --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-i --input -f --input-file -s --scenario -e --environment --working-dir --verbose --no-truncate --output -x --suppress-exit-code --workspace --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -455,7 +454,7 @@ _postman_flows_run() {
 
 _postman_flows_update() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-t --trigger -a --auth --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-t --trigger -a --auth --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -464,7 +463,7 @@ _postman_flows_update() {
 
 _postman_flows_list_runs() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-w --workspace -f --flow -r --range --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-w --workspace -f --flow -r --range --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -473,7 +472,7 @@ _postman_flows_list_runs() {
 
 _postman_flows_get_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-r --run-id -l --logs --filter --verbose --debug --json -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-r --run-id -l --logs --filter --verbose --debug --json -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -482,7 +481,7 @@ _postman_flows_get_run() {
 
 _postman_request() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-H --header -d --body -f --form -e --environment --timeout --redirects-ignore --redirects-max --redirects-follow-method --redirects-remove-referrer --retry --retry-delay --script-pre-request --script-post-request -o --output --verbose --response-only --debug -h --help --auth-basic-username --auth-basic-password --auth-bearer-token --auth-digest-username --auth-digest-password --auth-oauth1-consumerKey --auth-oauth1-consumerSecret --auth-oauth1-token --auth-oauth1-tokenSecret --auth-oauth2-accessToken --auth-oauth2-tokenType --auth-hawk-authId --auth-hawk-authKey --auth-hawk-algorithm --auth-aws-accessKey --auth-aws-secretKey --auth-aws-region --auth-aws-service --auth-aws-sessionToken --auth-ntlm-username --auth-ntlm-password --auth-ntlm-domain --auth-ntlm-workstation --auth-apikey-key --auth-apikey-value --auth-apikey-in -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-H --header -d --body -f --form -e --environment --timeout --redirects-ignore --redirects-max --redirects-follow-method --redirects-remove-referrer --retry --retry-delay --script-pre-request --script-post-request -o --output --verbose --response-only --debug -h --help --auth-basic-username --auth-basic-password --auth-bearer-token --auth-digest-username --auth-digest-password --auth-oauth1-consumerKey --auth-oauth1-consumerSecret --auth-oauth1-token --auth-oauth1-tokenSecret --auth-oauth2-accessToken --auth-oauth2-tokenType --auth-hawk-authId --auth-hawk-authKey --auth-hawk-algorithm --auth-aws-accessKey --auth-aws-secretKey --auth-aws-region --auth-aws-service --auth-aws-sessionToken --auth-ntlm-username --auth-ntlm-password --auth-ntlm-domain --auth-ntlm-workstation --auth-apikey-key --auth-apikey-value --auth-apikey-in" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -516,14 +515,14 @@ _postman_sdk() {
 
 _postman_sdk_init() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-y --yes -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-y --yes -h --help" -- "$cur") )
     return 0
   fi
 }
 
 _postman_sdk_generate() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-l --language --all -o --output-dir --name --sdk-version --config -y --yes --overwrite --verbose --log-level --pr --no-track-changes --no-merge --conflict-strategy -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-l --language --all -o --output-dir --name --sdk-version --config -y --yes --overwrite --verbose --log-level --pr --no-track-changes --no-merge --conflict-strategy -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -538,7 +537,7 @@ _postman_sdk_generate() {
 
 _postman_sdk_track() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-l --language -o --output-dir -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-l --language -o --output-dir -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -550,7 +549,7 @@ _postman_sdk_track() {
 
 _postman_sdk_list() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-s --status -o --output --log-level -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-s --status -o --output --log-level -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -559,7 +558,7 @@ _postman_sdk_list() {
 
 _postman_sdk_fetch() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-o --output-dir -l --language --overwrite --verbose --log-level -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-o --output-dir -l --language --overwrite --verbose --log-level -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -571,7 +570,7 @@ _postman_sdk_fetch() {
 
 _postman_sdk_connect() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-l --language -w --workspace -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-l --language -w --workspace -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -594,7 +593,7 @@ _postman_mock() {
 
 _postman_mock_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-e --environment -g --globals -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-e --environment -g --globals -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -624,7 +623,7 @@ _postman_application() {
 
 _postman_application_init() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--target-collection --target-environment --filter-urlpatterns --filter-methods --filter-headers --command -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--target-collection --target-environment --filter-urlpatterns --filter-methods --filter-headers --command -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -633,7 +632,7 @@ _postman_application_init() {
 
 _postman_application_test() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "--target --target-collection --target-environment --command --capture-only --output --force --verbose -h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "--target --target-collection --target-environment --command --capture-only --output --force --verbose -h --help" -- "$cur") )
     return 0
   fi
   case "$prev" in
@@ -665,7 +664,7 @@ _postman_simulate() {
 
 _postman_simulate_run() {
   if [[ "$cur" == -* ]]; then
-    COMPREPLY=( $(compgen -W "-h --help -h --help" -- "$cur") )
+    COMPREPLY=( $(compgen -W "-h --help" -- "$cur") )
     return 0
   fi
   _postman_filematch '!*.@(json)' "$cur"

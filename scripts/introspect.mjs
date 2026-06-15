@@ -52,8 +52,7 @@ export function splitSections(text) {
     if (/^Arguments:\s*$/.test(line)) { flush(); current = "arguments"; continue; }
     if (/^Options:\s*$/.test(line))   { flush(); current = "options";   continue; }
     if (/^Commands:\s*$/.test(line))  { flush(); current = "commands";  continue; }
-    if (/^[A-Z][A-Za-z ]*:\s*$/.test(line)) { flush(); current = null; continue; }
-    if (/^To get available options/.test(line)) { flush(); current = null; continue; }
+    if (/^\S/.test(line)) { flush(); current = null; continue; }
     if (current) acc.push(line);
   }
   flush();
