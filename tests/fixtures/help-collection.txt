@@ -1,0 +1,13 @@
+Usage: postman collection [options] [command]
+
+Run and test your Postman collections directly from the command line.
+
+Options:
+  -h, --help                         display help for command
+
+Commands:
+  migrate [options] <path>           Migrate a v2.1 collection to the v3 format
+  lint [options] <path>              Run linting on a local v3 collection at
+                                     the given file or directory path.
+  run [options] <collectionId/Path>  Initiate a Postman collection run from a
+                                     given ID or path.

@@ -1,0 +1,53 @@
+Usage: postman collection run <collectionId/Path>  [options]
+
+Initiate a Postman collection run from a given ID or path.
+
+Options:
+  -e, --environment <path>                        Specify an Id or path to a Postman Environment
+  -g, --globals <path>                            Specify an Id or path to a file containing Postman Globals
+  -r, --reporters [reporter]                      Specify the reporters to use for the run: cli,json,junit,html. For multiple reporters, provide their names as a comma-separated list (E.g., -r cli,json) (default: ["cli"])
+     --reporter-[reporter]-export <path>          [Optional] Specify a path to save the report. By default, reports are saved to the /postman-cli-reports directory in your current working directory. If the directory doesn't exist, it will be created automatically. If the specified path is an existing directory, the report file will be saved within it. Supported reporters: json, junit and html.
+  Type: string, Default value: null
+     --reporter-json-structure newman             [Optional] Generate JSON report using the Newman schema. By default, JSON reports use the native structure of Postman CLI. 
+  Type: string, Default value: null
+     --reporter-[reporter]-omitRequestBodies      [Optional] Remove all request bodies from the report. Supported reporters: json, html. 
+  Type: boolean, Default value: false
+     --reporter-[reporter]-omitResponseBodies     [Optional] Remove all response bodies from the report. Supported reporters: json, html. 
+  Type: boolean, Default value: false
+     --reporter-[reporter]-omitHeaders            [Optional] Remove all request and response headers from the report. Supported reporters: json, html. 
+  Type: boolean, Default value: false
+     --reporter-[reporter]-omitAllHeadersAndBody  [Optional] Remove all request and response headers, as well as request and response bodies, from the report. Supported reporters: json, html. 
+  Type: boolean, Default value: false
+  -n, --iteration-count <n>                       Define the number of iterations to run
+  -d, --iteration-data <path>                     Specify a data file to use for iterations (either JSON or CSV)
+  -i <id>                                         Specify the request/folder id, name, or path to run from the collection. Use a path (e.g. "FolderName/RequestName") to disambiguate items with the same name. Can be specified multiple times to run multiple items (default: [])
+  --global-var <value>                            Allows the specification of global variables via the command line, in a key=value format
+  --env-var <value>                               Allows the specification of environment variables via the command line, in a key=value format (default: [])
+  --integration-id <integration-id>               Specify the integration id for the report. (Only supported in the US region)
+  --postman-api-key <apiKey>                      API Key used to load the resources from the Postman API (Only supported in the US region, use 'postman login --region' to authenticate instead)
+  --alias <alias>                                 Specify the alias of the API key to fetch remote resources using it.[33m[39m
+  [33m(This option is discontinued and will be removed in a future release.)[39m
+  --bail [modifiers]                              Specify whether or not to gracefully stop a collection run on encountering an error and whether to end the run with an error based on the optional modifier
+  --ignore-redirects                              Prevents Postman CLI from automatically following 3XX redirect responses
+  -x , --suppress-exit-code                       Specify whether or not to override the default exit code for the current run
+  --silent                                        Prevents Postman CLI from showing output to CLI
+  --disable-unicode                               Forces Unicode compliant symbols to be replaced by their plain text equivalents
+  --delay-request [n]                             Specify the extent of delay between requests (milliseconds) (default: 0)
+  --timeout [n]                                   Specify a timeout for collection run (milliseconds) (default: 0)
+  --timeout-request [n]                           Specify a timeout for requests (milliseconds) (default: 0)
+  --timeout-script [n]                            Specify a timeout for scripts (milliseconds) (default: 0)
+  --working-dir <path>                            Specify the path to the working directory
+  --no-insecure-file-read                         Prevents reading the files situated outside of the working directory
+  -k, --insecure                                  Disables SSL validations
+  --ssl-client-cert-list <path>                   Specify the path to a client certificates configurations (JSON)
+  --ssl-client-cert <path>                        Specify the path to a client certificate (PEM)
+  --ssl-client-key <path>                         Specify the path to a client certificate private key
+  --ssl-client-passphrase <passphrase>            Specify the client certificate passphrase (for protected key)
+  --ssl-extra-ca-certs <path>                     Specify additionally trusted CA certificates (PEM)
+  --cookie-jar <path>                             Specify the path to a custom cookie jar (serialized tough-cookie JSON) 
+  --export-cookie-jar <path>                      Exports the cookie jar to a file after completing the run
+  --verbose                                       Show detailed information of collection run and each request sent
+  --mock <path>                                   Start a mock server from manifest (.json) file
+  --simulate <path>                               Start mock servers with fault-injection scenarios from a .sim.yaml file
+  -h, --help                                      display help for command
+Eg. postman collection run 123456-45159473-1e45-1f34-5678-1234567890ab

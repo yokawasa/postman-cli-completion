@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run tests
+        run: npm test
+
+      - name: Verify generator output is committed
+        run: node scripts/generate.mjs --check
+
+  lint-shells:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zsh and fish
+        run: sudo apt-get update && sudo apt-get install -y zsh fish
+
+      - name: shellcheck (bash)
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: completions/bash
+
+      - name: zsh syntax check
+        run: zsh -n completions/zsh/_postman
+
+      - name: fish syntax check
+        run: fish -n completions/fish/postman.fish
