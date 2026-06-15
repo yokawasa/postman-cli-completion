@@ -1,0 +1,95 @@
+{
+  "_comment": "Manual overrides for flags introspect cannot derive (dynamic patterns, enum choices). Keys are command paths ('global' for spec.global); values are merged into commands.json at generate time.",
+  "global": {
+    "enumChoices": {
+      "--color": ["auto", "on", "off"]
+    }
+  },
+  "request": {
+    "dynamicFlags": {
+      "--auth-<type>-<param>": {
+        "description": "Supply authentication parameters dynamically.",
+        "valueType": "string",
+        "expansions": [
+          "--auth-basic-username",
+          "--auth-basic-password",
+          "--auth-bearer-token",
+          "--auth-digest-username",
+          "--auth-digest-password",
+          "--auth-oauth1-consumerKey",
+          "--auth-oauth1-consumerSecret",
+          "--auth-oauth1-token",
+          "--auth-oauth1-tokenSecret",
+          "--auth-oauth2-accessToken",
+          "--auth-oauth2-tokenType",
+          "--auth-hawk-authId",
+          "--auth-hawk-authKey",
+          "--auth-hawk-algorithm",
+          "--auth-aws-accessKey",
+          "--auth-aws-secretKey",
+          "--auth-aws-region",
+          "--auth-aws-service",
+          "--auth-aws-sessionToken",
+          "--auth-ntlm-username",
+          "--auth-ntlm-password",
+          "--auth-ntlm-domain",
+          "--auth-ntlm-workstation",
+          "--auth-apikey-key",
+          "--auth-apikey-value",
+          "--auth-apikey-in"
+        ]
+      }
+    }
+  },
+  "collection/run": {
+    "dynamicFlags": {
+      "--reporter-[reporter]-export": {
+        "description": "Path to save the report for the given reporter.",
+        "valueType": "file",
+        "patterns": ["*.json", "*.xml", "*.html"],
+        "expansions": [
+          "--reporter-json-export",
+          "--reporter-junit-export",
+          "--reporter-html-export"
+        ]
+      },
+      "--reporter-[reporter]-omitRequestBodies": {
+        "description": "Remove all request bodies from the report.",
+        "expansions": [
+          "--reporter-json-omitRequestBodies",
+          "--reporter-html-omitRequestBodies"
+        ]
+      },
+      "--reporter-[reporter]-omitResponseBodies": {
+        "description": "Remove all response bodies from the report.",
+        "expansions": [
+          "--reporter-json-omitResponseBodies",
+          "--reporter-html-omitResponseBodies"
+        ]
+      },
+      "--reporter-[reporter]-omitHeaders": {
+        "description": "Remove all request and response headers from the report.",
+        "expansions": [
+          "--reporter-json-omitHeaders",
+          "--reporter-html-omitHeaders"
+        ]
+      },
+      "--reporter-[reporter]-omitAllHeadersAndBody": {
+        "description": "Remove all request/response headers and bodies from the report.",
+        "expansions": [
+          "--reporter-json-omitAllHeadersAndBody",
+          "--reporter-html-omitAllHeadersAndBody"
+        ]
+      }
+    },
+    "enumChoices": {
+      "--reporters": ["cli", "json", "junit", "html"],
+      "--bail": ["folder", "failure"]
+    }
+  },
+  "login": {
+    "enumChoices": {
+      "--region": ["us", "eu"]
+    }
+  }
+}

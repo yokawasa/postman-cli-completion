@@ -1,0 +1,27 @@
+Usage: postman [options] [command]
+
+Options:
+  -v, --version                          output the version number
+  --silent                               Silences all terminal output
+  --color <value>                        Enable/Disable colored output (auto|on|off) (default: "auto")
+  -h, --help                             display help for command
+
+Commands:
+  login [options]                        Authenticate with Postman to access your resources.
+  logout [options]                       Delete the stored Postman API key.
+  collection                             Run and test your Postman collections directly from the command line.
+  api                                    Publish and test your APIs directly from the command line
+  runner                                 Run runners on your own environments for monitoring your APIs
+  spec                                   Lint and validate Specifications from the command line
+  monitor                                Invoke a monitor run and display results
+  workspace                              Manage workspace resources.
+  performance                            Manage performance tests on your collections.
+  flows|fl                               Manage and interact with flows.
+  request [options] [methodOrUrl] [url]  Send HTTP requests from the command line with full Postman capabilities including authentication, environment variables, assertions, retries, and detailed output control.
+  sdk                                    Generate and manage your SDKs directly from the command line.
+  mock                                   Run and manage local Postman mock servers.
+  application|app                        Application-level commands: initialise config and run tests.
+  simulate                               Start mock servers with simulated failure scenarios.
+
+To get available options for a command:
+  postman <command> -h

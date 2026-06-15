@@ -1,0 +1,1957 @@
+{
+  "postmanCliVersion": "1.35.2",
+  "introspectedAt": "2026-06-15T15:55:28Z",
+  "global": {
+    "flags": [
+      {
+        "long": "--version",
+        "short": "-v",
+        "description": "output the version number"
+      },
+      {
+        "long": "--silent",
+        "description": "Silences all terminal output"
+      },
+      {
+        "long": "--color",
+        "valueType": "string",
+        "valueName": "value",
+        "description": "Enable/Disable colored output (auto|on|off) (default: \"auto\")"
+      },
+      {
+        "long": "--help",
+        "short": "-h",
+        "description": "display help for command"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "name": "login",
+      "description": "Authenticate with Postman to access your resources.",
+      "flags": [
+        {
+          "long": "--alias",
+          "valueType": "string",
+          "valueName": "alias",
+          "description": "Specify the alias of the API key to fetch your resources using it. (This option is discontinued and will be removed in a future release.)"
+        },
+        {
+          "long": "--with-api-key",
+          "valueType": "string",
+          "valueName": "apikey",
+          "description": "Specify the API key directly."
+        },
+        {
+          "long": "--region",
+          "valueType": "string",
+          "valueName": "region",
+          "description": "Specify the region for authentication. Use \"eu\" for EU region."
+        },
+        {
+          "long": "--verbose",
+          "description": "Show detailed error information"
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "logout",
+      "description": "Delete the stored Postman API key.",
+      "flags": [
+        {
+          "long": "--alias",
+          "valueType": "string",
+          "valueName": "alias",
+          "description": "Specify the alias of the API key to fetch your resources using it. (This option is discontinued and will be removed in a future release.)"
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "collection",
+      "description": "Run and test your Postman collections directly from the command line.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "migrate",
+          "aliases": [],
+          "description": "Migrate a v2.1 collection to the v3 format",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "file",
+              "valueName": "dir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Output directory (default: ./<collection-name>)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "lint",
+          "aliases": [],
+          "description": "Run linting on a local v3 collection at the given file or directory path.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--fail-severity",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Exit with failure if diagnostics at this level or above are present. [choices: \"error\", \"warning\"] (default: \"error\")"
+            },
+            {
+              "long": "--reporter",
+              "short": "-r",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format: cli (human-readable) or json. (default: \"cli\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Initiate a Postman collection run from a given ID or path.",
+          "positionals": [
+            {
+              "name": "collectionId/Path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Specify an Id or path to a Postman Environment"
+            },
+            {
+              "long": "--globals",
+              "short": "-g",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Specify an Id or path to a file containing Postman Globals"
+            },
+            {
+              "long": "--reporters",
+              "short": "-r",
+              "valueType": "string",
+              "valueName": "reporter",
+              "valueOptional": true,
+              "description": "Specify the reporters to use for the run: cli,json,junit,html. For multiple reporters, provide their names as a comma-separated list (E.g., -r cli,json) (default: [\"cli\"])"
+            },
+            {
+              "long": "--reporter-[reporter]-export",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "[Optional] Specify a path to save the report. By default, reports are saved to the /postman-cli-reports directory in your current working directory. If the directory doesn't exist, it will be created automatically. If the specified path is an existing directory, the report file will be saved within it. Supported reporters: json, junit and html.",
+              "dynamic": true
+            },
+            {
+              "long": "--reporter-json-structure",
+              "description": "[Optional] Generate JSON report using the Newman schema. By default, JSON reports use the native structure of Postman CLI."
+            },
+            {
+              "long": "--reporter-[reporter]-omitRequestBodies",
+              "description": "[Optional] Remove all request bodies from the report. Supported reporters: json, html.",
+              "dynamic": true
+            },
+            {
+              "long": "--reporter-[reporter]-omitResponseBodies",
+              "description": "[Optional] Remove all response bodies from the report. Supported reporters: json, html.",
+              "dynamic": true
+            },
+            {
+              "long": "--reporter-[reporter]-omitHeaders",
+              "description": "[Optional] Remove all request and response headers from the report. Supported reporters: json, html.",
+              "dynamic": true
+            },
+            {
+              "long": "--reporter-[reporter]-omitAllHeadersAndBody",
+              "description": "[Optional] Remove all request and response headers, as well as request and response bodies, from the report. Supported reporters: json, html.",
+              "dynamic": true
+            },
+            {
+              "long": "--iteration-count",
+              "short": "-n",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Define the number of iterations to run"
+            },
+            {
+              "long": "--iteration-data",
+              "short": "-d",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json",
+                "*.csv"
+              ],
+              "description": "Specify a data file to use for iterations (either JSON or CSV)"
+            },
+            {
+              "short": "-i",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Specify the request/folder id, name, or path to run from the collection. Use a path (e.g. \"FolderName/RequestName\") to disambiguate items with the same name. Can be specified multiple times to run multiple items (default: [])"
+            },
+            {
+              "long": "--global-var",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Allows the specification of global variables via the command line, in a key=value format"
+            },
+            {
+              "long": "--env-var",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Allows the specification of environment variables via the command line, in a key=value format (default: [])"
+            },
+            {
+              "long": "--integration-id",
+              "valueType": "string",
+              "valueName": "integration-id",
+              "description": "Specify the integration id for the report. (Only supported in the US region)"
+            },
+            {
+              "long": "--postman-api-key",
+              "valueType": "string",
+              "valueName": "apiKey",
+              "description": "API Key used to load the resources from the Postman API (Only supported in the US region, use 'postman login --region' to authenticate instead)"
+            },
+            {
+              "long": "--alias",
+              "valueType": "string",
+              "valueName": "alias",
+              "description": "Specify the alias of the API key to fetch remote resources using it."
+            },
+            {
+              "long": "--bail",
+              "valueType": "string",
+              "valueName": "modifiers",
+              "valueOptional": true,
+              "description": "Specify whether or not to gracefully stop a collection run on encountering an error and whether to end the run with an error based on the optional modifier"
+            },
+            {
+              "long": "--ignore-redirects",
+              "description": "Prevents Postman CLI from automatically following 3XX redirect responses"
+            },
+            {
+              "long": "--suppress-exit-code",
+              "short": "-x",
+              "description": "Specify whether or not to override the default exit code for the current run"
+            },
+            {
+              "long": "--silent",
+              "description": "Prevents Postman CLI from showing output to CLI"
+            },
+            {
+              "long": "--disable-unicode",
+              "description": "Forces Unicode compliant symbols to be replaced by their plain text equivalents"
+            },
+            {
+              "long": "--delay-request",
+              "valueType": "number",
+              "valueName": "n",
+              "valueOptional": true,
+              "description": "Specify the extent of delay between requests (milliseconds) (default: 0)"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "n",
+              "valueOptional": true,
+              "description": "Specify a timeout for collection run (milliseconds) (default: 0)"
+            },
+            {
+              "long": "--timeout-request",
+              "valueType": "number",
+              "valueName": "n",
+              "valueOptional": true,
+              "description": "Specify a timeout for requests (milliseconds) (default: 0)"
+            },
+            {
+              "long": "--timeout-script",
+              "valueType": "number",
+              "valueName": "n",
+              "valueOptional": true,
+              "description": "Specify a timeout for scripts (milliseconds) (default: 0)"
+            },
+            {
+              "long": "--working-dir",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Specify the path to the working directory"
+            },
+            {
+              "long": "--no-insecure-file-read",
+              "description": "Prevents reading the files situated outside of the working directory"
+            },
+            {
+              "long": "--insecure",
+              "short": "-k",
+              "description": "Disables SSL validations"
+            },
+            {
+              "long": "--ssl-client-cert-list",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Specify the path to a client certificates configurations (JSON)"
+            },
+            {
+              "long": "--ssl-client-cert",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Specify the path to a client certificate (PEM)"
+            },
+            {
+              "long": "--ssl-client-key",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Specify the path to a client certificate private key"
+            },
+            {
+              "long": "--ssl-client-passphrase",
+              "valueType": "string",
+              "valueName": "passphrase",
+              "description": "Specify the client certificate passphrase (for protected key)"
+            },
+            {
+              "long": "--ssl-extra-ca-certs",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Specify additionally trusted CA certificates (PEM)"
+            },
+            {
+              "long": "--cookie-jar",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Specify the path to a custom cookie jar (serialized tough-cookie JSON)"
+            },
+            {
+              "long": "--export-cookie-jar",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Exports the cookie jar to a file after completing the run"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed information of collection run and each request sent"
+            },
+            {
+              "long": "--mock",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Start a mock server from manifest (.json) file"
+            },
+            {
+              "long": "--simulate",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.sim.yaml",
+                "*.yaml",
+                "*.yml"
+              ],
+              "description": "Start mock servers with fault-injection scenarios from a .sim.yaml file"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "api",
+      "description": "Publish and test your APIs directly from the command line",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "lint",
+          "aliases": [],
+          "description": "Run linting on the schema of the given API ID or local file in the given path. If [api] is not provided we will run the linting on the schema present in the .postman config file",
+          "positionals": [
+            {
+              "name": "api",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--integration-id",
+              "valueType": "string",
+              "valueName": "integration-id",
+              "description": "Specify the integration ID for the report."
+            },
+            {
+              "long": "--fail-severity",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Results of this level or above will trigger a failure exit code. [choices: \"error\", \"warn\", \"info\", \"hint\"] (default: \"ERROR\")"
+            },
+            {
+              "long": "--suppress-exit-code",
+              "short": "-x",
+              "description": "Specify whether or not to override the default exit code for the current run"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "publish",
+          "aliases": [],
+          "description": "Publish a version of an API for the given apiId. All entities added to the API will be published by default. User can choose which entities to publish by using additional options.",
+          "positionals": [
+            {
+              "name": "apiId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Specify the name of the version to publish."
+            },
+            {
+              "long": "--release-notes",
+              "valueType": "string",
+              "valueName": "releaseNotes",
+              "description": "Specify release notes for the version to publish."
+            },
+            {
+              "long": "--collections",
+              "valueType": "file",
+              "valueName": "collectionIds/paths...",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Specify the collections to publish. If API is connected to a repository, provide file path instead of IDs."
+            },
+            {
+              "long": "--api-definition",
+              "valueType": "string",
+              "valueName": "apiDefinitionId/directory/file",
+              "description": "Specify the API Definition to publish. If API is connected to a repository, provide schema root file path. Note that some repository connections utilize a schema directory path; for such APIs, provide schema directory path instead of file path."
+            },
+            {
+              "long": "--do-not-poll",
+              "description": "Specify whether or not to poll for completion status of the publish action."
+            },
+            {
+              "long": "--suppress-exit-code",
+              "short": "-x",
+              "description": "Specify whether or not to override the default exit code for the current run."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "runner",
+      "description": "Run runners on your own environments for monitoring your APIs",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "start",
+          "aliases": [],
+          "description": "Start a runner",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "The ID of the runner to execute"
+            },
+            {
+              "long": "--key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "The secret key for the runner"
+            },
+            {
+              "long": "--region",
+              "valueType": "string",
+              "valueName": "region",
+              "description": "Specify the region for the runner. Use \"eu\" for EU region."
+            },
+            {
+              "long": "--proxy",
+              "valueType": "string",
+              "valueName": "url",
+              "description": "External proxy URL (e.g., http://proxy.com or http://proxy.com:8080)"
+            },
+            {
+              "long": "--egress-proxy",
+              "description": "Enable built-in egress proxy"
+            },
+            {
+              "long": "--egress-proxy-authz-url",
+              "valueType": "string",
+              "valueName": "url",
+              "description": "Custom egress proxy authorization service base URL"
+            },
+            {
+              "long": "--ssl-extra-ca-certs",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Additional trusted CA certificates (PEM file, can contain multiple certs)"
+            },
+            {
+              "long": "--metrics",
+              "description": "Enable the metrics server for health checks"
+            },
+            {
+              "long": "--metrics-port",
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Port for the metrics server (default: \"9090\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "spec",
+      "description": "Lint and validate Specifications from the command line",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "lint",
+          "aliases": [],
+          "description": "Run linting on the given specification by ID or local file path.",
+          "positionals": [
+            {
+              "name": "spec",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--fail-severity",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Results of this level or above will trigger a failure exit code. [choices: \"error\", \"warning\", \"info\", \"hint\"] (default: \"ERROR\")"
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format for the results. [choices: \"json\", \"csv\"]"
+            },
+            {
+              "long": "--workspace-id",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "The workspace ID to use for fetching governance rulesets."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "monitor",
+      "description": "Invoke a monitor run and display results",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Invoke a monitor run and display results.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--suppress-exit-code",
+              "short": "-x",
+              "description": "Specify whether or not to override the default exit code for the current run"
+            },
+            {
+              "long": "--timeout",
+              "short": "-t",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Maximum wait time for run completion in milliseconds (default: 15 minutes) (default: 900000)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "workspace",
+      "description": "Manage workspace resources.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "prepare",
+          "aliases": [],
+          "description": "Prepare local collections and environments for push by validating and regenerating IDs if needed.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--collections-dir",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Path to the collections directory (default: \"postman/collections\")"
+            },
+            {
+              "long": "--environments-dir",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Path to the environments directory (default: \"postman/environments\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "push",
+          "aliases": [],
+          "description": "Push local collection, environment, and specification changes to Postman workspace.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--collections-dir",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Path to the collections directory (default: \"postman/collections\")"
+            },
+            {
+              "long": "--environments-dir",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Path to the environments directory (default: \"postman/environments\")"
+            },
+            {
+              "long": "--no-prepare",
+              "description": "Skip ID validation and auto-fix before pushing"
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip all confirmation prompts"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "performance",
+      "description": "Manage performance tests on your collections.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Run a performance test on a collection",
+          "positionals": [
+            {
+              "name": "collectionId",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Specify an Id to a Postman Environment"
+            },
+            {
+              "long": "--globals",
+              "short": "-g",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Specify an Id to a Postman Globals"
+            },
+            {
+              "long": "--vu-count",
+              "valueType": "string",
+              "valueName": "count",
+              "description": "Number of virtual users (default: 20)"
+            },
+            {
+              "long": "--duration",
+              "short": "-d",
+              "valueType": "string",
+              "valueName": "minutes",
+              "description": "Duration of the performance test in minutes (default: 10)"
+            },
+            {
+              "long": "--load-profile",
+              "short": "-p",
+              "valueType": "string",
+              "valueName": "profile",
+              "description": "Load profile type: fixed, ramp-up, spike, peak (default: \"ramp-up\")"
+            },
+            {
+              "long": "--data-file",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to a JSON or CSV data file to use with the collection"
+            },
+            {
+              "long": "--postman-api-key",
+              "valueType": "string",
+              "valueName": "apiKey",
+              "description": "API Key used to load the resources from the Postman API (Only supported in the US region, use 'postman login --region' to authenticate instead)"
+            },
+            {
+              "long": "--pass-if",
+              "valueType": "string",
+              "valueName": "condition",
+              "description": "Pass condition in format: function(metric, value). Functions: less_than, greater_than, less_than_eq, greater_than_eq. Metrics: avg, p90, p95, p99, error_rate, rps. Example: less_than(p95, 500) or less_than(error_rate, 5)"
+            },
+            {
+              "long": "--persist-metrics",
+              "description": "Persist detailed run results to cloud for analysis (default: false)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "flows",
+      "aliases": [
+        "fl"
+      ],
+      "description": "Manage and interact with flows.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List all flows",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Specify the workspace ID to list flows from"
+            },
+            {
+              "long": "--paginate",
+              "short": "-p",
+              "description": "Paginates the list of flows"
+            },
+            {
+              "long": "--filter",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "pattern",
+              "description": "Filter flows by name. Pattern may be a regex, or a name prefix."
+            },
+            {
+              "long": "--sort",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "criteria",
+              "description": "Sort flows by criteria: \"name\" or \"updated\" (default: updated) (default: \"updated\")"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "trigger",
+          "aliases": [],
+          "description": "Trigger a deployed flow",
+          "positionals": [
+            {
+              "name": "flowId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--input",
+              "short": "-i",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set key=value pairs in the trigger payload (e.g. --input foo=bar --input baz=qux) (default: [])"
+            },
+            {
+              "long": "--input-file",
+              "short": "-f",
+              "valueType": "file",
+              "valueName": "path.json",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Set payload values from JSON files (e.g. --input-file ./inputs.json --input-file ./config.json) (default: [])"
+            },
+            {
+              "long": "--query",
+              "short": "-q",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set query parameters as key=value pairs (e.g. --query foo=bar --query baz=qux) (default: [])"
+            },
+            {
+              "long": "--headers",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set custom headers as key=value pairs (e.g. --headers X-API-Key=12345 --headers User-Agent=MyApp) (default: [])"
+            },
+            {
+              "long": "--dry-run",
+              "short": "-n",
+              "description": "Show the flow requestURL and payload that would be sent without making the actual request (default: false)"
+            },
+            {
+              "long": "--show-secrets",
+              "description": "Show actual authentication tokens in dry-run output (otherwise secrets are masked) (default: false)"
+            },
+            {
+              "long": "--result",
+              "short": "-r",
+              "description": "Show only the response body (default: false)"
+            },
+            {
+              "long": "--scenario",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Use a named scenario from the flow definition to construct the input payload, headers, and query parameters (overridden by --headers/--query)"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "deploy",
+          "aliases": [],
+          "description": "Deploy a flow (required to trigger it)",
+          "positionals": [
+            {
+              "name": "flowId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--path",
+              "short": "-p",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Specify the URL path for the trigger"
+            },
+            {
+              "long": "--timeout",
+              "short": "-t",
+              "valueType": "string",
+              "valueName": "timeout",
+              "description": "Specify the HTTP session timeout (5000ms to 60000ms) (default: \"10000ms\")"
+            },
+            {
+              "long": "--auth",
+              "short": "-a",
+              "description": "Enable authentication for the trigger (default: false)"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Run a single flow from a file (e.g. ./path/to/flow.json)",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--input",
+              "short": "-i",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set flow inputs as key=value pairs (e.g. --input foo=bar --input baz=qux) (default: [])"
+            },
+            {
+              "long": "--input-file",
+              "short": "-f",
+              "valueType": "file",
+              "valueName": "path.json",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Set flow inputs from JSON files (e.g. --input-file ./inputs.json --input-file ./config.json) (default: [])"
+            },
+            {
+              "long": "--scenario",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Use a pre-built scenario as flow inputs (by scenario name). Can be combined with --input and --input-file to override values."
+            },
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Specify a path to a Postman Environment file (JSON or YAML)"
+            },
+            {
+              "long": "--working-dir",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Specify the path to the working directory"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed information of flow run and each request (method, URL, assertions)"
+            },
+            {
+              "long": "--no-truncate",
+              "description": "Show full output without truncating long values"
+            },
+            {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Save execution result to a file (supported: json)"
+            },
+            {
+              "long": "--suppress-exit-code",
+              "short": "-x",
+              "description": "Specify whether or not to override the default exit code for the current run"
+            },
+            {
+              "long": "--workspace",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Workspace ID required for flows that contain connector blocks. Find it in the Postman app URL: https://postman.com/workspace/<workspaceId>"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "aliases": [],
+          "description": "Update settings for a deployed flow",
+          "positionals": [
+            {
+              "name": "flowId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--trigger",
+              "short": "-t",
+              "valueType": "string",
+              "valueName": "on|off",
+              "description": "Enable or disable the flow trigger"
+            },
+            {
+              "long": "--auth",
+              "short": "-a",
+              "valueType": "string",
+              "valueName": "on|off",
+              "description": "Enable or disable authentication for the flow trigger"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list-runs",
+          "aliases": [],
+          "description": "List run history for a deployed flow",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Specify the workspace ID"
+            },
+            {
+              "long": "--flow",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "flowId",
+              "description": "Filter sessions by flow ID"
+            },
+            {
+              "long": "--range",
+              "short": "-r",
+              "valueType": "string",
+              "valueName": "range",
+              "description": "Time range to list runs (e.g. 30m, 2h, 3d) (default: \"1h\")"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get-run",
+          "aliases": [],
+          "description": "Analyze a specific flow run",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--run-id",
+              "short": "-r",
+              "valueType": "string",
+              "valueName": "runId",
+              "description": "Specify the run ID to analyze"
+            },
+            {
+              "long": "--logs",
+              "short": "-l",
+              "description": "Show detailed event log (default: false)"
+            },
+            {
+              "long": "--filter",
+              "valueType": "string",
+              "valueName": "blockId",
+              "description": "Filter event log by block ID prefix (can be specified multiple times) (default: [])"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "request",
+      "description": "Send HTTP requests from the command line with full Postman capabilities including authentication, environment variables, assertions, retries, and detailed output control.",
+      "positionals": [
+        {
+          "name": "methodOrUrl",
+          "valueType": "string"
+        },
+        {
+          "name": "url",
+          "valueType": "string"
+        }
+      ],
+      "flags": [
+        {
+          "long": "--header",
+          "short": "-H",
+          "valueType": "string",
+          "valueName": "header",
+          "description": "Add HTTP header in key:value format. Can be used multiple times. Example: -H \"Content-Type:application/json\" -H \"X-API-Key:abc123\" (default: [])"
+        },
+        {
+          "long": "--body",
+          "short": "-d",
+          "valueType": "string",
+          "valueName": "body",
+          "description": "Request body content. Supports: inline string, @filepath for file content, or \"-\" for stdin. Example: --body '{\"name\":\"John\"}' or --body @data.json"
+        },
+        {
+          "long": "--form",
+          "short": "-f",
+          "valueType": "string",
+          "valueName": "field",
+          "description": "Add multipart/form-data field in key=value format. Can be used multiple times. For file uploads use key=@filepath. Example: -f \"name=John\" -f \"avatar=@photo.jpg\" (default: [])"
+        },
+        {
+          "long": "--environment",
+          "short": "-e",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.json"
+          ],
+          "description": "Load Postman Environment by UUID or file path. Variables in URL, headers, and body will be resolved. Example: -e dev.postman_environment.json"
+        },
+        {
+          "long": "--auth-<type>-<param>",
+          "valueType": "string",
+          "valueName": "value",
+          "description": "[Optional] Supply authentication parameters dynamically. Use --auth-<type>-<param> where <type> is the auth method and <param> is the parameter. Supported auth types: basic, bearer, digest, oauth1, oauth2, hawk, aws, ntlm, apikey Examples: Basic Auth: --auth-basic-username user --auth-basic-password pass Bearer Token: --auth-bearer-token mytoken123 API Key: --auth-apikey-key \"X-API-Key\" --auth-apikey-value \"abc123\" --auth-apikey-in header AWS: --auth-aws-accessKey KEY --auth-aws-secretKey SECRET --auth-aws-service s3 Type: string, Default: null",
+          "dynamic": true
+        },
+        {
+          "long": "--timeout",
+          "valueType": "number",
+          "valueName": "n",
+          "description": "Request timeout in milliseconds. Request will fail if no response within this time. (default: 300000)"
+        },
+        {
+          "long": "--redirects-ignore",
+          "description": "Prevents Postman CLI from automatically following 3XX redirect responses. By default, redirects are followed."
+        },
+        {
+          "long": "--redirects-max",
+          "valueType": "number",
+          "valueName": "n",
+          "description": "Maximum number of redirects to follow. Default is unlimited. Useful for preventing redirect loops."
+        },
+        {
+          "long": "--redirects-follow-method",
+          "description": "Preserves the original HTTP method when following redirects. By default, redirects are followed with GET method."
+        },
+        {
+          "long": "--redirects-remove-referrer",
+          "description": "Removes the Referer header when following redirects. By default, Referer header is sent with redirects."
+        },
+        {
+          "long": "--retry",
+          "valueType": "number",
+          "valueName": "n",
+          "description": "Number of retry attempts for failed requests (4xx, 5xx, network errors). Useful for flaky endpoints or rate-limited APIs. (default: 0)"
+        },
+        {
+          "long": "--retry-delay",
+          "valueType": "number",
+          "valueName": "ms",
+          "description": "Delay between retry attempts in milliseconds. (default: 1000)"
+        },
+        {
+          "long": "--script-pre-request",
+          "valueType": "string",
+          "valueName": "script",
+          "description": "Add JavaScript script to run before the request. Can be inline JS or @filepath to load from file. Scripts have access to pm.* APIs. Example: --script-pre-request \"pm.environment.set('timestamp', Date.now());\" or --script-pre-request @setup.js"
+        },
+        {
+          "long": "--script-post-request",
+          "valueType": "string",
+          "valueName": "script",
+          "description": "Add JavaScript script to run after the request. Can be inline JS or @filepath to load from file. Scripts have access to pm.* APIs. Example: --script-post-request \"console.log(pm.response.json());\" or --script-post-request @validate.js"
+        },
+        {
+          "long": "--output",
+          "short": "-o",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.json"
+          ],
+          "description": "Save complete response to JSON file.Useful for debugging or further processing."
+        },
+        {
+          "long": "--verbose",
+          "description": "Show detailed request and response information including headers, body, and metadata."
+        },
+        {
+          "long": "--response-only",
+          "description": "suppress all output except response body. Useful for piping to other commands."
+        },
+        {
+          "long": "--debug",
+          "description": "Debug mode: show detailed execution information including retry attempts, redirects, and timing breakdowns."
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "sdk",
+      "description": "Generate and manage your SDKs directly from the command line.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "init",
+          "aliases": [],
+          "description": "Create or update .postman/config.json with an SDK configuration stub.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip prompts and overwrite existing sdk config"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "generate",
+          "aliases": [
+            "build"
+          ],
+          "description": "Generate a new SDK from a Postman collection or specification.",
+          "positionals": [
+            {
+              "name": "idOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--language",
+              "short": "-l",
+              "valueType": "string",
+              "valueName": "languages...",
+              "description": "Target language(s) for SDK generation. Specify one or more languages. [choices: \"typescript\", \"python\", \"java\", \"go\", \"csharp\", \"php\", \"ruby\", \"cli\", \"kotlin\", \"rust\"]"
+            },
+            {
+              "long": "--all",
+              "description": "Generate SDKs for all supported languages"
+            },
+            {
+              "long": "--output-dir",
+              "short": "-o",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Directory where the generated SDK will be saved (default: \"./sdks\")"
+            },
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Name for the generated SDK package"
+            },
+            {
+              "long": "--sdk-version",
+              "valueType": "string",
+              "valueName": "version",
+              "description": "Version number for the generated SDK"
+            },
+            {
+              "long": "--config",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to SDK generation config file (JSON). If not specified, will look for .postman/config.json (sdk key)."
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip all confirmation prompts and overwrite existing files"
+            },
+            {
+              "long": "--overwrite",
+              "description": "Overwrite existing files without confirmation"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed generation progress and logs"
+            },
+            {
+              "long": "--log-level",
+              "valueType": "string",
+              "valueName": "level",
+              "description": "Set build log detail level. \"warn\" (default) shows errors/warnings inline and collapses info notes; \"info\" expands all log entries (default: \"warn\")"
+            },
+            {
+              "long": "--pr",
+              "description": "Create pull requests to configured GitHub repositories after SDK generation"
+            },
+            {
+              "long": "--no-track-changes",
+              "description": "Disable change tracking. By default, file hashes are written into .manifest.json to enable edit detection on the next regeneration."
+            },
+            {
+              "long": "--no-merge",
+              "description": "Skip custom code merge even if user edits are detected. Forces a fresh generation."
+            },
+            {
+              "long": "--conflict-strategy",
+              "valueType": "string",
+              "valueName": "strategy",
+              "description": "Strategy for handling merge conflicts: \"mark\" inserts conflict markers (default), \"ours\" keeps user edits, \"theirs\" keeps generated code"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "track",
+          "aliases": [],
+          "description": "Enable change tracking for a generated SDK. Adds file hashes to .manifest.json so that the next `sdk generate` can detect your edits and preserve them via 3-way merge.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--language",
+              "short": "-l",
+              "valueType": "string",
+              "valueName": "languages...",
+              "description": "Language(s) to track. [choices: \"typescript\", \"python\", \"java\", \"go\", \"csharp\", \"php\", \"ruby\", \"cli\", \"kotlin\", \"rust\"]"
+            },
+            {
+              "long": "--output-dir",
+              "short": "-o",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Base directory containing generated SDKs (default: \"./sdks\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [
+            "ls"
+          ],
+          "description": "List SDK builds for a collection, extensible collection, or specification.",
+          "positionals": [
+            {
+              "name": "id",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--status",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "status",
+              "description": "Filter builds by status (case-insensitive) [choices: in-progress, success, failure]"
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Output format [choices: \"json\", \"table\"] (default: \"table\")"
+            },
+            {
+              "long": "--log-level",
+              "valueType": "string",
+              "valueName": "level",
+              "description": "Set build log detail level. \"warn\" (default) shows errors/warnings inline and collapses info notes; \"info\" expands all log entries (default: \"warn\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "fetch",
+          "aliases": [
+            "get"
+          ],
+          "description": "Download SDKs from a build by its ID.",
+          "positionals": [
+            {
+              "name": "buildId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output-dir",
+              "short": "-o",
+              "valueType": "dir",
+              "valueName": "path",
+              "description": "Directory to save the downloaded SDK(s) (default: \"./sdks\")"
+            },
+            {
+              "long": "--language",
+              "short": "-l",
+              "valueType": "string",
+              "valueName": "language",
+              "description": "Download only the specified language (e.g., typescript, python)"
+            },
+            {
+              "long": "--overwrite",
+              "description": "Overwrite existing files without confirmation"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed download progress"
+            },
+            {
+              "long": "--log-level",
+              "valueType": "string",
+              "valueName": "level",
+              "description": "Set build log detail level. \"warn\" (default) shows errors/warnings inline and collapses info notes; \"info\" expands all log entries (default: \"warn\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "connect",
+          "aliases": [],
+          "description": "Connect a collection or specification to a Git repository for automated SDK PRs",
+          "positionals": [
+            {
+              "name": "provider",
+              "valueType": "string"
+            },
+            {
+              "name": "id",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--language",
+              "short": "-l",
+              "valueType": "string",
+              "valueName": "language",
+              "description": "SDK language (required) [choices: typescript, python, java, go, csharp, php, ruby, cli, kotlin, rust]"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Workspace ID (optional)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mock",
+      "description": "Run and manage local Postman mock servers.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Start a local mock server given a manifest file.",
+          "positionals": [
+            {
+              "name": "manifestPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to an environment file (JSON or YAML) for pm.environment"
+            },
+            {
+              "long": "--globals",
+              "short": "-g",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to a globals file (JSON or YAML) for pm.globals"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "application",
+      "aliases": [
+        "app"
+      ],
+      "description": "Application-level commands: initialise config and run tests.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "init",
+          "aliases": [],
+          "description": "Initialise a postman.config.cjs file with target collections, environment, and test command.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--target-collection",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Collection name or path for the default target (repeatable) (default: [])"
+            },
+            {
+              "long": "--target-environment",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Environment name or path for the default target (last value wins) (default: [])"
+            },
+            {
+              "long": "--filter-urlpatterns",
+              "valueType": "string",
+              "valueName": "patterns",
+              "description": "Comma-separated URL patterns to exclude from captured traffic (default: [])"
+            },
+            {
+              "long": "--filter-methods",
+              "valueType": "string",
+              "valueName": "methods",
+              "description": "Comma-separated HTTP methods to exclude from captured traffic (default: [])"
+            },
+            {
+              "long": "--filter-headers",
+              "valueType": "string",
+              "valueName": "headers",
+              "description": "Comma-separated request header filters in header=value form (default: [])"
+            },
+            {
+              "long": "--command",
+              "valueType": "string",
+              "valueName": "cmd",
+              "description": "Command to run your tests (e.g. \"npx playwright test\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "test",
+          "aliases": [],
+          "description": "Run a command first (primary task), then match captured traffic against Postman collections and run assertions.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--target",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Select a target from postman.config.js targets block (default: \"default\")"
+            },
+            {
+              "long": "--target-collection",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Collection override for the selected target (repeatable) (default: [])"
+            },
+            {
+              "long": "--target-environment",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Environment override for the selected target (last value wins) (default: [])"
+            },
+            {
+              "long": "--command",
+              "valueType": "string",
+              "valueName": "cmd",
+              "description": "Command to run first (primary task). Overrides config."
+            },
+            {
+              "long": "--capture-only",
+              "description": "Skip collection matching and tests; capture traffic and save a V3 collection organised by host"
+            },
+            {
+              "long": "--output",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Output directory for captured collection (default: pm-results/captured/; used with --capture-only)"
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite the output directory if it exists and is not empty (used with --capture-only)"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed per-request matching, sandbox errors, and debug information"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "simulate",
+      "description": "Start mock servers with simulated failure scenarios.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Start mocks with fault-injection scenarios defined in a .sim.yaml file",
+          "positionals": [
+            {
+              "name": "filepath",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

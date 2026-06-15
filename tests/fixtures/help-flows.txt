@@ -1,0 +1,16 @@
+Usage: postman flows|fl [options] [command]
+
+Manage and interact with flows.
+
+Options:
+  -h, --help                  display help for command
+
+Commands:
+  list [options]              List all flows
+  trigger [options] <flowId>  Trigger a deployed flow
+  deploy [options] <flowId>   Deploy a flow (required to trigger it)
+  run [options] <path>        Run a single flow from a file (e.g.
+                              ./path/to/flow.json)
+  update [options] <flowId>   Update settings for a deployed flow
+  list-runs [options]         List run history for a deployed flow
+  get-run [options]           Analyze a specific flow run

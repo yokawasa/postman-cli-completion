@@ -1,0 +1,23 @@
+Usage: postman sdk [options] [command]
+
+Generate and manage your SDKs directly from the command line.
+
+Options:
+  -h, --help                           display help for command
+
+Commands:
+  init [options]                       Create or update .postman/config.json
+                                       with an SDK configuration stub.
+  generate|build [options] <idOrPath>  Generate a new SDK from a Postman
+                                       collection or specification.
+  track [options]                      Enable change tracking for a generated
+                                       SDK. Adds file hashes to .manifest.json
+                                       so that the next `sdk generate` can
+                                       detect your edits and preserve them via
+                                       3-way merge.
+  list|ls [options] <id>               List SDK builds for a collection,
+                                       extensible collection, or specification.
+  fetch|get [options] <buildId>        Download SDKs from a build by its ID.
+  connect [options] <provider> <id>    Connect a collection or specification to
+                                       a Git repository for automated SDK PRs
+  help [command]                       display help for command

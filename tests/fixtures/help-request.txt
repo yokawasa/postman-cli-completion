@@ -1,0 +1,296 @@
+Usage: postman request [METHOD] <URL> [options]
+
+Send HTTP requests from the command line with full Postman capabilities
+including authentication, environment variables, assertions, retries, and
+detailed output control.
+
+Arguments:
+  methodOrUrl                     HTTP method (GET, POST, PUT, DELETE, PATCH,
+                                  HEAD, OPTIONS) or URL. If URL provided
+                                  without method, defaults to GET.
+  url                             The target URL to request (required if first
+                                  argument is HTTP method)
+
+Options:
+  -H, --header <header>           Add HTTP header in key:value format. Can be
+                                  used multiple times. Example: -H
+                                  "Content-Type:application/json" -H
+                                  "X-API-Key:abc123" (default: [])
+  -d, --body <body>               Request body content. Supports: inline
+                                  string, @filepath for file content, or "-"
+                                  for stdin. Example: --body '{"name":"John"}'
+                                  or --body @data.json
+  -f, --form <field>              Add multipart/form-data field in key=value
+                                  format. Can be used multiple times. For file
+                                  uploads use key=@filepath. Example: -f
+                                  "name=John" -f "avatar=@photo.jpg" (default:
+                                  [])
+  -e, --environment <path>        Load Postman Environment by UUID or file
+                                  path. Variables in URL, headers, and body
+                                  will be resolved. Example: -e
+                                  dev.postman_environment.json
+  --auth-<type>-<param> <value>   [Optional] Supply authentication parameters dynamically.
+                                     Use --auth-<type>-<param> where <type> is the auth method and <param> is the parameter.
+                                     Supported auth types: basic, bearer, digest, oauth1, oauth2, hawk, aws, ntlm, apikey
+                                     Examples:
+                                       Basic Auth: --auth-basic-username user --auth-basic-password pass
+                                       Bearer Token: --auth-bearer-token mytoken123
+                                       API Key: --auth-apikey-key "X-API-Key" --auth-apikey-value "abc123" --auth-apikey-in header
+                                       AWS: --auth-aws-accessKey KEY --auth-aws-secretKey SECRET --auth-aws-service s3
+                                     Type: string, Default: null
+  --timeout <n>                   Request timeout in milliseconds. Request will
+                                  fail if no response within this time.
+                                  (default: 300000)
+  --redirects-ignore              Prevents Postman CLI from automatically
+                                  following 3XX redirect responses. By default,
+                                  redirects are followed.
+  --redirects-max <n>             Maximum number of redirects to follow.
+                                  Default is unlimited. Useful for preventing
+                                  redirect loops.
+  --redirects-follow-method       Preserves the original HTTP method when
+                                  following redirects. By default, redirects
+                                  are followed with GET method.
+  --redirects-remove-referrer     Removes the Referer header when following
+                                  redirects. By default, Referer header is sent
+                                  with redirects.
+  --retry <n>                     Number of retry attempts for failed requests
+                                  (4xx, 5xx, network errors). Useful for flaky
+                                  endpoints or rate-limited APIs. (default: 0)
+  --retry-delay <ms>              Delay between retry attempts in milliseconds.
+                                  (default: 1000)
+  --script-pre-request <script>   Add JavaScript script to run before the
+                                  request. Can be inline JS or @filepath to
+                                  load from file. Scripts have access to pm.*
+                                  APIs. Example: --script-pre-request
+                                  "pm.environment.set('timestamp',
+                                  Date.now());" or --script-pre-request
+                                  @setup.js
+  --script-post-request <script>  Add JavaScript script to run after the
+                                  request. Can be inline JS or @filepath to
+                                  load from file. Scripts have access to pm.*
+                                  APIs. Example: --script-post-request
+                                  "console.log(pm.response.json());" or
+                                  --script-post-request @validate.js
+  -o, --output <path>             Save complete response to JSON file.Useful
+                                  for debugging or further processing.
+  --verbose                       Show detailed request and response
+                                  information including headers, body, and
+                                  metadata.
+  --response-only                 suppress all output except response body.
+                                  Useful for piping to other commands.
+  --debug                         Debug mode: show detailed execution
+                                  information including retry attempts,
+                                  redirects, and timing breakdowns.
+  -h, --help                      display help for command
+
+Examples:
+
+  Basic Requests:
+    Simple GET request (method defaults to GET):
+      postman request https://api.example.com/users
+
+    GET request with explicit method:
+      postman request GET https://api.example.com/users
+
+    POST request with JSON body:
+      postman request POST https://api.example.com/users \
+        --body '{"name": "Alice", "email": "alice@example.com"}'
+
+    PUT request with body from file:
+      postman request PUT https://api.example.com/users/123 --body @user-data.json
+
+    DELETE request:
+      postman request DELETE https://api.example.com/users/123
+
+  Authentication:
+    Bearer token authentication:
+      postman request https://api.example.com/protected \
+        --auth-bearer-token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    Basic authentication:
+      postman request https://api.example.com/protected \
+        --auth-basic-username myuser \
+        --auth-basic-password mypass
+
+    API Key in header:
+      postman request https://api.example.com/data \
+        --auth-apikey-key "X-API-Key" \
+        --auth-apikey-value "abc123xyz" \
+        --auth-apikey-in header
+
+    API Key in query parameter:
+      postman request https://api.example.com/data \
+        --auth-apikey-key "apikey" \
+        --auth-apikey-value "abc123xyz" \
+        --auth-apikey-in query
+
+    AWS Signature v4 authentication:
+      postman request https://s3.amazonaws.com/my-bucket/object \
+        --auth-aws-accessKey AKIAIOSFODNN7EXAMPLE \
+        --auth-aws-secretKey wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
+        --auth-aws-service s3 \
+        --auth-aws-region us-east-1
+
+  Headers and Forms:
+    Add custom headers:
+      postman request https://api.example.com/data \
+        -H "Content-Type:application/json" \
+        -H "X-Custom-Header:custom-value" \
+        -H "Accept:application/json"
+
+    Multipart form data (file upload):
+      postman request POST https://api.example.com/upload \
+        -f "file=@document.pdf" \
+        -f "title=My Document" \
+        -f "description=Important file"
+
+    Form data with multiple files:
+      postman request POST https://api.example.com/gallery \
+        -f "photos=@image1.jpg" \
+        -f "photos=@image2.jpg" \
+        -f "album_name=Vacation 2025"
+
+  Environment Variables:
+    Use Postman environment file:
+      postman request https://api.example.com/{{endpoint}} \
+        -e production.postman_environment.json \
+        -H "Authorization:Bearer {{auth_token}}"
+
+    Environment with authentication:
+      postman request POST https://{{base_url}}/api/data \
+        -e dev.postman_environment.json \
+        --body '{"userId": "{{user_id}}", "data": "test"}'
+
+  Pre-Request and Post-Request Scripts:
+    Inline pre-request script (set timestamp before request):
+      postman request https://api.example.com/data \
+        --script-pre-request "pm.environment.set('timestamp', Date.now());"
+
+    Inline post-request script (log response):
+      postman request https://api.example.com/users \
+        --script-post-request "console.log('Response:', pm.response.json());"
+
+    Load pre-request script from file:
+      postman request https://api.example.com/data \
+        --script-pre-request @setup.js
+
+    Load post-request script from file:
+      postman request https://api.example.com/users \
+        --script-post-request @validate.js
+
+    Combine both pre-request and post-request scripts (inline):
+      postman request POST https://api.example.com/orders \
+        --body '{"product": "widget", "quantity": 5}' \
+        --script-pre-request "pm.environment.set('requestTime', new Date().toISOString());" \
+        --script-post-request "const order = pm.response.json(); console.log('Order created:', order.id);"
+
+    Combine both scripts (from files):
+      postman request POST https://api.example.com/process \
+        --body @data.json \
+        --script-pre-request @setup.js \
+        --script-post-request @teardown.js
+
+    Use scripts for dynamic authentication (inline):
+      postman request https://api.example.com/protected \
+        --script-pre-request "pm.request.headers.add({key: 'X-Request-ID', value: Date.now().toString()});" \
+        --script-post-request "console.log('Status:', pm.response.code);"
+
+    Advanced post-request script with validation (from file):
+      postman request https://api.example.com/users/123 \
+        --script-post-request @validate-user-response.js
+
+    Example setup.js file content:
+      // Set dynamic timestamp
+      pm.environment.set('timestamp', Date.now());
+      // Add custom header
+      pm.request.headers.add({
+        key: 'X-Request-Time',
+        value: new Date().toISOString()
+      });
+
+    Example validate.js file content:
+      // Validate response structure
+      const response = pm.response.json();
+      if (!response.id) {
+        console.error('Response missing required id field');
+      }
+      console.log('Validation passed for:', response.id);
+
+  Retry Logic:
+    Retry failed requests up to 3 times:
+      postman request https://api.flaky-service.com/data \
+        --retry 3 \
+        --retry-delay 2000
+
+    Retry with debug output to see all attempts:
+      postman request https://api.example.com/data \
+        --retry 5 \
+        --retry-delay 1000 \
+        --debug
+
+  Output Control:
+    Save complete response to JSON file (status, headers, body, timings):
+      postman request https://api.example.com/data --output response.json
+
+    Download binary file using response only mode and shell redirection:
+      postman request https://cdn.example.com/archive.zip --response-only > archive.zip
+
+    Response only mode - only output response body (useful for piping):
+      postman request https://api.example.com/data --response-only | jq '.results[]'
+
+    Verbose mode - show all request/response details:
+      postman request https://api.example.com/data --verbose
+
+    Debug mode - show execution details, redirects, timing:
+      postman request https://api.example.com/data --debug
+
+  Advanced Use Cases:
+    Complete CI/CD health check with validation:
+      postman request https://api.production.com/health \
+        --timeout 5000 \
+        --retry 3 \
+        --retry-delay 1000 \
+        --script-post-request "pm.test('Health check status', function() { \
+          const resp = pm.response.json(); \
+          pm.expect(resp.status).to.equal('healthy'); \
+        });" \
+        --response-only
+
+    Long-running request with complete response capture:
+      postman request https://api.example.com/long-process \
+        --output response.json \
+        --timeout 300000 \
+        --verbose
+
+    Chain requests using jq and environment variables:
+      TOKEN=$(postman request POST https://api.example.com/login \
+        --body '{"username":"admin","password":"pass"}' \
+        --response-only | jq -r '.token')
+
+      postman request https://api.example.com/protected \
+        --auth-bearer-token "${TOKEN}" \
+        --script-post-request "console.log('Authorized access granted');"
+
+    Request with environment variables and post-processing:
+      postman request POST https://{{base_url}}/api/users \
+        -e dev.postman_environment.json \
+        --body '{"name": "{{test_user}}", "role": "admin"}' \
+        --script-post-request "const user = pm.response.json(); console.log('Created user with ID:', user.id);"
+
+  Usage Notes:
+    - Quick API testing without leaving the terminal
+    - CI/CD pipelines with pre/post-request scripts for dynamic setup and validation
+    - Automated health checks and monitoring
+    - Replacing curl/wget with Postman's powerful features
+    - Testing APIs with complex authentication schemes
+    - Integration with Postman Environments for multi-environment testing
+    - Use pre-request scripts to set dynamic values, headers, or environment variables
+    - Use post-request scripts to process responses, log data, or validate results
+
+  Exit Codes:
+    0: Success (2xx-3xx response, all tests passed)
+    N: Number of failed tests (e.g., exit code 3 means 3 tests failed)
+
+  Piping Output:
+    postman request https://api.example.com/users --response-only | jq '.[] | .name'
+
