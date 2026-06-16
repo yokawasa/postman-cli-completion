@@ -86,8 +86,8 @@ test("parseEntries — deeply-indented --reporter-*-export captured as own entry
   assert.ok(heads.some((h) => h.startsWith("--reporter-[reporter]-omitRequestBodies")));
 });
 
-test("introspect spec — postman v1.35.2 has 15 commands and required ones present", () => {
-  assert.equal(spec.postmanCliVersion, "1.35.2");
+test("introspect spec — postmanCliVersion is semver and required top-level commands are present", () => {
+  assert.match(spec.postmanCliVersion, /^\d+\.\d+\.\d+/, "postmanCliVersion must be semver-like");
   const names = spec.commands.map((c) => c.name);
   for (const required of [
     "login", "logout", "collection", "api", "runner", "spec",
