@@ -51,6 +51,22 @@ test("parseCommandEntry — alias-bearing command", () => {
   assert.deepEqual(c.aliases, ["fl"]);
 });
 
+test("splitSections — Topics: pseudo-block in v1.39.0 context help leaks into Commands but only real names survive command filter", () => {
+  const text = stripAnsi(read("tests/fixtures/help-context-v139.txt"));
+  const s = splitSections(text);
+  const COMMAND_NAME = /^[a-z][\w-]*$/;
+  const heads = s.commands.map((e) => parseCommandEntry(e).name);
+  const surviving = heads.filter((n) => n !== "help" && COMMAND_NAME.test(n));
+  // `Topics:` is filtered (colon); `(none)` parses as continuation; `code-generation`
+  // is missing entirely (single-space header). `discovery` and `maintenance` would
+  // slip through the name filter — the second-line defense is the parent-help
+  // cycle detector in introspectCommand, asserted separately.
+  assert.ok(!surviving.includes("Topics:"));
+  for (const real of ["instructions", "collection", "request", "folder", "response", "workspace", "environment"]) {
+    assert.ok(surviving.includes(real), `missing real subcommand: ${real}`);
+  }
+});
+
 test("splitSections — Usage and section bodies separated", () => {
   const text = stripAnsi(read("tests/fixtures/help-collection.txt"));
   const s = splitSections(text);

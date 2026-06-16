@@ -176,8 +176,18 @@ export function parseCommandEntry(entry) {
   return { name, aliases, positionals, description: entry.desc };
 }
 
-function introspectCommand(path) {
-  const sections = splitSections(help(path));
+const COMMAND_NAME = /^[a-z][\w-]*$/;
+const MAX_DEPTH = 6;
+
+function introspectCommand(path, parentHelp = null) {
+  if (path.length > MAX_DEPTH) {
+    throw new Error(`recursion depth exceeded at ${path.join(" ")}`);
+  }
+  const helpText = help(path);
+  if (parentHelp && helpText === parentHelp) {
+    return null;
+  }
+  const sections = splitSections(helpText);
   const positionals = parsePositionals(sections.usage);
 
   const flags = sections.options
@@ -199,7 +209,9 @@ function introspectCommand(path) {
     for (const e of sections.commands) {
       const meta = parseCommandEntry(e);
       if (meta.name === "help") continue;
-      const child = introspectCommand([...path, meta.name]);
+      if (!COMMAND_NAME.test(meta.name)) continue;
+      const child = introspectCommand([...path, meta.name], helpText);
+      if (child === null) continue;
       subs.push({
         name: meta.name,
         aliases: meta.aliases,
