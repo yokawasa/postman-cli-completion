@@ -1,0 +1,23 @@
+Usage: postman context [options] [command]
+
+[Beta] Get API context for AI coding agents directly from the command line.
+
+Options:
+  -h, --help            display help for command
+
+Commands:
+  instructions [topic]  Get agent instructions for using Postman Context with AI coding agents.
+  
+  Topics:
+    (none)          — Overview of capabilities, workflow, and API reference
+    discovery       — Agent instructions for searching for and exploring APIs
+    code-generation — Agent instructions for generating and maintaining client code
+    maintenance     — Agent instructions for maintaining and updating client code
+  
+  collection            Collection commands
+  request               Request commands
+  folder                Folder commands
+  response              Response commands
+  workspace             Workspace commands
+  environment           Environment commands
+  help [command]        display help for command
