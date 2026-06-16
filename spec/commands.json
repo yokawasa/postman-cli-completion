@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.35.2",
-  "introspectedAt": "2026-06-15T15:55:28Z",
+  "postmanCliVersion": "1.39.0",
+  "introspectedAt": "2026-06-16T07:30:27Z",
   "global": {
     "flags": [
       {
@@ -139,6 +139,37 @@
               "valueType": "string",
               "valueName": "value",
               "description": "Output format: cli (human-readable) or json. (default: \"cli\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "ai-readiness",
+          "aliases": [],
+          "description": "Score a Postman collection for AI readiness by ID, local file path, or local-mode directory.",
+          "positionals": [
+            {
+              "name": "collectionId/Path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format for the results. [choices: \"cli\", \"json\"]"
+            },
+            {
+              "long": "--min-score",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
             },
             {
               "long": "--help",
@@ -679,6 +710,37 @@
               "description": "display help for command"
             }
           ]
+        },
+        {
+          "name": "ai-readiness",
+          "aliases": [],
+          "description": "Score an OpenAPI specification for AI readiness by ID or local file path.",
+          "positionals": [
+            {
+              "name": "spec",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format for the results. [choices: \"cli\", \"json\"]"
+            },
+            {
+              "long": "--min-score",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
@@ -873,10 +935,6 @@
               "valueType": "string",
               "valueName": "condition",
               "description": "Pass condition in format: function(metric, value). Functions: less_than, greater_than, less_than_eq, greater_than_eq. Metrics: avg, p90, p95, p99, error_rate, rps. Example: less_than(p95, 500) or less_than(error_rate, 5)"
-            },
-            {
-              "long": "--persist-metrics",
-              "description": "Persist detailed run results to cloud for analysis (default: false)"
             },
             {
               "long": "--help",
@@ -1169,6 +1227,12 @@
               "valueType": "string",
               "valueName": "format",
               "description": "Save execution result to a file (supported: json)"
+            },
+            {
+              "long": "--reporters",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Save a test results report to a file (supported: html)"
             },
             {
               "long": "--suppress-exit-code",
@@ -1565,10 +1629,6 @@
               "description": "Set build log detail level. \"warn\" (default) shows errors/warnings inline and collapses info notes; \"info\" expands all log entries (default: \"warn\")"
             },
             {
-              "long": "--pr",
-              "description": "Create pull requests to configured GitHub repositories after SDK generation"
-            },
-            {
               "long": "--no-track-changes",
               "description": "Disable change tracking. By default, file hashes are written into .manifest.json to enable edit detection on the next regeneration."
             },
@@ -1581,6 +1641,10 @@
               "valueType": "string",
               "valueName": "strategy",
               "description": "Strategy for handling merge conflicts: \"mark\" inserts conflict markers (default), \"ours\" keeps user edits, \"theirs\" keeps generated code"
+            },
+            {
+              "long": "--no-emit",
+              "description": "Skip downloading and saving SDK artifacts to disk. Useful in CI when the build only needs to trigger server-side pull requests."
             },
             {
               "long": "--help",
@@ -1707,7 +1771,7 @@
         {
           "name": "connect",
           "aliases": [],
-          "description": "Connect a collection or specification to a Git repository for automated SDK PRs",
+          "description": "Connect a collection or specification to a GitHub repository for automatic SDK pull requests",
           "positionals": [
             {
               "name": "provider",
@@ -1727,16 +1791,133 @@
               "description": "SDK language (required) [choices: typescript, python, java, go, csharp, php, ruby, cli, kotlin, rust]"
             },
             {
-              "long": "--workspace",
-              "short": "-w",
+              "long": "--repo",
+              "short": "-r",
               "valueType": "string",
-              "valueName": "workspaceId",
-              "description": "Workspace ID (optional)"
+              "valueName": "owner/name",
+              "description": "GitHub repository in <owner>/<name> form (alternative to --repo-owner + --repo-name)"
+            },
+            {
+              "long": "--repo-owner",
+              "valueType": "string",
+              "valueName": "owner",
+              "description": "GitHub repository owner (user or org)"
+            },
+            {
+              "long": "--repo-name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "GitHub repository name"
+            },
+            {
+              "long": "--branch",
+              "short": "-b",
+              "valueType": "string",
+              "valueName": "branch",
+              "description": "Target branch for SDK pull requests (default: \"main\")"
+            },
+            {
+              "long": "--push-to-base",
+              "description": "Push SDK updates directly to the base branch instead of opening a pull request (default: false)"
+            },
+            {
+              "long": "--enable-npm-publishing",
+              "description": "Inject a GitHub Actions workflow that publishes to npm on merge (TypeScript only) (default: false)"
+            },
+            {
+              "long": "--auth-provider",
+              "valueType": "string",
+              "valueName": "provider",
+              "description": "OAuth provider used by the server when pushing (choices: githubapp, github) (default: \"githubapp\")"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show extra logging"
             },
             {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "connections",
+          "aliases": [],
+          "description": "Manage GitHub connections that drive automatic SDK pull requests",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [
+                "ls"
+              ],
+              "description": "List GitHub connections for a collection or specification",
+              "positionals": [
+                {
+                  "name": "id",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--refresh",
+                  "description": "Refresh PR statuses from GitHub before listing (slower) (default: false)"
+                },
+                {
+                  "long": "--json",
+                  "description": "Output raw JSON instead of formatted text (default: false)"
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Show extra logging"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "delete",
+              "aliases": [
+                "rm"
+              ],
+              "description": "Delete a GitHub connection for a collection or specification",
+              "positionals": [
+                {
+                  "name": "id",
+                  "valueType": "string"
+                },
+                {
+                  "name": "connectionId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--yes",
+                  "short": "-y",
+                  "description": "Skip the confirmation prompt (default: false)"
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Show extra logging"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         }
@@ -1893,6 +2074,15 @@
               "description": "Command to run first (primary task). Overrides config."
             },
             {
+              "long": "--network-log",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Directory to scan for captured artifacts, or a direct path to a Playwright JSON report / NDJSON capture file. When a directory is given, recursively discovers `*.json` Playwright reports plus their `trace.zip` attachments, and `network-capture-*.ndjson` at the top level. By default, scans Playwright config `outputDir`, test-results/, then pm-results/."
+            },
+            {
               "long": "--capture-only",
               "description": "Skip collection matching and tests; capture traffic and save a V3 collection organised by host"
             },
@@ -1908,6 +2098,10 @@
             {
               "long": "--force",
               "description": "Overwrite the output directory if it exists and is not empty (used with --capture-only)"
+            },
+            {
+              "long": "--report-events",
+              "description": "Send application test run results and analytics to Postman"
             },
             {
               "long": "--verbose",
@@ -1944,6 +2138,743 @@
             }
           ],
           "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "context",
+      "description": "[Beta] Get API context for AI coding agents directly from the command line.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "instructions",
+          "aliases": [],
+          "description": "Get agent instructions for using Postman Context with AI coding agents.",
+          "positionals": [
+            {
+              "name": "topic",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "collection",
+          "aliases": [],
+          "description": "Collection commands",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a collection's metadata and a map of its folders and requests. Returns collection info (name, description, variables, auth) plus a recursive tree of folders and requests.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--collection-id",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Collection ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "request",
+          "aliases": [],
+          "description": "Request commands",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a request from a collection",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--request-id",
+                  "short": "-r",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Request ID"
+                },
+                {
+                  "long": "--collection-id",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Collection ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "context",
+              "aliases": [],
+              "description": "Fetch all context about a request and return it as a Markdown document.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--collection-id",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Collection ID"
+                },
+                {
+                  "long": "--request-id",
+                  "short": "-r",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Request ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "folder",
+          "aliases": [],
+          "description": "Folder commands",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a folder from a collection",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--folder-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Folder ID"
+                },
+                {
+                  "long": "--collection-id",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Collection ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "response",
+          "aliases": [],
+          "description": "Response commands",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a saved response example from a collection",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Response ID"
+                },
+                {
+                  "long": "--collection-id",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Collection ID"
+                },
+                {
+                  "long": "--request-id",
+                  "short": "-r",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Request ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "workspace",
+          "aliases": [],
+          "description": "Workspace commands",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a workspace by ID",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--workspace-id",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Workspace ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "environment",
+          "aliases": [],
+          "description": "Environment commands",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a single environment by ID",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--environment-id",
+                  "short": "-e",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Environment ID"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "search",
+      "description": "Search for Postman element types (requests, collections, workspaces, and more).",
+      "flags": [
+        {
+          "long": "--ownership",
+          "valueType": "string",
+          "valueName": "ownership",
+          "description": "Ownership: organization (or org), external, all (default: \"organization\")"
+        },
+        {
+          "long": "--limit",
+          "short": "-n",
+          "valueType": "string",
+          "valueName": "limit",
+          "description": "Max results per page. Max allowed limit: 25 (default: 10)"
+        },
+        {
+          "long": "--cursor",
+          "valueType": "string",
+          "valueName": "cursor",
+          "description": "Cursor for pagination"
+        },
+        {
+          "long": "--output",
+          "short": "-o",
+          "valueType": "string",
+          "valueName": "format",
+          "description": "Output format: default (card list), json (detailed JSON) (default: \"default\")"
+        },
+        {
+          "long": "--filter",
+          "valueType": "string",
+          "valueName": "expression",
+          "description": "Filter expression (e.g. \"workspaceId=ws-123 AND visibility=public\")"
+        },
+        {
+          "long": "--filter-json",
+          "valueType": "string",
+          "valueName": "json",
+          "description": "Filter as raw JSON. Only a top-level \"$and\" list of condition objects is supported. \"$or\" and nested groups are not supported in --filter-json. Each condition: { \"<property>\": { \"<operator>\": <value> } }. If both --filter and --filter-json are provided, --filter-json takes precedence."
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "requests",
+          "aliases": [],
+          "description": "Search for requests by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "collections",
+          "aliases": [],
+          "description": "Search for collections by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "workspaces",
+          "aliases": [],
+          "description": "Search for workspaces by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "flows",
+          "aliases": [],
+          "description": "Search for flows by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "specs",
+          "aliases": [],
+          "description": "Search for API specs by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "mocks",
+          "aliases": [],
+          "description": "Search for mocks by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "environments",
+          "aliases": [],
+          "description": "Search for environments by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "webhook",
+      "description": "Create and manage Postman webhooks.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "create",
+          "aliases": [],
+          "description": "Create a new webhook and print its public URL.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--title",
+              "short": "-t",
+              "valueType": "string",
+              "valueName": "title",
+              "description": "Name for the webhook (default: \"CLI Webhook\")"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "start",
+          "aliases": [],
+          "description": "Activate a webhook so it can receive requests.",
+          "positionals": [
+            {
+              "name": "webhookIdOrUrl",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "pause",
+          "aliases": [],
+          "description": "Pause a webhook so it no longer accepts requests.",
+          "positionals": [
+            {
+              "name": "webhookIdOrUrl",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List all webhooks in a workspace.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Permanently delete a webhook.",
+          "positionals": [
+            {
+              "name": "webhookId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "aliases": [],
+          "description": "Show details for a webhook.",
+          "positionals": [
+            {
+              "name": "webhookId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "forward",
+          "aliases": [],
+          "description": "Forward incoming webhook requests to a local port.",
+          "positionals": [
+            {
+              "name": "webhookIdOrUrl",
+              "valueType": "string"
+            },
+            {
+              "name": "port",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
             {
               "long": "--help",
               "short": "-h",
