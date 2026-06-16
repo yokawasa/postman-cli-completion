@@ -4,8 +4,8 @@ Shell completion scripts for the [Postman CLI](https://learning.postman.com/docs
 
 Completes:
 
-- All top-level commands (`login`, `logout`, `collection`, `api`, `runner`, `spec`, `monitor`, `workspace`, `performance`, `flows`, `request`, `sdk`, `mock`, `application`, `simulate`) and their subcommands.
-- Flags for each (sub)command — including all 40+ flags of `postman collection run`.
+- All top-level commands (`login`, `collection`, `spec`, `monitor`, `workspace`, `flows`, etc.) and their subcommands.
+- Flags for each (sub)command.
 - Local file arguments such as `*.json` (collections, manifests) and `*.yaml`/`*.yml` (specs, simulate scenarios).
 
 Dynamic completion of remote IDs (collection / workspace / monitor IDs) is **not** supported — paste those yourself.
@@ -66,7 +66,7 @@ After installing for your shell, open a fresh terminal and check each:
 
 | Input | Expected |
 | --- | --- |
-| `postman <TAB>` | All 14 top-level commands appear |
+| `postman <TAB>` | All top-level commands appear |
 | `postman col<TAB>` | Completes to `collection` |
 | `postman collection <TAB>` | `migrate`, `lint`, `run` |
 | `postman collection run <TAB>` | `*.json` files in the current directory |
@@ -79,9 +79,22 @@ After installing for your shell, open a fresh terminal and check each:
 
 ## Versioning
 
-These completions are written against **Postman CLI v1.35.2**. If the Postman CLI adds or renames commands/flags, the scripts will fall behind until updated. PRs welcome.
+The completion scripts are auto-generated from a single source of truth (`spec/commands.json`) and tracked against the upstream Postman CLI by two GitHub Actions workflows:
 
-To check your installed version:
+- **`catchup.yml`** runs daily, queries npm for the latest `postman-cli` version, introspects its `--help` surface, regenerates the spec and the three completion scripts, and opens an auto-merging PR whenever something changed.
+- **`release.yml`** fires when `spec/commands.json` lands on `main` and publishes a matching GitHub Release (e.g. tag `v1.39.0` mirrors Postman CLI 1.39.0).
+
+So this repo follows the latest published Postman CLI version automatically — pull the latest `main` (or grab the matching tag) and the completions will match whatever Postman CLI version you have installed.
+
+Suspicious catchup diffs (≥30 % flag drop, a known fixed command missing, semver regression) are blocked by `scripts/validate-diff.mjs` and stay open for human review instead of auto-merging.
+
+To check the version the committed spec was generated against:
+
+```sh
+node -p "require('./spec/commands.json').postmanCliVersion"
+```
+
+And your installed Postman CLI:
 
 ```sh
 postman --version
