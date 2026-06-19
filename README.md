@@ -12,6 +12,46 @@ Dynamic completion of remote IDs (collection / workspace / monitor IDs) is **not
 
 ## Install
 
+### Via npm (recommended)
+
+```sh
+npm install -g postman-cli-completion
+```
+
+This installs a `postman-completion` helper command — it does **not** shadow the real
+`postman` CLI (install that separately via `npm i -g postman-cli`). The helper prints the
+completion script for your shell to stdout; wire it in as follows.
+
+**zsh** — quick test in the current shell (requires `compinit` already initialised, see
+the note below):
+
+```sh
+source <(postman-completion zsh)
+```
+
+**zsh** — persistent. Add the packaged completions dir to `fpath` in `~/.zshrc`:
+
+```sh
+fpath=("$(postman-completion path zsh --dir)" $fpath)
+autoload -Uz compinit && compinit
+```
+
+**bash** — add to `~/.bashrc` (requires bash 4+; see the bash note below):
+
+```sh
+source <(postman-completion bash)
+```
+
+**fish** — source it in the current session, or install it persistently:
+
+```sh
+postman-completion fish | source
+# persistent:
+ln -sf "$(postman-completion path fish)" ~/.config/fish/completions/postman.fish
+```
+
+### From source
+
 Clone this repo somewhere, e.g. `~/.postman-cli-completion`:
 
 ```sh

@@ -20,6 +20,9 @@ jobs:
       - name: Verify generator output is committed
         run: node scripts/generate.mjs --check
 
+      - name: Verify npm package contents
+        run: npm pack --dry-run
+
   lint-shells:
     runs-on: ubuntu-latest
     steps:

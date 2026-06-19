@@ -1,15 +1,44 @@
 {
   "name": "postman-cli-completion",
   "version": "0.0.0-managed-by-spec",
-  "description": "Shell completions for the Postman CLI",
+  "description": "Shell completions for the Postman CLI (zsh, bash, fish)",
   "type": "module",
-  "private": true,
+  "bin": {
+    "postman-completion": "bin/postman-completion.mjs"
+  },
+  "files": [
+    "bin/",
+    "completions/zsh/_postman",
+    "completions/bash/postman.bash",
+    "completions/fish/postman.fish",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "introspect": "node scripts/introspect.mjs",
     "generate": "node scripts/generate.mjs",
     "generate:check": "node scripts/generate.mjs --check",
     "check-version": "node scripts/check-version.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "prepublishOnly": "node scripts/generate.mjs --check && node --test tests/*.test.mjs"
+  },
+  "keywords": [
+    "postman",
+    "postman-cli",
+    "completion",
+    "completions",
+    "zsh",
+    "bash",
+    "fish",
+    "shell"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yokawasa/postman-cli-completion.git"
+  },
+  "homepage": "https://github.com/yokawasa/postman-cli-completion#readme",
+  "bugs": {
+    "url": "https://github.com/yokawasa/postman-cli-completion/issues"
   },
   "engines": {
     "node": ">=20"
