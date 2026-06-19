@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.39.0",
-  "introspectedAt": "2026-06-16T08:30:27Z",
+  "postmanCliVersion": "1.39.2",
+  "introspectedAt": "2026-06-19T01:22:40Z",
   "global": {
     "flags": [
       {
@@ -163,7 +163,7 @@
               "short": "-o",
               "valueType": "string",
               "valueName": "value",
-              "description": "Output format for the results. [choices: \"cli\", \"json\"]"
+              "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
             },
             {
               "long": "--min-score",
@@ -727,7 +727,7 @@
               "short": "-o",
               "valueType": "string",
               "valueName": "value",
-              "description": "Output format for the results. [choices: \"cli\", \"json\"]"
+              "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
             },
             {
               "long": "--min-score",
