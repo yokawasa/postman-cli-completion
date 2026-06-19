@@ -126,6 +126,15 @@ test("snapshot — zsh emitter matches checked-in completions/zsh/_postman", () 
   assert.equal(emitZsh(merged), read("completions/zsh/_postman"));
 });
 
+test("zsh emitter avoids single-alternative globs (regression: issue #15)", () => {
+  // zsh reads a trailing parenthesized group as a glob qualifier, so
+  // `_files -g "*.(json)"` errors and yields no completions. Single
+  // extensions must be emitted as `*.json`.
+  const zsh = emitZsh(merged);
+  assert.match(zsh, /_files -g "\*\.json"/);
+  assert.doesNotMatch(zsh, /_files -g "\*\.\([a-zA-Z.]+\)"/);
+});
+
 test("snapshot — bash emitter matches checked-in completions/bash/postman.bash", () => {
   assert.equal(emitBash(merged), read("completions/bash/postman.bash"));
 });

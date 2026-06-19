@@ -27,11 +27,18 @@ const desc = (s) => esc((s || "").replace(/\s+/g, " ").trim());
 
 const fnName = (parts) => "_postman" + parts.map((p) => "_" + p.replace(/-/g, "_")).join("");
 
+// zsh parses a trailing parenthesized group as a glob qualifier, so a
+// single-alternative pattern like "*.(json)" errors ("unknown file attribute: j")
+// and yields no completions. Emit "*.json" for one extension and only use the
+// "(a|b)" alternation form (forced by the "|") when there are several.
+const filesGlob = (exts) =>
+  exts.length === 1 ? `*.${exts[0]}` : `*.(${exts.join("|")})`;
+
 function filesArg(flag) {
   if (flag.valueType === "file") {
     const pats = flag.patterns?.length ? flag.patterns : ["*.json"];
     const exts = pats.map((p) => p.replace(/^\*\./, ""));
-    return `_files -g "*.(${exts.join("|")})"`;
+    return `_files -g "${filesGlob(exts)}"`;
   }
   if (flag.valueType === "dir") return `_files -/`;
   if (flag.valueType === "enum" && flag.choices?.length) {
@@ -61,7 +68,7 @@ function positionalSpec(positionals) {
   if (p.valueType === "file") {
     const patterns = p.patterns?.length ? p.patterns : ["*.json"];
     const exts = patterns.map((s) => s.replace(/^\*\./, ""));
-    return `'*:${argName}:_files -g "*.(${exts.join("|")})"'`;
+    return `'*:${argName}:_files -g "${filesGlob(exts)}"'`;
   }
   if (p.valueType === "dir") return `'*:${argName}:_files -/'`;
   return `'*:${argName}:'`;
