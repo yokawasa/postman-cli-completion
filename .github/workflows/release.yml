@@ -58,6 +58,10 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # NPM_TOKEN must be able to publish this package. The *first* publish creates the
+      # package and needs create rights (Classic Automation token, or a granular token with
+      # "All packages" write access); a granular token scoped to "select packages" 403s on a
+      # not-yet-existing name. See docs/npm-distribution.md §5 and §11 (one-time manual claim).
       - name: Publish to npm
         if: steps.npm_exists.outputs.skip != 'true'
         env:

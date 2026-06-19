@@ -149,7 +149,12 @@ re-runs safe.
     with `env: NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}`.
 
 **Manual prerequisite (out-of-band):** create the repo secret `NPM_TOKEN` as an npm
-**Automation** token (so 2FA does not block CI).
+**Automation** token (so 2FA does not block CI). A **granular** access token scoped to
+"only select packages" is **not** sufficient for the very first publish — it cannot create a
+package that does not exist yet, and the publish fails with
+`403 Forbidden … You may not perform that action with these credentials` even though the name
+is free. Use a Classic **Automation** token (read+write, can create packages), a granular
+token with **"All packages"** write access, or claim the name once manually (see §11).
 
 ## 6. README changes
 
@@ -200,3 +205,32 @@ Out-of-band: set the `NPM_TOKEN` repo secret before the next release fires.
 
 - Dynamic remote-ID completion (already documented as unsupported).
 - Homebrew or other package managers.
+
+## 11. First publish (one-time, manual) — claiming the name
+
+The automated `release.yml` publish can only *update* an existing package; it cannot create
+the package the first time unless `NPM_TOKEN` has create rights (see §5). The simplest way to
+unblock the first release (issue #17) is to publish once locally to claim the name. After the
+package exists, CI publishes every subsequent version automatically.
+
+```sh
+# from a clean checkout of the latest main (so the published tarball has up-to-date completions)
+git pull origin main
+npm login                                                   # interactive; handles 2FA
+npm version "$(node -p "require('./spec/commands.json').postmanCliVersion")" \
+  --no-git-tag-version --allow-same-version                 # match the spec version
+npm publish --access public
+npm view postman-cli-completion version                     # confirm it is now published
+```
+
+**Why no `--provenance` here:** provenance is generated from a CI/CD OIDC token and only works
+inside a supported runner (e.g. GitHub Actions). A local `npm publish --provenance` fails with
+"provenance generation … not supported". Provenance is per-version, so this first version
+simply ships without it; every later version published by `release.yml` attaches provenance.
+
+`prepublishOnly` (`generate:check` + `node --test`) runs automatically as a publish-time gate.
+
+**After claiming the name:** ensure `NPM_TOKEN` has write access to the now-existing
+`postman-cli-completion` (add it to a granular token's package list, or use an Automation
+token). No `release.yml` change is needed — its `npm view …@<version>` guard skips the
+already-published version and publishes only new ones.
