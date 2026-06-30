@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.39.2",
-  "introspectedAt": "2026-06-19T01:22:40Z",
+  "postmanCliVersion": "1.40.0",
+  "introspectedAt": "2026-06-30T01:08:46Z",
   "global": {
     "flags": [
       {
@@ -268,6 +268,31 @@
                 "*.csv"
               ],
               "description": "Specify a data file to use for iterations (either JSON or CSV)"
+            },
+            {
+              "long": "--iteration-data-dataset",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json",
+                "*.csv"
+              ],
+              "description": "[BETA] Path to a .dataset.yaml whose view drives the iteration data. Mutually exclusive with --iteration-data. Requires --iteration-data-view."
+            },
+            {
+              "long": "--iteration-data-view",
+              "valueType": "string",
+              "valueName": "nameOrId",
+              "description": "[BETA] Name or id of the view to execute (within --iteration-data-dataset). The view's result set drives one iteration per row."
+            },
+            {
+              "long": "--dataset",
+              "valueType": "file",
+              "valueName": "pathOrDir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to scripts as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. (default: [])"
             },
             {
               "short": "-i",
@@ -1498,6 +1523,15 @@
           "valueType": "string",
           "valueName": "script",
           "description": "Add JavaScript script to run after the request. Can be inline JS or @filepath to load from file. Scripts have access to pm.* APIs. Example: --script-post-request \"console.log(pm.response.json());\" or --script-post-request @validate.js"
+        },
+        {
+          "long": "--dataset",
+          "valueType": "file",
+          "valueName": "pathOrDir",
+          "patterns": [
+            "*.json"
+          ],
+          "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to pre/post-request scripts as pm.datasets(<id>). (default: [])"
         },
         {
           "long": "--output",
@@ -2879,6 +2913,601 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dataset",
+      "description": "[BETA] Work with Postman datasets defined in local YAML files.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "[BETA] List dataset YAMLs under the given directory, or print summary for a single YAML file.",
+          "positionals": [
+            {
+              "name": "pathOrDir",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "[BETA] Print a dataset's metadata and structure summary.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output the full parsed YAML as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "query",
+          "aliases": [],
+          "description": "[BETA] Run an ad-hoc SQL query against a dataset.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--query",
+              "short": "-q",
+              "valueType": "string",
+              "valueName": "sql",
+              "description": "SQL query to execute (e.g. \"SELECT * FROM source_users LIMIT 10\")"
+            },
+            {
+              "long": "--param",
+              "short": "-p",
+              "valueType": "string",
+              "valueName": "value...",
+              "description": "Positional parameter values for $1, $2, ... bindings; repeatable"
+            },
+            {
+              "long": "--json",
+              "description": "Output rows as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "aliases": [],
+          "description": "[BETA] Scaffold a new empty .dataset.yaml file at <path>.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--name",
+              "short": "-n",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Human-readable name for the dataset"
+            },
+            {
+              "long": "--description",
+              "short": "-d",
+              "valueType": "string",
+              "valueName": "desc",
+              "description": "Optional description"
+            },
+            {
+              "long": "--id",
+              "valueType": "string",
+              "valueName": "uuid",
+              "description": "Override the generated dataset id (defaults to a random v4 UUID)"
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite an existing file at <path>"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "[BETA] Permanently remove a dataset's .dataset.yaml file and its .resources/ directory.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip the confirmation prompt"
+            },
+            {
+              "long": "--keep-resources",
+              "description": "Delete only the YAML file; leave the .resources/ directory intact"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "source",
+          "aliases": [],
+          "description": "[BETA] Inspect and manage a dataset's datasources.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "[BETA] List the datasources defined on a dataset.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Output sources as JSON instead of a table"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "add",
+              "aliases": [],
+              "description": "[BETA] Add a datasource to a dataset.",
+              "positionals": [
+                {
+                  "name": "pathOrId",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--name",
+                  "short": "-n",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Logical name for the source (becomes the SQL table name)"
+                },
+                {
+                  "long": "--id",
+                  "valueType": "string",
+                  "valueName": "uuid",
+                  "description": "Override the generated source id"
+                },
+                {
+                  "long": "--format",
+                  "valueType": "string",
+                  "valueName": "csv|json|mysql|postgres",
+                  "description": "Override the inferred format"
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "local|remote-url|mysql|postgresql",
+                  "description": "Source kind; inferred from --file/--url when omitted"
+                },
+                {
+                  "long": "--file",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Path to a local CSV/JSON file (absolute or cwd-relative)"
+                },
+                {
+                  "long": "--ref-only",
+                  "description": "Reference the file in place; do NOT copy into data_dir"
+                },
+                {
+                  "long": "--force",
+                  "description": "When copying, overwrite an existing file at the destination"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "HTTP(S) URL to a remote CSV/JSON file"
+                },
+                {
+                  "long": "--host",
+                  "valueType": "string",
+                  "valueName": "host",
+                  "description": "DB host (mysql/postgresql)"
+                },
+                {
+                  "long": "--port",
+                  "valueType": "string",
+                  "valueName": "port",
+                  "description": "DB port"
+                },
+                {
+                  "long": "--user",
+                  "valueType": "string",
+                  "valueName": "user",
+                  "description": "DB user (warning: stored as plaintext in the YAML)."
+                },
+                {
+                  "long": "--password",
+                  "valueType": "string",
+                  "valueName": "password",
+                  "description": "DB password (warning: stored as plaintext in the YAML)."
+                },
+                {
+                  "long": "--database",
+                  "valueType": "string",
+                  "valueName": "db",
+                  "description": "DB database name"
+                },
+                {
+                  "long": "--table",
+                  "valueType": "string",
+                  "valueName": "table",
+                  "description": "DB table name (optional)"
+                },
+                {
+                  "long": "--slug",
+                  "valueType": "string",
+                  "valueName": "slug",
+                  "description": "Optional slug for the source"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "remove",
+              "aliases": [],
+              "description": "[BETA] Remove a datasource from a dataset.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                },
+                {
+                  "name": "sourceNameOrId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "update",
+              "aliases": [],
+              "description": "[BETA] Update fields on an existing datasource. Only the flags you provide are changed.",
+              "positionals": [
+                {
+                  "name": "pathOrId",
+                  "valueType": "file"
+                },
+                {
+                  "name": "sourceNameOrId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--name",
+                  "short": "-n",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Rename the source"
+                },
+                {
+                  "long": "--format",
+                  "valueType": "string",
+                  "valueName": "csv|json|mysql|postgres",
+                  "description": "Change the format"
+                },
+                {
+                  "long": "--file",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Replace the source's file (local-filesystem only)"
+                },
+                {
+                  "long": "--ref-only",
+                  "description": "When using --file, reference in place instead of copying"
+                },
+                {
+                  "long": "--force",
+                  "description": "When copying with --file, overwrite existing destination"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Replace the remote URL (remote-url only)"
+                },
+                {
+                  "long": "--host",
+                  "valueType": "string",
+                  "valueName": "host",
+                  "description": "Update DB host (mysql/postgresql)"
+                },
+                {
+                  "long": "--port",
+                  "valueType": "string",
+                  "valueName": "port",
+                  "description": "Update DB port"
+                },
+                {
+                  "long": "--user",
+                  "valueType": "string",
+                  "valueName": "user",
+                  "description": "Update DB user (warning: stored as plaintext in the YAML)."
+                },
+                {
+                  "long": "--password",
+                  "valueType": "string",
+                  "valueName": "password",
+                  "description": "Update DB password (warning: stored as plaintext in the YAML)."
+                },
+                {
+                  "long": "--database",
+                  "valueType": "string",
+                  "valueName": "db",
+                  "description": "Update DB database name"
+                },
+                {
+                  "long": "--table",
+                  "valueType": "string",
+                  "valueName": "table",
+                  "description": "Update DB table name"
+                },
+                {
+                  "long": "--slug",
+                  "valueType": "string",
+                  "valueName": "slug",
+                  "description": "Update slug"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "view",
+          "aliases": [],
+          "description": "[BETA] Inspect and manage saved views on a dataset.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "[BETA] List the saved views defined on a dataset.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Output views as JSON instead of a table"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "run",
+              "aliases": [],
+              "description": "[BETA] Execute a saved view against a dataset and print the rows.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                },
+                {
+                  "name": "viewNameOrId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--param",
+                  "short": "-p",
+                  "valueType": "string",
+                  "valueName": "value...",
+                  "description": "Positional parameter values for $1, $2, ... bindings; repeatable"
+                },
+                {
+                  "long": "--json",
+                  "description": "Output rows as JSON instead of a table"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "create",
+              "aliases": [],
+              "description": "[BETA] Add a saved view to a dataset.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--name",
+                  "short": "-n",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "View name"
+                },
+                {
+                  "long": "--query",
+                  "short": "-q",
+                  "valueType": "string",
+                  "valueName": "sql",
+                  "description": "SQL query the view executes"
+                },
+                {
+                  "long": "--id",
+                  "valueType": "string",
+                  "valueName": "uuid",
+                  "description": "Override the generated view id"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "delete",
+              "aliases": [],
+              "description": "[BETA] Remove a saved view from a dataset.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                },
+                {
+                  "name": "viewNameOrId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "update",
+              "aliases": [],
+              "description": "[BETA] Update name and/or query on an existing view.",
+              "positionals": [
+                {
+                  "name": "path",
+                  "valueType": "file"
+                },
+                {
+                  "name": "viewNameOrId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--name",
+                  "short": "-n",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "New view name"
+                },
+                {
+                  "long": "--query",
+                  "short": "-q",
+                  "valueType": "string",
+                  "valueName": "sql",
+                  "description": "New SQL query"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         }
