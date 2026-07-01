@@ -18,10 +18,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      # Follows the official npm Trusted Publishing recipe (https://docs.npmjs.com/trusted-publishers).
+      # setup-node MUST be v6+: v4 defaulted a dummy NODE_AUTH_TOKEN and wrote `always-auth`,
+      # which shadowed OIDC and made npm publish anonymously → `404 Not Found` on the PUT
+      # (setup-node issue #1440). v6 removed that behavior, so `registry-url` + no token works.
+      # `package-manager-cache: false` disables dependency caching for a clean release build.
+      - uses: actions/setup-node@v6
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
 
       - name: Read version from spec
         id: ver
