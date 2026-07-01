@@ -136,11 +136,17 @@ re-runs safe.
 
 - Add `id-token: write` to `permissions` (npm Trusted Publishing exchanges the GitHub
   Actions OIDC token for a short-lived credential; provenance uses the same token).
-- Add `actions/setup-node@v4` with `node-version: "24"`. **Do not** set `registry-url`:
-  it makes setup-node write an `.npmrc` with `always-auth=true` and a dummy
-  `_authToken`, which shadows OIDC — npm then publishes anonymously and the registry
-  returns `404 Not Found` on the `PUT`. With no auth configured, npm performs the
-  Trusted Publishing token exchange. The default registry is already npmjs.org.
+- Add `actions/setup-node@v6` (following the official npm recipe) with
+  `node-version: "24"`, `registry-url: "https://registry.npmjs.org"`, and
+  `package-manager-cache: false`. **setup-node must be v6+**: v4 defaulted a dummy
+  `NODE_AUTH_TOKEN` and wrote `always-auth`, which shadowed OIDC and made npm publish
+  anonymously → `404 Not Found` on the `PUT` ([setup-node issue #1440]). v6 removed that
+  behavior, so `registry-url` with **no** token works with OIDC. `package-manager-cache: false`
+  disables dependency caching for a clean release build. Trusted Publishing requires
+  **npm CLI >= 11.5.1 and Node >= 22.14.0** (Node 24 satisfies Node; we still upgrade npm in
+  the publish step since Node 24's bundled npm may predate 11.5.1).
+
+[setup-node issue #1440]: https://github.com/actions/setup-node/issues/1440
 - After the existing "Tag and release" step:
   - An npm idempotency guard mirroring the git-tag guard:
     `npm view "postman-cli-completion@$V" version` → set `skip=true` if it exists.
