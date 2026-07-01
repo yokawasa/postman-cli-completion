@@ -62,11 +62,17 @@ jobs:
         if: steps.check.outputs.outdated == 'true'
         run: npm test
 
+      # `token` must NOT be the default GITHUB_TOKEN: pushes/PRs it produces do not
+      # trigger further workflow runs (a GitHub anti-recursion safeguard), so the
+      # ci.yml / release.yml `push`/`pull_request` triggers never fire on the merge.
+      # Use a fine-grained PAT (secret CATCHUP_TOKEN, contents:write + pull-requests:write)
+      # so downstream workflows run. Falls back to GITHUB_TOKEN if the secret is unset.
       - name: Create pull request
         if: steps.check.outputs.outdated == 'true'
         id: pr
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.CATCHUP_TOKEN || secrets.GITHUB_TOKEN }}
           branch: catchup/postman-cli-${{ steps.check.outputs.latest }}
           commit-message: "chore: catch up to Postman CLI v${{ steps.check.outputs.latest }}"
           title: "chore: catch up to Postman CLI v${{ steps.check.outputs.latest }}"
@@ -77,8 +83,10 @@ jobs:
             Once required checks pass, this PR will auto-merge and trigger a release.
           labels: automated,catchup
 
+      # Same reason as above: the auto-merge push to main must be attributed to the
+      # PAT, otherwise release.yml (push on spec/commands.json) will not trigger.
       - name: Enable auto-merge
         if: steps.pr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CATCHUP_TOKEN || secrets.GITHUB_TOKEN }}
         run: gh pr merge --squash --auto ${{ steps.pr.outputs.pull-request-number }}

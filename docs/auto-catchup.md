@@ -301,6 +301,7 @@ jobs:
         id: pr
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.CATCHUP_TOKEN || secrets.GITHUB_TOKEN }}
           branch: catchup/postman-cli-${{ steps.check.outputs.latest }}
           commit-message: "chore: catch up to Postman CLI v${{ steps.check.outputs.latest }}"
           title: "chore: catch up to Postman CLI v${{ steps.check.outputs.latest }}"
@@ -311,9 +312,20 @@ jobs:
 
       - if: steps.pr.outputs.pull-request-number != ''
         name: Enable auto-merge
-        env: { GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        env: { GH_TOKEN: ${{ secrets.CATCHUP_TOKEN || secrets.GITHUB_TOKEN }} }
         run: gh pr merge --squash --auto ${{ steps.pr.outputs.pull-request-number }}
 ```
+
+> **Downstream triggering (issue #22).** The PR-creation and auto-merge steps must
+> *not* use the default `GITHUB_TOKEN`. GitHub deliberately suppresses further
+> workflow runs for events (`push`, `pull_request`) produced by `GITHUB_TOKEN`, to
+> prevent recursive runs. If the catchup merge is attributed to `GITHUB_TOKEN`, the
+> merge push to `main` will **not** fire `ci.yml` or `release.yml`, so a new upstream
+> version is caught up but never released. Provide a **fine-grained PAT** as repo
+> secret `CATCHUP_TOKEN` (Contents: read/write, Pull requests: read/write) so the
+> merge is attributed to a real user and the downstream workflows run. The
+> `|| secrets.GITHUB_TOKEN` fallback keeps the workflow from erroring before the
+> secret is configured (at the cost of downstream triggering until it is set).
 
 ### 7.2 `.github/workflows/ci.yml` (PR checks)
 
