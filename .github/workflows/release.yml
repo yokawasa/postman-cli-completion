@@ -18,10 +18,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      # No `registry-url`: it makes setup-node write an .npmrc with `always-auth=true` and
+      # `_authToken=${NODE_AUTH_TOKEN}` (defaulting to a dummy token). That configured token
+      # shadows OIDC — npm publishes anonymously and the registry returns 404. Omitting it
+      # leaves no auth configured, so npm performs the Trusted Publishing token exchange.
+      # The default registry is already https://registry.npmjs.org/.
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
 
       - name: Read version from spec
         id: ver
