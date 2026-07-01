@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Read version from spec
@@ -58,14 +58,16 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # NPM_TOKEN must be able to publish this package. The *first* publish creates the
-      # package and needs create rights (Classic Automation token, or a granular token with
-      # "All packages" write access); a granular token scoped to "select packages" 403s on a
-      # not-yet-existing name. See docs/npm-distribution.md §5 and §11 (one-time manual claim).
-      - name: Publish to npm
+      # Publishing uses npm Trusted Publishing (OIDC) — no NPM_TOKEN. npm exchanges the
+      # GitHub Actions OIDC token (needs `id-token: write`, set above) for a short-lived,
+      # package-scoped credential, and attaches provenance automatically. Requirements:
+      #   1. npm CLI >= 11.5.1 (Node 24's bundled npm may be older, so we upgrade below).
+      #   2. A Trusted Publisher configured on npmjs.com for this package, pointing at
+      #      repo yokawasa/postman-cli-completion + workflow "release.yml" (no environment).
+      # See docs/npm-distribution.md §5.
+      - name: Publish to npm (OIDC trusted publishing)
         if: steps.npm_exists.outputs.skip != 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          npm install -g npm@latest
           npm version "${{ steps.ver.outputs.version }}" --no-git-tag-version --allow-same-version
           npm publish --provenance --access public

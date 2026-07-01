@@ -134,8 +134,9 @@ re-runs safe.
 
 ## 5. `.github/workflows/release.yml` changes
 
-- Add `id-token: write` to `permissions` (for npm `--provenance`).
-- Add `actions/setup-node@v4` with `node-version: "20"` and
+- Add `id-token: write` to `permissions` (npm Trusted Publishing exchanges the GitHub
+  Actions OIDC token for a short-lived credential; provenance uses the same token).
+- Add `actions/setup-node@v4` with `node-version: "24"` and
   `registry-url: "https://registry.npmjs.org"`.
 - After the existing "Tag and release" step:
   - An npm idempotency guard mirroring the git-tag guard:
@@ -143,18 +144,30 @@ re-runs safe.
   - A publish step gated only on that guard (independent of the git-tag guard, so a
     missing publish can be repaired even after the tag exists):
     ```sh
+    npm install -g npm@latest   # Trusted Publishing requires npm CLI >= 11.5.1
     npm version "$V" --no-git-tag-version --allow-same-version
     npm publish --provenance --access public
     ```
-    with `env: NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}`.
+    No `NODE_AUTH_TOKEN` / `NPM_TOKEN` — authentication is via OIDC, and provenance is
+    attached automatically under Trusted Publishing.
 
-**Manual prerequisite (out-of-band):** create the repo secret `NPM_TOKEN` as an npm
-**Automation** token (so 2FA does not block CI). A **granular** access token scoped to
-"only select packages" is **not** sufficient for the very first publish — it cannot create a
-package that does not exist yet, and the publish fails with
-`403 Forbidden … You may not perform that action with these credentials` even though the name
-is free. Use a Classic **Automation** token (read+write, can create packages), a granular
-token with **"All packages"** write access, or claim the name once manually (see §11).
+**Manual prerequisite (out-of-band):** configure a **Trusted Publisher** for the package on
+npmjs.com — there is no long-lived token to store or rotate. On the package page → *Settings*
+→ *Trusted Publisher* → **GitHub Actions**, set:
+
+| Field | Value |
+|---|---|
+| Organization or user | `yokawasa` |
+| Repository | `postman-cli-completion` |
+| Workflow filename | `release.yml` |
+| Environment | *(leave blank — the workflow uses none)* |
+
+Once saved, `release.yml` publishes with no secret. This removes the entire `NPM_TOKEN` class
+of failures (issue #17): expired/rotated tokens, 2FA prompts, and granular tokens that `403`
+because they lack write/create rights on the package. Note the Trusted Publisher is configured
+on an **existing** package's settings page, so the very first publish that *creates* the name
+must still be done once manually (see §11); the package already exists (`1.39.2`), so this is
+already satisfied and every subsequent release flows through OIDC.
 
 ## 6. README changes
 
@@ -186,7 +199,7 @@ A single PR:
 5. `README.md`: npm install section.
 6. (Optional) `ci.yml`: `npm pack --dry-run`.
 
-Out-of-band: set the `NPM_TOKEN` repo secret before the next release fires.
+Out-of-band: configure the npm Trusted Publisher (§5) before the next release fires.
 
 ## 9. Verification
 
@@ -197,9 +210,9 @@ Out-of-band: set the `NPM_TOKEN` repo secret before the next release fires.
 4. End-to-end: `npm pack` → `npm i -g ./postman-cli-completion-*.tgz` → in a fresh shell
    run the per-shell snippet and check `postman <TAB>` against the README "Verify"
    checklist.
-5. After `NPM_TOKEN` is set, trigger `release.yml` via `workflow_dispatch`; confirm the
-   guard skips an already-published version and publishes a new one
-   (`npm view postman-cli-completion version`).
+5. After the Trusted Publisher is configured (§5), trigger `release.yml` via
+   `workflow_dispatch`; confirm the guard skips an already-published version and publishes a
+   new one (`npm view postman-cli-completion version`).
 
 ## 10. Out of scope
 
@@ -208,10 +221,11 @@ Out-of-band: set the `NPM_TOKEN` repo secret before the next release fires.
 
 ## 11. First publish (one-time, manual) — claiming the name
 
-The automated `release.yml` publish can only *update* an existing package; it cannot create
-the package the first time unless `NPM_TOKEN` has create rights (see §5). The simplest way to
-unblock the first release (issue #17) is to publish once locally to claim the name. After the
-package exists, CI publishes every subsequent version automatically.
+The automated `release.yml` publish (OIDC Trusted Publishing, §5) can only *update* an
+existing package: a Trusted Publisher is configured on a package's settings page, which does
+not exist until the name is claimed. The way to unblock the very first release (issue #17) is
+to publish once locally to claim the name. After the package exists, configure the Trusted
+Publisher and CI publishes every subsequent version automatically over OIDC.
 
 ```sh
 # from a clean checkout of the latest main (so the published tarball has up-to-date completions)
@@ -230,7 +244,7 @@ simply ships without it; every later version published by `release.yml` attaches
 
 `prepublishOnly` (`generate:check` + `node --test`) runs automatically as a publish-time gate.
 
-**After claiming the name:** ensure `NPM_TOKEN` has write access to the now-existing
-`postman-cli-completion` (add it to a granular token's package list, or use an Automation
-token). No `release.yml` change is needed — its `npm view …@<version>` guard skips the
-already-published version and publishes only new ones.
+**After claiming the name:** configure the npm **Trusted Publisher** on the now-existing
+`postman-cli-completion` (§5) so CI publishes over OIDC with no stored token. No `release.yml`
+change is needed — its `npm view …@<version>` guard skips the already-published version and
+publishes only new ones.
