@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.40.0",
-  "introspectedAt": "2026-06-30T01:08:46Z",
+  "postmanCliVersion": "1.41.0",
+  "introspectedAt": "2026-07-01T01:13:57Z",
   "global": {
     "flags": [
       {
@@ -842,6 +842,10 @@
               "description": "Path to the environments directory (default: \"postman/environments\")"
             },
             {
+              "long": "--verbose",
+              "description": "Show detailed logging"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -851,7 +855,7 @@
         {
           "name": "push",
           "aliases": [],
-          "description": "Push local collection, environment, and specification changes to Postman workspace.",
+          "description": "Push local collection, environment, specification, mock, and simulation changes to Postman workspace.",
           "positionals": [],
           "flags": [
             {
@@ -874,6 +878,10 @@
               "long": "--yes",
               "short": "-y",
               "description": "Skip all confirmation prompts"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed logging"
             },
             {
               "long": "--help",
@@ -1855,8 +1863,10 @@
               "description": "Push SDK updates directly to the base branch instead of opening a pull request (default: false)"
             },
             {
-              "long": "--enable-npm-publishing",
-              "description": "Inject a GitHub Actions workflow that publishes to npm on merge (TypeScript only) (default: false)"
+              "long": "--auto-update-pull-requests",
+              "valueType": "string",
+              "valueName": "bool",
+              "description": "Open auto-update pull requests when the SDK changes (true|false). Defaults to true server-side when omitted"
             },
             {
               "long": "--auth-provider",
