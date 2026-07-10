@@ -143,8 +143,8 @@ re-runs safe.
   anonymously → `404 Not Found` on the `PUT` ([setup-node issue #1440]). v6 removed that
   behavior, so `registry-url` with **no** token works with OIDC. `package-manager-cache: false`
   disables dependency caching for a clean release build. Trusted Publishing requires
-  **npm CLI >= 11.5.1 and Node >= 22.14.0** (Node 24 satisfies Node; we still upgrade npm in
-  the publish step since Node 24's bundled npm may predate 11.5.1).
+  **npm CLI >= 11.5.1 and Node >= 22.14.0**, both of which Node 24's bundled npm (11.6+)
+  already satisfies — so the publish step does **not** self-upgrade npm (see below).
 
 [setup-node issue #1440]: https://github.com/actions/setup-node/issues/1440
 - After the existing "Tag and release" step:
@@ -153,12 +153,15 @@ re-runs safe.
   - A publish step gated only on that guard (independent of the git-tag guard, so a
     missing publish can be repaired even after the tag exists):
     ```sh
-    npm install -g npm@latest   # Trusted Publishing requires npm CLI >= 11.5.1
     npm version "$V" --no-git-tag-version --allow-same-version
     npm publish --provenance --access public
     ```
     No `NODE_AUTH_TOKEN` / `NPM_TOKEN` — authentication is via OIDC, and provenance is
-    attached automatically under Trusted Publishing.
+    attached automatically under Trusted Publishing. Do **not** add
+    `npm install -g npm@latest` here: self-upgrading Node 24's bundled npm leaves its
+    dependency tree inconsistent and drops `sigstore`, so `npm publish --provenance` then
+    fails with `Cannot find module 'sigstore'` (issue #29). The bundled npm (11.6+) already
+    meets the >= 11.5.1 requirement.
 
 **Manual prerequisite (out-of-band):** configure a **Trusted Publisher** for the package on
 npmjs.com — there is no long-lived token to store or rotate. On the package page → *Settings*

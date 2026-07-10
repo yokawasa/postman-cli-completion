@@ -67,13 +67,15 @@ jobs:
       # Publishing uses npm Trusted Publishing (OIDC) — no NPM_TOKEN. npm exchanges the
       # GitHub Actions OIDC token (needs `id-token: write`, set above) for a short-lived,
       # package-scoped credential, and attaches provenance automatically. Requirements:
-      #   1. npm CLI >= 11.5.1 (Node 24's bundled npm may be older, so we upgrade below).
+      #   1. npm CLI >= 11.5.1, which Node 24's bundled npm already satisfies (11.6+).
+      #      Do NOT run `npm install -g npm@latest` here: self-upgrading the bundled npm
+      #      leaves its dependency tree inconsistent and drops `sigstore`, so `npm publish
+      #      --provenance` then fails with "Cannot find module 'sigstore'" (issue #29).
       #   2. A Trusted Publisher configured on npmjs.com for this package, pointing at
       #      repo yokawasa/postman-cli-completion + workflow "release.yml" (no environment).
       # See docs/npm-distribution.md §5.
       - name: Publish to npm (OIDC trusted publishing)
         if: steps.npm_exists.outputs.skip != 'true'
         run: |
-          npm install -g npm@latest
           npm version "${{ steps.ver.outputs.version }}" --no-git-tag-version --allow-same-version
           npm publish --provenance --access public
