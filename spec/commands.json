@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.41.2",
-  "introspectedAt": "2026-07-10T03:53:23Z",
+  "postmanCliVersion": "1.43.0",
+  "introspectedAt": "2026-07-17T03:18:35Z",
   "global": {
     "flags": [
       {
@@ -216,6 +216,12 @@
               "valueName": "reporter",
               "valueOptional": true,
               "description": "Specify the reporters to use for the run: cli,json,junit,html. For multiple reporters, provide their names as a comma-separated list (E.g., -r cli,json) (default: [\"cli\"])"
+            },
+            {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "folder",
+              "description": "Write a YAML-based run report to the given folder. Creates a paired `<prefix>.collection-run-summary.yaml` (refreshed during the run) and streaming `<prefix>.collection-run-executions.yaml`, where prefix defaults to `<collection-slug>-<timestamp>`. Gotcha: --output streams run data to file and cannot be combined with the built-in reporters (-r/--reporter-*); doing so exits with an error. This keeps large runs from buffering an entire report in memory."
             },
             {
               "long": "--reporter-[reporter]-export",
@@ -490,6 +496,10 @@
               "description": "Start mock servers with fault-injection scenarios from a .sim.yaml file"
             },
             {
+              "long": "--report-events",
+              "description": "Send run results and analytics to Postman"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -679,6 +689,10 @@
               "description": "Port for the metrics server (default: \"9090\")"
             },
             {
+              "long": "--report-events",
+              "description": "Send run events and analytics to Postman"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -728,6 +742,10 @@
               "valueType": "string",
               "valueName": "value",
               "description": "The workspace ID to use for fetching governance rulesets."
+            },
+            {
+              "long": "--report-events",
+              "description": "Send lint results and analytics to Postman"
             },
             {
               "long": "--help",
@@ -882,6 +900,10 @@
             {
               "long": "--verbose",
               "description": "Show detailed logging"
+            },
+            {
+              "long": "--report-events",
+              "description": "Send workspace push events to Postman"
             },
             {
               "long": "--help",
@@ -2883,6 +2905,143 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "requests",
+          "aliases": [],
+          "description": "List, inspect, and replay requests received by a webhook.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "List recent requests received by a webhook.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--cursor",
+                  "valueType": "string",
+                  "valueName": "cursor",
+                  "description": "Pagination cursor returned by a previous request list response"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "describe",
+              "aliases": [],
+              "description": "Show details for a request received by a webhook.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                },
+                {
+                  "name": "requestId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "replay",
+              "aliases": [],
+              "description": "Replay a request received by a webhook.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                },
+                {
+                  "name": "requestId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         },
