@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.43.0",
-  "introspectedAt": "2026-07-17T03:18:35Z",
+  "postmanCliVersion": "1.44.0",
+  "introspectedAt": "2026-07-23T03:27:02Z",
   "global": {
     "flags": [
       {
@@ -848,18 +848,6 @@
           "positionals": [],
           "flags": [
             {
-              "long": "--collections-dir",
-              "valueType": "dir",
-              "valueName": "path",
-              "description": "Path to the collections directory (default: \"postman/collections\")"
-            },
-            {
-              "long": "--environments-dir",
-              "valueType": "dir",
-              "valueName": "path",
-              "description": "Path to the environments directory (default: \"postman/environments\")"
-            },
-            {
               "long": "--verbose",
               "description": "Show detailed logging"
             },
@@ -873,21 +861,9 @@
         {
           "name": "push",
           "aliases": [],
-          "description": "Push local collection, environment, specification, mock, and simulation changes to Postman workspace.",
+          "description": "Push local workspace entities (collections, environments, specifications, and more) to Postman workspace.",
           "positionals": [],
           "flags": [
-            {
-              "long": "--collections-dir",
-              "valueType": "dir",
-              "valueName": "path",
-              "description": "Path to the collections directory (default: \"postman/collections\")"
-            },
-            {
-              "long": "--environments-dir",
-              "valueType": "dir",
-              "valueName": "path",
-              "description": "Path to the environments directory (default: \"postman/environments\")"
-            },
             {
               "long": "--no-prepare",
               "description": "Skip ID validation and auto-fix before pushing"
@@ -896,6 +872,12 @@
               "long": "--yes",
               "short": "-y",
               "description": "Skip all confirmation prompts"
+            },
+            {
+              "long": "--push-strategy",
+              "valueType": "string",
+              "valueName": "strategy",
+              "description": "Push strategy. \"force-sync\": mirror the whole workspace — also DELETE cloud entities that have no local counterpart (destructive). Defaults to \"default\" (create/update only)."
             },
             {
               "long": "--verbose",
