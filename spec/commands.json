@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.44.0",
-  "introspectedAt": "2026-07-23T03:27:02Z",
+  "postmanCliVersion": "1.45.0",
+  "introspectedAt": "2026-08-01T03:31:26Z",
   "global": {
     "flags": [
       {
@@ -278,12 +278,12 @@
             {
               "long": "--iteration-data-dataset",
               "valueType": "file",
-              "valueName": "path",
+              "valueName": "pathOrId",
               "patterns": [
                 "*.json",
                 "*.csv"
               ],
-              "description": "[BETA] Path to a .dataset.yaml whose view drives the iteration data. Mutually exclusive with --iteration-data. Requires --iteration-data-view."
+              "description": "[BETA] Path to a .dataset.yaml (local collection) or a cloud dataset id (cloud collection) whose view drives the iteration data. Mutually exclusive with --iteration-data. Requires --iteration-data-view."
             },
             {
               "long": "--iteration-data-view",
@@ -298,7 +298,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to scripts as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. (default: [])"
+              "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to scripts as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. For a cloud collection, scripts address cloud datasets by id via pm.datasets(<id>) (resolved from your `postman login` session). SECURITY: for a cloud collection this does NOT scope access — a script can pm.datasets(<anyId>) for any dataset your session can read. Only run collections you trust against a logged-in cloud session. (default: [])"
             },
             {
               "short": "-i",
@@ -832,6 +832,9 @@
     },
     {
       "name": "workspace",
+      "aliases": [
+        "ws"
+      ],
       "description": "Manage workspace resources.",
       "flags": [
         {
@@ -841,6 +844,45 @@
         }
       ],
       "subcommands": [
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List all available Postman Workspaces",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--filter",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Filter workspaces by name."
+            },
+            {
+              "long": "--type",
+              "short": "-t",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Filter workspaces by visibility type: team, public, private, personal."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
         {
           "name": "prepare",
           "aliases": [],
@@ -1608,7 +1650,7 @@
           "aliases": [
             "build"
           ],
-          "description": "Generate a new SDK from a Postman collection or specification.",
+          "description": "Generate a new SDK from a Postman collection or specification (OpenAPI or AsyncAPI).",
           "positionals": [
             {
               "name": "idOrPath",
@@ -3083,7 +3125,7 @@
         {
           "name": "list",
           "aliases": [],
-          "description": "[BETA] List dataset YAMLs under the given directory, or print summary for a single YAML file.",
+          "description": "[BETA] List local dataset YAMLs under a path, or (no path) a workspace's cloud datasets.",
           "positionals": [
             {
               "name": "pathOrDir",
@@ -3091,6 +3133,24 @@
             }
           ],
           "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Postman workspace ID (cloud list)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
             {
               "long": "--json",
               "description": "Output as JSON instead of a table"
@@ -3105,17 +3165,32 @@
         {
           "name": "get",
           "aliases": [],
-          "description": "[BETA] Print a dataset's metadata and structure summary.",
+          "description": "[BETA] Print a dataset's metadata and structure summary (local YAML path or cloud id).",
           "positionals": [
             {
-              "name": "path",
-              "valueType": "file"
+              "name": "datasetPathOrId",
+              "valueType": "string"
             }
           ],
           "flags": [
             {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
+            {
+              "long": "--no-populate",
+              "description": "Skip fetching datasources/views for a cloud dataset"
+            },
+            {
               "long": "--json",
-              "description": "Output the full parsed YAML as JSON"
+              "description": "Output the full dataset as JSON"
             },
             {
               "long": "--help",
@@ -3127,11 +3202,11 @@
         {
           "name": "query",
           "aliases": [],
-          "description": "[BETA] Run an ad-hoc SQL query against a dataset.",
+          "description": "[BETA] Run an ad-hoc SQL query against a dataset (local YAML path or cloud id).",
           "positionals": [
             {
-              "name": "path",
-              "valueType": "file"
+              "name": "datasetPathOrId",
+              "valueType": "string"
             }
           ],
           "flags": [
@@ -3150,6 +3225,17 @@
               "description": "Positional parameter values for $1, $2, ... bindings; repeatable"
             },
             {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
+            {
               "long": "--json",
               "description": "Output rows as JSON instead of a table"
             },
@@ -3163,7 +3249,7 @@
         {
           "name": "create",
           "aliases": [],
-          "description": "[BETA] Scaffold a new empty .dataset.yaml file at <path>.",
+          "description": "[BETA] Scaffold a new .dataset.yaml at <path>, or (no path, with -w) create a cloud dataset.",
           "positionals": [
             {
               "name": "path",
@@ -3186,14 +3272,32 @@
               "description": "Optional description"
             },
             {
-              "long": "--id",
+              "long": "--dataset-id",
               "valueType": "string",
               "valueName": "uuid",
-              "description": "Override the generated dataset id (defaults to a random v4 UUID)"
+              "description": "Override the generated dataset id (local only; defaults to a random v4 UUID)"
             },
             {
               "long": "--force",
               "description": "Overwrite an existing file at <path>"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Postman workspace ID (create a cloud dataset)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
             },
             {
               "long": "--help",
@@ -3205,11 +3309,11 @@
         {
           "name": "delete",
           "aliases": [],
-          "description": "[BETA] Permanently remove a dataset's .dataset.yaml file and its .resources/ directory.",
+          "description": "[BETA] Permanently remove a dataset: a local .dataset.yaml (+ .resources/) or a cloud dataset id.",
           "positionals": [
             {
-              "name": "path",
-              "valueType": "file"
+              "name": "datasetPathOrId",
+              "valueType": "string"
             }
           ],
           "flags": [
@@ -3220,7 +3324,18 @@
             },
             {
               "long": "--keep-resources",
-              "description": "Delete only the YAML file; leave the .resources/ directory intact"
+              "description": "Delete only the YAML file; leave the .resources/ directory intact (local only)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
             },
             {
               "long": "--help",
@@ -3245,14 +3360,27 @@
             {
               "name": "list",
               "aliases": [],
-              "description": "[BETA] List the datasources defined on a dataset.",
-              "positionals": [
-                {
-                  "name": "path",
-                  "valueType": "file"
-                }
-              ],
+              "description": "[BETA] List the datasources defined on a dataset (local YAML path or cloud id).",
+              "positionals": [],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset whose sources to list — a local .dataset.yaml path or a cloud dataset id"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
                 {
                   "long": "--json",
                   "description": "Output sources as JSON instead of a table"
@@ -3268,13 +3396,15 @@
               "name": "add",
               "aliases": [],
               "description": "[BETA] Add a datasource to a dataset.",
-              "positionals": [
-                {
-                  "name": "pathOrId",
-                  "valueType": "file"
-                }
-              ],
+              "positionals": [],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset to add the source to — a local .dataset.yaml path or a cloud dataset id"
+                },
                 {
                   "long": "--name",
                   "short": "-n",
@@ -3283,7 +3413,7 @@
                   "description": "Logical name for the source (becomes the SQL table name)"
                 },
                 {
-                  "long": "--id",
+                  "long": "--source-id",
                   "valueType": "string",
                   "valueName": "uuid",
                   "description": "Override the generated source id"
@@ -3311,11 +3441,15 @@
                 },
                 {
                   "long": "--ref-only",
-                  "description": "Reference the file in place; do NOT copy into data_dir"
+                  "description": "Reference the file in place; do NOT copy into data_dir (local dataset)"
                 },
                 {
                   "long": "--force",
-                  "description": "When copying, overwrite an existing file at the destination"
+                  "description": "When copying, overwrite an existing file at the destination (local dataset)"
+                },
+                {
+                  "long": "--upload",
+                  "description": "Cloud dataset only: upload --file as a postmancloudfile source (runs via /exec). Without --upload, --file is registered as a local_filesystem csv/json source read by the local engine."
                 },
                 {
                   "long": "--url",
@@ -3345,7 +3479,7 @@
                   "long": "--password",
                   "valueType": "string",
                   "valueName": "password",
-                  "description": "DB password (warning: stored as plaintext in the YAML)."
+                  "description": "DB password. WARNING: passing it here exposes it in `ps` output and shell history, and it is stored as plaintext in the dataset YAML (local) or sent in the request body (cloud). Prefer a restricted DB user; secure input (prompt / stdin / env) is planned."
                 },
                 {
                   "long": "--database",
@@ -3366,6 +3500,17 @@
                   "description": "Optional slug for the source"
                 },
                 {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
@@ -3375,18 +3520,32 @@
             {
               "name": "remove",
               "aliases": [],
-              "description": "[BETA] Remove a datasource from a dataset.",
+              "description": "[BETA] Remove a datasource from a dataset (local YAML path or cloud id).",
               "positionals": [
-                {
-                  "name": "path",
-                  "valueType": "file"
-                },
                 {
                   "name": "sourceNameOrId",
                   "valueType": "string"
                 }
               ],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset the source belongs to — a local .dataset.yaml path or a cloud dataset id"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
                 {
                   "long": "--help",
                   "short": "-h",
@@ -3400,15 +3559,18 @@
               "description": "[BETA] Update fields on an existing datasource. Only the flags you provide are changed.",
               "positionals": [
                 {
-                  "name": "pathOrId",
-                  "valueType": "file"
-                },
-                {
                   "name": "sourceNameOrId",
                   "valueType": "string"
                 }
               ],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset the source belongs to — a local .dataset.yaml path or a cloud dataset id"
+                },
                 {
                   "long": "--name",
                   "short": "-n",
@@ -3467,7 +3629,7 @@
                   "long": "--password",
                   "valueType": "string",
                   "valueName": "password",
-                  "description": "Update DB password (warning: stored as plaintext in the YAML)."
+                  "description": "Update DB password. WARNING: passing it here exposes it in `ps` output and shell history, and it is stored as plaintext in the dataset YAML (local) or sent in the request body (cloud). Prefer a restricted DB user; secure input (prompt / stdin / env) is planned."
                 },
                 {
                   "long": "--database",
@@ -3486,6 +3648,17 @@
                   "valueType": "string",
                   "valueName": "slug",
                   "description": "Update slug"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
                 },
                 {
                   "long": "--help",
@@ -3512,14 +3685,27 @@
             {
               "name": "list",
               "aliases": [],
-              "description": "[BETA] List the saved views defined on a dataset.",
-              "positionals": [
-                {
-                  "name": "path",
-                  "valueType": "file"
-                }
-              ],
+              "description": "[BETA] List the saved views defined on a dataset (local YAML path or cloud id).",
+              "positionals": [],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset whose views to list — a local .dataset.yaml path or a cloud dataset id"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
                 {
                   "long": "--json",
                   "description": "Output views as JSON instead of a table"
@@ -3537,21 +3723,35 @@
               "description": "[BETA] Execute a saved view against a dataset and print the rows.",
               "positionals": [
                 {
-                  "name": "path",
-                  "valueType": "file"
-                },
-                {
                   "name": "viewNameOrId",
                   "valueType": "string"
                 }
               ],
               "flags": [
                 {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset the view belongs to — a local .dataset.yaml path or a cloud dataset id"
+                },
+                {
                   "long": "--param",
                   "short": "-p",
                   "valueType": "string",
                   "valueName": "value...",
                   "description": "Positional parameter values for $1, $2, ... bindings; repeatable"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
                 },
                 {
                   "long": "--json",
@@ -3567,14 +3767,16 @@
             {
               "name": "create",
               "aliases": [],
-              "description": "[BETA] Add a saved view to a dataset.",
-              "positionals": [
-                {
-                  "name": "path",
-                  "valueType": "file"
-                }
-              ],
+              "description": "[BETA] Add a saved view to a dataset (local YAML path or cloud id).",
+              "positionals": [],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset to add the view to — a local .dataset.yaml path or a cloud dataset id"
+                },
                 {
                   "long": "--name",
                   "short": "-n",
@@ -3590,10 +3792,21 @@
                   "description": "SQL query the view executes"
                 },
                 {
-                  "long": "--id",
+                  "long": "--view-id",
                   "valueType": "string",
                   "valueName": "uuid",
-                  "description": "Override the generated view id"
+                  "description": "Override the generated view id (local only; cloud assigns its own)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
                 },
                 {
                   "long": "--help",
@@ -3605,18 +3818,32 @@
             {
               "name": "delete",
               "aliases": [],
-              "description": "[BETA] Remove a saved view from a dataset.",
+              "description": "[BETA] Remove a saved view from a dataset (local YAML path or cloud id).",
               "positionals": [
-                {
-                  "name": "path",
-                  "valueType": "file"
-                },
                 {
                   "name": "viewNameOrId",
                   "valueType": "string"
                 }
               ],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset the view belongs to — a local .dataset.yaml path or a cloud dataset id"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
                 {
                   "long": "--help",
                   "short": "-h",
@@ -3627,18 +3854,21 @@
             {
               "name": "update",
               "aliases": [],
-              "description": "[BETA] Update name and/or query on an existing view.",
+              "description": "[BETA] Update name and/or query on an existing view (local YAML path or cloud id).",
               "positionals": [
-                {
-                  "name": "path",
-                  "valueType": "file"
-                },
                 {
                   "name": "viewNameOrId",
                   "valueType": "string"
                 }
               ],
               "flags": [
+                {
+                  "long": "--dataset",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "datasetPathOrId",
+                  "description": "Dataset the view belongs to — a local .dataset.yaml path or a cloud dataset id"
+                },
                 {
                   "long": "--name",
                   "short": "-n",
@@ -3652,6 +3882,17 @@
                   "valueType": "string",
                   "valueName": "sql",
                   "description": "New SQL query"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
                 },
                 {
                   "long": "--help",
