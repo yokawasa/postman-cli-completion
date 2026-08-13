@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.45.0",
-  "introspectedAt": "2026-08-01T03:31:26Z",
+  "postmanCliVersion": "1.46.0",
+  "introspectedAt": "2026-08-13T02:26:42Z",
   "global": {
     "flags": [
       {
@@ -482,7 +482,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Start a mock server from manifest (.json) file"
+              "description": "Start a mock server from manifest (.json, .yaml or .yml) file"
             },
             {
               "long": "--simulate",
@@ -985,7 +985,7 @@
               "short": "-d",
               "valueType": "string",
               "valueName": "minutes",
-              "description": "Duration of the performance test in minutes (default: 10)"
+              "description": "Duration of the performance test in minutes (default: 1)"
             },
             {
               "long": "--load-profile",
@@ -2027,7 +2027,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Start a local mock server given a manifest file.",
+          "description": "Start a local mock server given a manifest file (JSON or YAML).",
           "positionals": [
             {
               "name": "manifestPath",
@@ -2692,6 +2692,24 @@
           "name": "environments",
           "aliases": [],
           "description": "Search for environments by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "documents",
+          "aliases": [],
+          "description": "Search for documents by name or keyword.",
           "positionals": [
             {
               "name": "query",
