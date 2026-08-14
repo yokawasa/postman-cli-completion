@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.46.0",
-  "introspectedAt": "2026-08-13T02:26:42Z",
+  "postmanCliVersion": "1.46.1",
+  "introspectedAt": "2026-08-14T02:24:58Z",
   "global": {
     "flags": [
       {
@@ -498,6 +498,96 @@
             {
               "long": "--report-events",
               "description": "Send run results and analytics to Postman"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "environment",
+      "description": "Work with local Postman environments from the command line.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "lint",
+          "aliases": [],
+          "description": "Run linting on a local Postman environment at the given file or directory path.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--fail-severity",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Exit with failure if diagnostics at this level or above are present. [choices: \"error\", \"warning\"] (default: \"error\")"
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format: cli (human-readable), table, json, or csv. (default: \"cli\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "globals",
+      "description": "Work with local Postman globals from the command line.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "lint",
+          "aliases": [],
+          "description": "Run linting on a local Postman globals file at the given file or directory path.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--fail-severity",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Exit with failure if diagnostics at this level or above are present. [choices: \"error\", \"warning\"] (default: \"error\")"
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format: cli (human-readable), table, json, or csv. (default: \"cli\")"
             },
             {
               "long": "--help",
@@ -1663,7 +1753,7 @@
               "short": "-l",
               "valueType": "string",
               "valueName": "languages...",
-              "description": "Target language(s) for SDK generation. Specify one or more languages. [choices: \"typescript\", \"python\", \"java\", \"go\", \"csharp\", \"php\", \"ruby\", \"cli\", \"kotlin\", \"rust\"]"
+              "description": "Target language(s) for SDK generation. Specify one or more languages. [choices: \"typescript\", \"python\", \"java\", \"go\", \"csharp\", \"php\", \"ruby\", \"cli\", \"kotlin\", \"rust\", \"swift\"]"
             },
             {
               "long": "--all",
@@ -1752,7 +1842,7 @@
               "short": "-l",
               "valueType": "string",
               "valueName": "languages...",
-              "description": "Language(s) to track. [choices: \"typescript\", \"python\", \"java\", \"go\", \"csharp\", \"php\", \"ruby\", \"cli\", \"kotlin\", \"rust\"]"
+              "description": "Language(s) to track. [choices: \"typescript\", \"python\", \"java\", \"go\", \"csharp\", \"php\", \"ruby\", \"cli\", \"kotlin\", \"rust\", \"swift\"]"
             },
             {
               "long": "--output-dir",
@@ -1876,7 +1966,7 @@
               "short": "-l",
               "valueType": "string",
               "valueName": "language",
-              "description": "SDK language (required) [choices: typescript, python, java, go, csharp, php, ruby, cli, kotlin, rust]"
+              "description": "SDK language (required) [choices: typescript, python, java, go, csharp, php, ruby, cli, kotlin, rust, swift]"
             },
             {
               "long": "--repo",
