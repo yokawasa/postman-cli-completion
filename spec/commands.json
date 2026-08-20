@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.46.1",
-  "introspectedAt": "2026-08-14T02:24:58Z",
+  "postmanCliVersion": "1.47.2",
+  "introspectedAt": "2026-08-20T01:37:53Z",
   "global": {
     "flags": [
       {
@@ -483,6 +483,12 @@
                 "*.json"
               ],
               "description": "Start a mock server from manifest (.json, .yaml or .yml) file"
+            },
+            {
+              "long": "--port",
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Port for the --mock server; pass \"auto\" for an OS-assigned ephemeral port (default: configured port, falls back to an ephemeral one if busy). Only valid with --mock."
             },
             {
               "long": "--simulate",
@@ -2115,6 +2121,65 @@
       ],
       "subcommands": [
         {
+          "name": "generate",
+          "aliases": [],
+          "description": "Generate a local, runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected.",
+          "positionals": [
+            {
+              "name": "sourcePath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "file",
+              "valueName": "dir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Output directory for the mock (default: postman/mocks/<slug>)"
+            },
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Display name for the generated mock"
+            },
+            {
+              "long": "--port",
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Port the mock server should listen on (default: 4500)"
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite the config.yaml/default.js in the output directory if it already exists"
+            },
+            {
+              "long": "--update",
+              "short": "-u",
+              "valueType": "file",
+              "valueName": "mockPath",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Update an existing mock in place from the source: path to its config.yaml (or the directory containing it). Regenerates the default scenario handler and preserves the existing name/port/scenarios. Cannot be combined with --output."
+            },
+            {
+              "long": "--suppress-exit-code",
+              "short": "-x",
+              "description": "Always exit with code 0, even on failure"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "run",
           "aliases": [],
           "description": "Start a local mock server given a manifest file (JSON or YAML).",
@@ -2144,6 +2209,13 @@
                 "*.json"
               ],
               "description": "Path to a globals file (JSON or YAML) for pm.globals"
+            },
+            {
+              "long": "--port",
+              "short": "-p",
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Mock server port, or \"auto\" for an ephemeral one (default: configured port, falls back to an ephemeral one if busy)."
             },
             {
               "long": "--help",
