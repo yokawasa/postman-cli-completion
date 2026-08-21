@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.47.2",
-  "introspectedAt": "2026-08-20T01:37:53Z",
+  "postmanCliVersion": "1.48.0",
+  "introspectedAt": "2026-08-21T01:42:19Z",
   "global": {
     "flags": [
       {
@@ -1024,6 +1024,43 @@
             {
               "long": "--report-events",
               "description": "Send workspace push events to Postman"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "lint",
+          "aliases": [],
+          "description": "Lint the current local Postman workspace: its configuration (.postman/resources.yaml) plus every discovered entity. Use --meta to lint only the configuration.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--fail-severity",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Exit with failure if diagnostics at this level or above are present. [choices: \"error\", \"warning\", \"info\", \"hint\"] (default: \"error\")"
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format: cli (human-readable), table, or json. (default: \"cli\")"
+            },
+            {
+              "long": "--meta",
+              "description": "Only lint the workspace configuration (.postman/resources.yaml); skip per-entity linting."
+            },
+            {
+              "long": "--workspace-id",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "The workspace ID to use for fetching governance rulesets. Defaults to the id in .postman/resources.yaml."
             },
             {
               "long": "--help",
@@ -2324,6 +2361,12 @@
               "valueType": "string",
               "valueName": "cmd",
               "description": "Command to run first (primary task). Overrides config."
+            },
+            {
+              "long": "--deployed-version",
+              "valueType": "string",
+              "valueName": "version",
+              "description": "Version identity of the application under test (e.g. a build ID, release tag, or version string). Also read from the APP_DEPLOYED_VERSION environment variable."
             },
             {
               "long": "--network-log",
