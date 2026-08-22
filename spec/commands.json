@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.48.0",
-  "introspectedAt": "2026-08-21T01:42:19Z",
+  "postmanCliVersion": "1.49.0",
+  "introspectedAt": "2026-08-22T01:36:27Z",
   "global": {
     "flags": [
       {
@@ -1137,6 +1137,24 @@
               "description": "Path to a JSON or CSV data file to use with the collection"
             },
             {
+              "long": "--dataset-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Use a Postman Dataset as iteration data (with --dataset-view-id)"
+            },
+            {
+              "long": "--dataset-view-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Dataset view to execute for iteration data (requires --dataset-id)"
+            },
+            {
+              "long": "--dataset-distribution",
+              "valueType": "string",
+              "valueName": "strategy",
+              "description": "How rows map to VUs: round-robin (default), fixed, random"
+            },
+            {
               "long": "--postman-api-key",
               "valueType": "string",
               "valueName": "apiKey",
@@ -1411,6 +1429,29 @@
               "description": "Use a pre-built scenario as flow inputs (by scenario name). Can be combined with --input and --input-file to override values."
             },
             {
+              "long": "--iteration-data-dataset",
+              "valueType": "file",
+              "valueName": "pathOrId",
+              "patterns": [
+                "*.json",
+                "*.csv"
+              ],
+              "description": "[BETA] Run the flow once per row of a dataset view. Accepts a local .dataset.yaml path or a cloud dataset id (cloud requires login). Requires --iteration-data-view. Dataset columns feed the flow inputs (see --map-column)."
+            },
+            {
+              "long": "--iteration-data-view",
+              "valueType": "string",
+              "valueName": "nameOrId",
+              "description": "[BETA] Name or id of the view (within --iteration-data-dataset) whose rows drive the run."
+            },
+            {
+              "long": "--map-column",
+              "short": "-m",
+              "valueType": "string",
+              "valueName": "input=column",
+              "description": "[BETA] Bind a flow input to a dataset column (e.g. -m isActive=active). Repeatable. Inputs whose name matches a column bind automatically. (default: [])"
+            },
+            {
               "long": "--environment",
               "short": "-e",
               "valueType": "file",
@@ -1425,6 +1466,10 @@
               "valueType": "dir",
               "valueName": "path",
               "description": "Specify the path to the working directory"
+            },
+            {
+              "long": "--no-insecure-file-read",
+              "description": "Prevent reading dataset files situated outside of the working directory (applies to --iteration-data-dataset)"
             },
             {
               "long": "--verbose",
@@ -3244,6 +3289,10 @@
                   "description": "Postman API key"
                 },
                 {
+                  "long": "--verbose",
+                  "description": "Show script execution logs"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
@@ -3265,6 +3314,67 @@
                 }
               ],
               "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "scripts",
+          "aliases": [],
+          "description": "Create or update scripts executed by a webhook.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "set",
+              "aliases": [],
+              "description": "Create or update a webhook script from a JavaScript or TypeScript file.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                },
+                {
+                  "name": "scriptPath",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--event",
+                  "valueType": "string",
+                  "valueName": "event",
+                  "description": "Script event: onEvent or onResponse"
+                },
                 {
                   "long": "--workspace",
                   "short": "-w",
