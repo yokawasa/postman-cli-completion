@@ -10,6 +10,8 @@ Completes:
 
 Dynamic completion of remote IDs (collection / workspace / monitor IDs) is **not** supported — paste those yourself.
 
+![postman-cli-completion anime gif](assets/postman-cli-completion.gif)
+
 ## Install
 
 ### Via npm (recommended)
