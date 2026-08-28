@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.49.0",
-  "introspectedAt": "2026-08-22T01:36:27Z",
+  "postmanCliVersion": "1.51.0",
+  "introspectedAt": "2026-08-28T10:52:01Z",
   "global": {
     "flags": [
       {
@@ -1063,6 +1063,69 @@
               "description": "The workspace ID to use for fetching governance rulesets. Defaults to the id in .postman/resources.yaml."
             },
             {
+              "long": "--fix",
+              "description": "Apply safe autofixes to repairable workspace lint issues."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "pull",
+          "aliases": [],
+          "description": "Pull workspace entities from a Postman workspace into the local git-native folder.",
+          "positionals": [
+            {
+              "name": "workspaceId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip all confirmation prompts"
+            },
+            {
+              "long": "--source-workspace",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Pull from a different source workspace."
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed logging"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "connect-git",
+          "aliases": [],
+          "description": "Connect a Postman workspace to a local git repository.",
+          "positionals": [
+            {
+              "name": "workspaceId",
+              "valueType": "string"
+            },
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--verbose",
+              "description": "Show detailed logging"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -1159,6 +1222,12 @@
               "valueType": "string",
               "valueName": "apiKey",
               "description": "API Key used to load the resources from the Postman API (Only supported in the US region, use 'postman login --region' to authenticate instead)"
+            },
+            {
+              "long": "--runner",
+              "valueType": "string",
+              "valueName": "runner",
+              "description": "Runner to execute the performance test on (local or postman-cloud) (default: local)"
             },
             {
               "long": "--pass-if",
@@ -2205,7 +2274,7 @@
         {
           "name": "generate",
           "aliases": [],
-          "description": "Generate a local, runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected.",
+          "description": "Generate a local, runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected. Omit the source to scaffold a sample mock with a GET /health endpoint.",
           "positionals": [
             {
               "name": "sourcePath",
@@ -2225,9 +2294,10 @@
             },
             {
               "long": "--name",
+              "short": "-n",
               "valueType": "string",
               "valueName": "name",
-              "description": "Display name for the generated mock"
+              "description": "Display name for the generated mock. Optional with a source (derived from it); required when generating without a source."
             },
             {
               "long": "--port",
@@ -2264,11 +2334,11 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Start a local mock server given a manifest file (JSON or YAML).",
+          "description": "Start a local mock server given a manifest file (JSON or YAML), a mock directory (postman/mocks/<slug>), or a .js handler.",
           "positionals": [
             {
-              "name": "manifestPath",
-              "valueType": "string"
+              "name": "pathOrDir",
+              "valueType": "file"
             }
           ],
           "flags": [
@@ -2305,6 +2375,73 @@
               "description": "display help for command"
             }
           ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Show a local mock's details and run status.",
+          "positionals": [
+            {
+              "name": "pathOrDir",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output the mock details as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List local mocks found under a directory.",
+          "positionals": [
+            {
+              "name": "pathOrDir",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output the mock list as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Permanently remove a local mock artifact.",
+          "positionals": [
+            {
+              "name": "pathOrDir",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip the confirmation prompt"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
@@ -2325,7 +2462,7 @@
         {
           "name": "init",
           "aliases": [],
-          "description": "Initialise a postman.config.cjs file with target collections, environment, and test command.",
+          "description": "[DEPRECATED] Use `postman app test` instead. Initialise a postman.config.cjs file with target collections, environment, and test command.",
           "positionals": [],
           "flags": [
             {
@@ -2446,6 +2583,28 @@
             {
               "long": "--verbose",
               "description": "Show detailed per-request matching, sandbox errors, and debug information"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "setup-capture",
+          "aliases": [],
+          "description": "Install postman-playwright and patch playwright.config.* to capture network traffic automatically via withPostman().",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--config",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to playwright.config.* to patch (default: auto-detect)"
             },
             {
               "long": "--help",
@@ -3446,7 +3605,7 @@
     },
     {
       "name": "dataset",
-      "description": "[BETA] Work with Postman datasets defined in local YAML files.",
+      "description": "[BETA] Work with Postman datasets in local YAML files or the cloud.",
       "flags": [
         {
           "long": "--help",
@@ -3555,7 +3714,7 @@
               "short": "-p",
               "valueType": "string",
               "valueName": "value...",
-              "description": "Positional parameter values for $1, $2, ... bindings; repeatable"
+              "description": "Bind values to $1, $2, ... in order; pass multiple values after -p or repeat -p"
             },
             {
               "long": "--api-key",
@@ -3571,6 +3730,10 @@
             {
               "long": "--json",
               "description": "Output rows as JSON instead of a table"
+            },
+            {
+              "long": "--debug",
+              "description": "Include safe classified dataset diagnostics"
             },
             {
               "long": "--help",
@@ -3642,7 +3805,7 @@
         {
           "name": "delete",
           "aliases": [],
-          "description": "[BETA] Permanently remove a dataset: a local .dataset.yaml (+ .resources/) or a cloud dataset id.",
+          "description": "[BETA] Permanently remove a dataset: a local .dataset.yaml or a cloud dataset id.",
           "positionals": [
             {
               "name": "datasetPathOrId",
@@ -3657,7 +3820,7 @@
             },
             {
               "long": "--keep-resources",
-              "description": "Delete only the YAML file; leave the .resources/ directory intact (local only)"
+              "description": "Preserve the local resource directory even when it is empty (local only)"
             },
             {
               "long": "--api-key",
@@ -3729,14 +3892,19 @@
               "name": "add",
               "aliases": [],
               "description": "[BETA] Add a datasource to a dataset.",
-              "positionals": [],
+              "positionals": [
+                {
+                  "name": "datasetPathOrId",
+                  "valueType": "string"
+                }
+              ],
               "flags": [
                 {
                   "long": "--dataset",
                   "short": "-d",
                   "valueType": "string",
                   "valueName": "datasetPathOrId",
-                  "description": "Dataset to add the source to — a local .dataset.yaml path or a cloud dataset id"
+                  "description": "Dataset to add the source to; positional target is also accepted for v1.45 compatibility"
                 },
                 {
                   "long": "--name",
@@ -3749,19 +3917,19 @@
                   "long": "--source-id",
                   "valueType": "string",
                   "valueName": "uuid",
-                  "description": "Override the generated source id"
+                  "description": "Override the generated source id (local dataset only)"
                 },
                 {
                   "long": "--format",
                   "valueType": "string",
-                  "valueName": "csv|json|mysql|postgres",
-                  "description": "Override the inferred format"
+                  "valueName": "csv|json|mysql|postgres|sqlserver",
+                  "description": "Use this format instead of extension/type inference; file contents are not sniffed"
                 },
                 {
                   "long": "--type",
                   "valueType": "string",
-                  "valueName": "local|remote-url|mysql|postgresql",
-                  "description": "Source kind; inferred from --file/--url when omitted"
+                  "valueName": "local|mysql|postgresql|sqlserver",
+                  "description": "Source kind; local is inferred when --file is provided"
                 },
                 {
                   "long": "--file",
@@ -3785,22 +3953,16 @@
                   "description": "Cloud dataset only: upload --file as a postmancloudfile source (runs via /exec). Without --upload, --file is registered as a local_filesystem csv/json source read by the local engine."
                 },
                 {
-                  "long": "--url",
-                  "valueType": "string",
-                  "valueName": "url",
-                  "description": "HTTP(S) URL to a remote CSV/JSON file"
-                },
-                {
                   "long": "--host",
                   "valueType": "string",
                   "valueName": "host",
-                  "description": "DB host (mysql/postgresql)"
+                  "description": "DB host (mysql/postgresql/sqlserver)"
                 },
                 {
                   "long": "--port",
                   "valueType": "string",
                   "valueName": "port",
-                  "description": "DB port"
+                  "description": "DB port (defaults to 1433 for sqlserver)"
                 },
                 {
                   "long": "--user",
@@ -3824,13 +3986,99 @@
                   "long": "--table",
                   "valueType": "string",
                   "valueName": "table",
-                  "description": "DB table name (optional)"
+                  "description": "DB table name (required for sqlserver)"
                 },
                 {
-                  "long": "--slug",
+                  "long": "--ssh-host",
                   "valueType": "string",
-                  "valueName": "slug",
-                  "description": "Optional slug for the source"
+                  "valueName": "host",
+                  "description": "SSH bastion host"
+                },
+                {
+                  "long": "--ssh-port",
+                  "valueType": "string",
+                  "valueName": "port",
+                  "description": "SSH bastion port"
+                },
+                {
+                  "long": "--ssh-user",
+                  "valueType": "string",
+                  "valueName": "user",
+                  "description": "SSH bastion user"
+                },
+                {
+                  "long": "--ssh-private-key",
+                  "valueType": "file",
+                  "valueName": "filepath",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Path to the SSH private key. WARNING: the path is visible in `ps` output and shell history; key contents are read locally at execution time and are not stored in the dataset config."
+                },
+                {
+                  "long": "--ssh-host-key",
+                  "valueType": "string",
+                  "valueName": "publicKey",
+                  "description": "SSH bastion public host key"
+                },
+                {
+                  "long": "--ssh-host-key-vault-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Shared Vault ID containing the SSH public host key"
+                },
+                {
+                  "long": "--ssh-host-key-secret-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Shared Vault secret ID containing the SSH public host key"
+                },
+                {
+                  "long": "--ssh-insecure-skip-host-key-verification",
+                  "description": "WARNING: disable SSH host-key verification; use only for trusted local testing"
+                },
+                {
+                  "long": "--schema",
+                  "valueType": "string",
+                  "valueName": "schema",
+                  "description": "DB schema (postgresql/sqlserver; defaults to dbo for sqlserver)"
+                },
+                {
+                  "long": "--encrypt",
+                  "valueType": "string",
+                  "valueName": "true|false",
+                  "description": "SQL Server TLS encryption (default: true)"
+                },
+                {
+                  "long": "--trust-server-certificate",
+                  "valueType": "string",
+                  "valueName": "true|false",
+                  "description": "SQL Server: skip certificate verification (default: false; insecure)"
+                },
+                {
+                  "long": "--tls-certificate",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "SQL Server CA/server certificate file path"
+                },
+                {
+                  "long": "--host-name-in-certificate",
+                  "valueType": "string",
+                  "valueName": "hostname",
+                  "description": "SQL Server certificate hostname override"
+                },
+                {
+                  "long": "--tls-min-version",
+                  "valueType": "string",
+                  "valueName": "1.2|1.3",
+                  "description": "SQL Server minimum TLS version (default: 1.2)"
                 },
                 {
                   "long": "--api-key",
@@ -3914,8 +4162,8 @@
                 {
                   "long": "--format",
                   "valueType": "string",
-                  "valueName": "csv|json|mysql|postgres",
-                  "description": "Change the format"
+                  "valueName": "csv|json|mysql|postgres|sqlserver",
+                  "description": "Change the format (local dataset only; cloud source formats are immutable)"
                 },
                 {
                   "long": "--file",
@@ -3924,27 +4172,21 @@
                   "patterns": [
                     "*.json"
                   ],
-                  "description": "Replace the source's file (local-filesystem only)"
+                  "description": "Replace the source file (local dataset only; cloud file replacement is unsupported)"
                 },
                 {
                   "long": "--ref-only",
-                  "description": "When using --file, reference in place instead of copying"
+                  "description": "With --file, reference in place instead of copying (local dataset only)"
                 },
                 {
                   "long": "--force",
-                  "description": "When copying with --file, overwrite existing destination"
-                },
-                {
-                  "long": "--url",
-                  "valueType": "string",
-                  "valueName": "url",
-                  "description": "Replace the remote URL (remote-url only)"
+                  "description": "With --file, overwrite the copied destination (local dataset only)"
                 },
                 {
                   "long": "--host",
                   "valueType": "string",
                   "valueName": "host",
-                  "description": "Update DB host (mysql/postgresql)"
+                  "description": "Update DB host (mysql/postgresql/sqlserver)"
                 },
                 {
                   "long": "--port",
@@ -3977,10 +4219,96 @@
                   "description": "Update DB table name"
                 },
                 {
-                  "long": "--slug",
+                  "long": "--ssh-host",
                   "valueType": "string",
-                  "valueName": "slug",
-                  "description": "Update slug"
+                  "valueName": "host",
+                  "description": "Update SSH bastion host"
+                },
+                {
+                  "long": "--ssh-port",
+                  "valueType": "string",
+                  "valueName": "port",
+                  "description": "Update SSH bastion port"
+                },
+                {
+                  "long": "--ssh-user",
+                  "valueType": "string",
+                  "valueName": "user",
+                  "description": "Update SSH bastion user"
+                },
+                {
+                  "long": "--ssh-private-key",
+                  "valueType": "file",
+                  "valueName": "filepath",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Update the SSH private-key file path. WARNING: the path is visible in `ps` output and shell history; key contents are read locally and are not stored in the dataset config."
+                },
+                {
+                  "long": "--ssh-host-key",
+                  "valueType": "string",
+                  "valueName": "publicKey",
+                  "description": "Update the SSH bastion public host key"
+                },
+                {
+                  "long": "--ssh-host-key-vault-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Update the Shared Vault ID containing the SSH public host key"
+                },
+                {
+                  "long": "--ssh-host-key-secret-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Update the Shared Vault secret ID containing the SSH public host key"
+                },
+                {
+                  "long": "--ssh-insecure-skip-host-key-verification",
+                  "description": "WARNING: disable SSH host-key verification; use only for trusted local testing"
+                },
+                {
+                  "long": "--schema",
+                  "valueType": "string",
+                  "valueName": "schema",
+                  "description": "Update DB schema (postgresql/sqlserver)"
+                },
+                {
+                  "long": "--encrypt",
+                  "valueType": "string",
+                  "valueName": "true|false",
+                  "description": "Update SQL Server TLS encryption"
+                },
+                {
+                  "long": "--trust-server-certificate",
+                  "valueType": "string",
+                  "valueName": "true|false",
+                  "description": "Update SQL Server certificate verification (true is insecure)"
+                },
+                {
+                  "long": "--tls-certificate",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Update SQL Server CA/server certificate file path"
+                },
+                {
+                  "long": "--host-name-in-certificate",
+                  "valueType": "string",
+                  "valueName": "hostname",
+                  "description": "Update SQL Server certificate hostname override"
+                },
+                {
+                  "long": "--tls-min-version",
+                  "valueType": "string",
+                  "valueName": "1.2|1.3",
+                  "description": "Update SQL Server minimum TLS version"
                 },
                 {
                   "long": "--api-key",
@@ -4073,7 +4401,7 @@
                   "short": "-p",
                   "valueType": "string",
                   "valueName": "value...",
-                  "description": "Positional parameter values for $1, $2, ... bindings; repeatable"
+                  "description": "Bind values to $1, $2, ... in order; pass multiple values after -p or repeat -p"
                 },
                 {
                   "long": "--api-key",
@@ -4089,6 +4417,10 @@
                 {
                   "long": "--json",
                   "description": "Output rows as JSON instead of a table"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Include safe classified dataset diagnostics"
                 },
                 {
                   "long": "--help",
