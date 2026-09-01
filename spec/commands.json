@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.51.0",
-  "introspectedAt": "2026-08-28T10:52:01Z",
+  "postmanCliVersion": "1.52.0",
+  "introspectedAt": "2026-09-01T04:35:32Z",
   "global": {
     "flags": [
       {
@@ -491,6 +491,12 @@
               "description": "Port for the --mock server; pass \"auto\" for an OS-assigned ephemeral port (default: configured port, falls back to an ephemeral one if busy). Only valid with --mock."
             },
             {
+              "long": "--use-mock",
+              "valueType": "string",
+              "valueName": "mapping",
+              "description": "Redirect requests for a URL or {{variable}} to a mock during the run. Format: \"<url> mock|mock-server:<path|id> [scenario]\". Repeat the flag to redirect multiple URLs (one --use-mock per mock). Use \"mock:<path>\" for a local mock manifest (.json/.yaml/.yml), \"mock:<id>\" for a local mock by id (fetched from the cloud then run locally), or \"mock-server:<id>\" to redirect to a deployed mock server's URL. Id-based references require `postman login` (or --postman-api-key). The optional third field selects a scenario (defaults to \"default\"). (default: [])"
+            },
+            {
               "long": "--simulate",
               "valueType": "file",
               "valueName": "path",
@@ -503,7 +509,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Send run results and analytics to Postman"
+              "description": "Upload results for git-native v3 collection runs. Analytics are sent by default"
+            },
+            {
+              "long": "--no-report-events",
+              "description": "Do not send analytics to Postman"
             },
             {
               "long": "--help",
@@ -786,7 +796,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Send run events and analytics to Postman"
+              "description": "Accepted for compatibility; analytics are sent by default"
+            },
+            {
+              "long": "--no-report-events",
+              "description": "Do not send analytics to Postman"
             },
             {
               "long": "--help",
@@ -841,7 +855,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Send lint results and analytics to Postman"
+              "description": "Accepted for compatibility; analytics are sent by default"
+            },
+            {
+              "long": "--no-report-events",
+              "description": "Do not send analytics to Postman"
             },
             {
               "long": "--help",
@@ -1023,7 +1041,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Send workspace push events to Postman"
+              "description": "Accepted for compatibility; analytics are sent by default"
+            },
+            {
+              "long": "--no-report-events",
+              "description": "Do not send analytics to Postman"
             },
             {
               "long": "--help",
@@ -1572,6 +1594,14 @@
               "description": "Workspace ID required for flows that contain connector blocks. Find it in the Postman app URL: https://postman.com/workspace/<workspaceId>"
             },
             {
+              "long": "--report-events",
+              "description": "Accepted for compatibility; analytics are sent by default"
+            },
+            {
+              "long": "--no-report-events",
+              "description": "Do not send analytics to Postman"
+            },
+            {
               "long": "--verbose",
               "description": "Verbose output"
             },
@@ -1855,6 +1885,14 @@
         {
           "long": "--debug",
           "description": "Debug mode: show detailed execution information including retry attempts, redirects, and timing breakdowns."
+        },
+        {
+          "long": "--report-events",
+          "description": "Accepted for compatibility; analytics are sent by default"
+        },
+        {
+          "long": "--no-report-events",
+          "description": "Do not send analytics to Postman"
         },
         {
           "long": "--help",
@@ -2578,7 +2616,14 @@
             },
             {
               "long": "--report-events",
-              "description": "Send application test run results and analytics to Postman"
+              "valueType": "string",
+              "valueName": "boolean",
+              "valueOptional": true,
+              "description": "Send application test run results to Postman (default: true)"
+            },
+            {
+              "long": "--no-report-events",
+              "description": "Do not send run results or analytics to Postman"
             },
             {
               "long": "--verbose",
@@ -3605,7 +3650,7 @@
     },
     {
       "name": "dataset",
-      "description": "[BETA] Work with Postman datasets in local YAML files or the cloud.",
+      "description": "Work with Postman datasets in local YAML files or the cloud.",
       "flags": [
         {
           "long": "--help",
@@ -3617,7 +3662,7 @@
         {
           "name": "list",
           "aliases": [],
-          "description": "[BETA] List local dataset YAMLs under a path, or (no path) a workspace's cloud datasets.",
+          "description": "List local dataset YAMLs under a path, or (no path) a workspace's cloud datasets.",
           "positionals": [
             {
               "name": "pathOrDir",
@@ -3657,7 +3702,7 @@
         {
           "name": "get",
           "aliases": [],
-          "description": "[BETA] Print a dataset's metadata and structure summary (local YAML path or cloud id).",
+          "description": "Print a dataset's metadata and structure summary (local YAML path or cloud id).",
           "positionals": [
             {
               "name": "datasetPathOrId",
@@ -3694,7 +3739,7 @@
         {
           "name": "query",
           "aliases": [],
-          "description": "[BETA] Run an ad-hoc SQL query against a dataset (local YAML path or cloud id).",
+          "description": "Run an ad-hoc SQL query against a dataset (local YAML path or cloud id).",
           "positionals": [
             {
               "name": "datasetPathOrId",
@@ -3745,7 +3790,7 @@
         {
           "name": "create",
           "aliases": [],
-          "description": "[BETA] Scaffold a new .dataset.yaml at <path>, or (no path, with -w) create a cloud dataset.",
+          "description": "Scaffold a new .dataset.yaml at <path>, or (no path, with -w) create a cloud dataset.",
           "positionals": [
             {
               "name": "path",
@@ -3805,7 +3850,7 @@
         {
           "name": "delete",
           "aliases": [],
-          "description": "[BETA] Permanently remove a dataset: a local .dataset.yaml or a cloud dataset id.",
+          "description": "Permanently remove a dataset: a local .dataset.yaml or a cloud dataset id.",
           "positionals": [
             {
               "name": "datasetPathOrId",
@@ -3843,7 +3888,7 @@
         {
           "name": "source",
           "aliases": [],
-          "description": "[BETA] Inspect and manage a dataset's datasources.",
+          "description": "Inspect and manage a dataset's datasources.",
           "positionals": [],
           "flags": [
             {
@@ -3856,7 +3901,7 @@
             {
               "name": "list",
               "aliases": [],
-              "description": "[BETA] List the datasources defined on a dataset (local YAML path or cloud id).",
+              "description": "List the datasources defined on a dataset (local YAML path or cloud id).",
               "positionals": [],
               "flags": [
                 {
@@ -3891,7 +3936,7 @@
             {
               "name": "add",
               "aliases": [],
-              "description": "[BETA] Add a datasource to a dataset.",
+              "description": "Add a datasource to a dataset.",
               "positionals": [
                 {
                   "name": "datasetPathOrId",
@@ -4101,7 +4146,7 @@
             {
               "name": "remove",
               "aliases": [],
-              "description": "[BETA] Remove a datasource from a dataset (local YAML path or cloud id).",
+              "description": "Remove a datasource from a dataset (local YAML path or cloud id).",
               "positionals": [
                 {
                   "name": "sourceNameOrId",
@@ -4137,7 +4182,7 @@
             {
               "name": "update",
               "aliases": [],
-              "description": "[BETA] Update fields on an existing datasource. Only the flags you provide are changed.",
+              "description": "Update fields on an existing datasource. Only the flags you provide are changed.",
               "positionals": [
                 {
                   "name": "sourceNameOrId",
@@ -4333,7 +4378,7 @@
         {
           "name": "view",
           "aliases": [],
-          "description": "[BETA] Inspect and manage saved views on a dataset.",
+          "description": "Inspect and manage saved views on a dataset.",
           "positionals": [],
           "flags": [
             {
@@ -4346,7 +4391,7 @@
             {
               "name": "list",
               "aliases": [],
-              "description": "[BETA] List the saved views defined on a dataset (local YAML path or cloud id).",
+              "description": "List the saved views defined on a dataset (local YAML path or cloud id).",
               "positionals": [],
               "flags": [
                 {
@@ -4381,7 +4426,7 @@
             {
               "name": "run",
               "aliases": [],
-              "description": "[BETA] Execute a saved view against a dataset and print the rows.",
+              "description": "Execute a saved view against a dataset and print the rows.",
               "positionals": [
                 {
                   "name": "viewNameOrId",
@@ -4432,7 +4477,7 @@
             {
               "name": "create",
               "aliases": [],
-              "description": "[BETA] Add a saved view to a dataset (local YAML path or cloud id).",
+              "description": "Add a saved view to a dataset (local YAML path or cloud id).",
               "positionals": [],
               "flags": [
                 {
@@ -4483,7 +4528,7 @@
             {
               "name": "delete",
               "aliases": [],
-              "description": "[BETA] Remove a saved view from a dataset (local YAML path or cloud id).",
+              "description": "Remove a saved view from a dataset (local YAML path or cloud id).",
               "positionals": [
                 {
                   "name": "viewNameOrId",
@@ -4519,7 +4564,7 @@
             {
               "name": "update",
               "aliases": [],
-              "description": "[BETA] Update name and/or query on an existing view (local YAML path or cloud id).",
+              "description": "Update name and/or query on an existing view (local YAML path or cloud id).",
               "positionals": [
                 {
                   "name": "viewNameOrId",
