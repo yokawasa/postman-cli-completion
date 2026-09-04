@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.52.0",
-  "introspectedAt": "2026-09-01T04:35:32Z",
+  "postmanCliVersion": "1.54.1",
+  "introspectedAt": "2026-09-04T03:58:42Z",
   "global": {
     "flags": [
       {
@@ -68,6 +68,60 @@
           "valueType": "string",
           "valueName": "alias",
           "description": "Specify the alias of the API key to fetch your resources using it. (This option is discontinued and will be removed in a future release.)"
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "init",
+      "description": "Set up Postman artifacts and agent instructions in a repository.",
+      "positionals": [
+        {
+          "name": "path",
+          "valueType": "file"
+        }
+      ],
+      "flags": [
+        {
+          "long": "--json",
+          "description": "Emit machine-readable output for agents"
+        },
+        {
+          "long": "--dry-run",
+          "description": "Report what would happen without writing anything"
+        },
+        {
+          "long": "--no-seed",
+          "description": "Do not derive a spec from source"
+        },
+        {
+          "long": "--spec",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.yaml",
+            "*.yml",
+            "*.json"
+          ],
+          "description": "Which spec is authoritative, when more than one could be"
+        },
+        {
+          "long": "--visibility",
+          "valueType": "string",
+          "valueName": "status",
+          "description": "Create and bind a workspace non-interactively (personal or team)"
+        },
+        {
+          "long": "--no-cloud",
+          "description": "Skip the workspace step entirely"
+        },
+        {
+          "long": "--report-events",
+          "description": "Send init analytics to Postman (requires login)"
         },
         {
           "long": "--help",
@@ -1096,6 +1150,54 @@
           ]
         },
         {
+          "name": "create",
+          "aliases": [],
+          "description": "Create a Postman workspace and bind it to this git repository.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--visibility",
+              "valueType": "string",
+              "valueName": "status",
+              "description": "Required. Workspace visibility, e.g. personal or team"
+            },
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Workspace name (defaults to owner/repo from the git remote)"
+            },
+            {
+              "long": "--summary",
+              "valueType": "string",
+              "valueName": "text",
+              "description": "Optional workspace summary"
+            },
+            {
+              "long": "--path",
+              "valueType": "file",
+              "valueName": "dir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Directory to bind (defaults to the current directory)"
+            },
+            {
+              "long": "--no-connect",
+              "description": "Create the workspace without binding it to the repository"
+            },
+            {
+              "long": "--force",
+              "description": "Create even when a workspace is already recorded for this repo"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "pull",
           "aliases": [],
           "description": "Pull workspace entities from a Postman workspace into the local git-native folder.",
@@ -1191,6 +1293,18 @@
               "valueType": "string",
               "valueName": "id",
               "description": "Specify an Id to a Postman Globals"
+            },
+            {
+              "long": "--setup-collection",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Collection UID to run before the Postman Cloud performance test"
+            },
+            {
+              "long": "--teardown-collection",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Collection UID to run after the Postman Cloud performance test"
             },
             {
               "long": "--vu-count",
@@ -2300,7 +2414,7 @@
     },
     {
       "name": "mock",
-      "description": "Run and manage local Postman mock servers.",
+      "description": "Run and manage Postman mocks, locally and in the cloud.",
       "flags": [
         {
           "long": "--help",
@@ -2312,7 +2426,7 @@
         {
           "name": "generate",
           "aliases": [],
-          "description": "Generate a local, runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected. Omit the source to scaffold a sample mock with a GET /health endpoint.",
+          "description": "Generate a runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected. Omit the source to scaffold a sample mock with a GET /health endpoint. Writes a local mock by default, or a cloud mock with --workspace.",
           "positionals": [
             {
               "name": "sourcePath",
@@ -2358,6 +2472,24 @@
               "description": "Update an existing mock in place from the source: path to its config.yaml (or the directory containing it). Regenerates the default scenario handler and preserves the existing name/port/scenarios. Cannot be combined with --output."
             },
             {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Create a cloud mock in this Postman workspace instead of a local mock. Cannot be combined with --output/--force/--update."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key for --workspace (defaults to the `postman login` session)"
+            },
+            {
               "long": "--suppress-exit-code",
               "short": "-x",
               "description": "Always exit with code 0, even on failure"
@@ -2372,10 +2504,10 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Start a local mock server given a manifest file (JSON or YAML), a mock directory (postman/mocks/<slug>), or a .js handler.",
+          "description": "Start a local mock server from a cloud mock id (fetched and run locally), a manifest file (JSON or YAML), a mock directory (postman/mocks/<slug>), or a .js handler.",
           "positionals": [
             {
-              "name": "pathOrDir",
+              "name": "mockIdOrPath",
               "valueType": "file"
             }
           ],
@@ -2408,6 +2540,80 @@
               "description": "Mock server port, or \"auto\" for an ephemeral one (default: configured port, falls back to an ephemeral one if busy)."
             },
             {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key for cloud mock ids (defaults to the `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "deploy",
+          "aliases": [],
+          "description": "Deploy a cloud mock into a mock server.",
+          "positionals": [
+            {
+              "name": "mockId",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace that will own the mock server (defaults to the workspace linked in .postman/resources.yaml)"
+            },
+            {
+              "long": "--name",
+              "short": "-n",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Display name for the mock server (prompts when omitted)"
+            },
+            {
+              "long": "--slug",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "slug",
+              "description": "Slug for the deploy URL (prompts when omitted)"
+            },
+            {
+              "long": "--public",
+              "description": "Deploy as a public mock (default is private; requires an x-api-key header)"
+            },
+            {
+              "long": "--auto-deploy",
+              "description": "Re-deploy the mock automatically whenever it changes (default off)"
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Accept defaults and skip all prompts (private, no auto-deploy)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -2417,14 +2623,25 @@
         {
           "name": "get",
           "aliases": [],
-          "description": "Show a local mock's details and run status.",
+          "description": "Show a mock's details: a cloud mock by id, or a local mock by path.",
           "positionals": [
             {
-              "name": "pathOrDir",
+              "name": "mockIdOrPath",
               "valueType": "file"
             }
           ],
           "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
             {
               "long": "--json",
               "description": "Output the mock details as JSON instead of a table"
@@ -2439,7 +2656,7 @@
         {
           "name": "list",
           "aliases": [],
-          "description": "List local mocks found under a directory.",
+          "description": "List a workspace's cloud mocks, or (with a path) local mocks under a directory.",
           "positionals": [
             {
               "name": "pathOrDir",
@@ -2447,6 +2664,24 @@
             }
           ],
           "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace whose cloud mocks to list (defaults to the workspace linked in .postman/resources.yaml)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
             {
               "long": "--json",
               "description": "Output the mock list as JSON instead of a table"
@@ -2459,12 +2694,81 @@
           ]
         },
         {
-          "name": "delete",
+          "name": "log",
           "aliases": [],
-          "description": "Permanently remove a local mock artifact.",
+          "description": "Browse a deployed mock server's request/response logs by its id (see `mock get`).",
           "positionals": [
             {
-              "name": "pathOrDir",
+              "name": "mockServerId",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Maximum number of log entries to show (default 50 for --json/non-interactive output)"
+            },
+            {
+              "long": "--method",
+              "valueType": "string",
+              "valueName": "method",
+              "description": "Filter by HTTP method (e.g. GET, POST)"
+            },
+            {
+              "long": "--status",
+              "valueType": "string",
+              "valueName": "code|range",
+              "description": "Filter by response status (e.g. 404 or 5xx)"
+            },
+            {
+              "long": "--path",
+              "valueType": "string",
+              "valueName": "pattern",
+              "description": "Filter by request path (supports * and ? wildcards)"
+            },
+            {
+              "long": "--since",
+              "valueType": "string",
+              "valueName": "duration",
+              "description": "Show logs from this long ago onward (e.g. 2h = the last 2 hours)"
+            },
+            {
+              "long": "--until",
+              "valueType": "string",
+              "valueName": "duration",
+              "description": "Stop this long ago (e.g. 30m = exclude the most recent 30 minutes)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output logs as JSON instead of the interactive pager"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Permanently remove a mock: a cloud mock by id, or a local mock artifact by path.",
+          "positionals": [
+            {
+              "name": "mockIdOrPath",
               "valueType": "file"
             }
           ],
@@ -2473,6 +2777,17 @@
               "long": "--yes",
               "short": "-y",
               "description": "Skip the confirmation prompt"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key for cloud mock ids (defaults to the `postman login` session)"
             },
             {
               "long": "--help",
