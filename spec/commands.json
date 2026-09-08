@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.54.2",
-  "introspectedAt": "2026-09-05T03:56:04Z",
+  "postmanCliVersion": "1.55.0",
+  "introspectedAt": "2026-09-08T04:02:28Z",
   "global": {
     "flags": [
       {
@@ -1071,7 +1071,7 @@
         {
           "name": "push",
           "aliases": [],
-          "description": "Push local workspace entities (collections, environments, specifications, and more) to Postman workspace.",
+          "description": "Push local workspace entities (collections, environments, specifications, mocks and more) to Postman workspace.",
           "positionals": [],
           "flags": [
             {
@@ -2469,7 +2469,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Update an existing mock in place from the source: path to its config.yaml (or the directory containing it). Regenerates the default scenario handler and preserves the existing name/port/scenarios. Cannot be combined with --output."
+              "description": "Update an existing mock in place from the source: path to its config.yaml (or the directory containing it). Regenerates the default scenario handler and preserves the existing name/port. Cannot be combined with --output."
             },
             {
               "long": "--workspace",
