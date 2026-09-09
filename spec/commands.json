@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.55.0",
-  "introspectedAt": "2026-09-08T04:02:28Z",
+  "postmanCliVersion": "1.56.0",
+  "introspectedAt": "2026-09-09T04:09:24Z",
   "global": {
     "flags": [
       {
@@ -95,8 +95,8 @@
           "description": "Report what would happen without writing anything"
         },
         {
-          "long": "--no-seed",
-          "description": "Do not derive a spec from source"
+          "long": "--no-fetch",
+          "description": "Use the skills bundled with this CLI instead of fetching the latest"
         },
         {
           "long": "--spec",
@@ -127,6 +127,75 @@
           "long": "--help",
           "short": "-h",
           "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "skills",
+      "description": "Check and update the agent skills in this repository.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "status",
+          "aliases": [],
+          "description": "Report whether this repository's skills are up to date.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Emit machine-readable output for agents"
+            },
+            {
+              "long": "--strict",
+              "description": "Exit non-zero when the skills are not current"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "aliases": [],
+          "description": "Fetch the latest skills into this repository.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Emit machine-readable output for agents"
+            },
+            {
+              "long": "--dry-run",
+              "description": "Report what would change without writing anything"
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite skill files that were edited locally"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
@@ -1370,6 +1439,12 @@
               "valueType": "string",
               "valueName": "condition",
               "description": "Pass condition in format: function(metric, value). Functions: less_than, greater_than, less_than_eq, greater_than_eq. Metrics: avg, p90, p95, p99, error_rate, rps. Example: less_than(p95, 500) or less_than(error_rate, 5)"
+            },
+            {
+              "long": "--use-mock",
+              "valueType": "string",
+              "valueName": "mapping",
+              "description": "Redirect a variable/host to a local code mock or cloud Mock Server (repeatable). Format: \"<{{var}}|host> mock|mock-server:<path|id> [scenario]\" (default: [])"
             },
             {
               "long": "--help",
