@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.56.1",
-  "introspectedAt": "2026-09-10T04:07:51Z",
+  "postmanCliVersion": "1.56.3",
+  "introspectedAt": "2026-09-16T04:20:07Z",
   "global": {
     "flags": [
       {
@@ -1432,7 +1432,7 @@
               "long": "--runner",
               "valueType": "string",
               "valueName": "runner",
-              "description": "Runner to execute the performance test on (local or postman-cloud) (default: local)"
+              "description": "Runner to execute the performance test on: local, postman-cloud, or postman-cloud-static-ip (egress from your account region's static-IP cluster) (default: local)"
             },
             {
               "long": "--pass-if",
@@ -4143,6 +4143,13 @@
               "valueType": "string",
               "valueName": "sql",
               "description": "SQL query to execute (e.g. \"SELECT * FROM source_users LIMIT 10\")"
+            },
+            {
+              "long": "--source",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "nameOrIdOrSlug",
+              "description": "Execute directly against a database datasource; without --source, use federated SQLite"
             },
             {
               "long": "--param",
