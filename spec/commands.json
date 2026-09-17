@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.56.3",
-  "introspectedAt": "2026-09-16T04:20:07Z",
+  "postmanCliVersion": "1.57.0",
+  "introspectedAt": "2026-09-17T04:26:58Z",
   "global": {
     "flags": [
       {
@@ -51,6 +51,25 @@
         {
           "long": "--verbose",
           "description": "Show detailed error information"
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "signup",
+      "description": "Sign up to keep the work you created as a guest (claims your guest workspace). By default prints a single-use sign-up URL to open in a browser; --browser signs up in a browser and signs this CLI in.",
+      "flags": [
+        {
+          "long": "--browser",
+          "description": "Open a browser to sign up and sign this CLI in, instead of printing a URL."
+        },
+        {
+          "long": "--json",
+          "description": "Print the sign-up details as machine-readable JSON."
         },
         {
           "long": "--help",
@@ -649,7 +668,7 @@
     },
     {
       "name": "environment",
-      "description": "Work with local Postman environments from the command line.",
+      "description": "Work with local Postman environments from the command line. Also read cloud environments by ID.",
       "flags": [
         {
           "long": "--help",
@@ -658,6 +677,203 @@
         }
       ],
       "subcommands": [
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List environments in a Postman workspace.",
+          "positionals": [
+            {
+              "name": "workspacePath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Workspace ID to list environments from."
+            },
+            {
+              "long": "--filter",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Filter environments by name."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Read an environment by ID or local environment file path.",
+          "positionals": [
+            {
+              "name": "environment",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--show-secrets",
+              "description": "Show secret variable values in output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "var",
+          "aliases": [],
+          "description": "Read and update environment variables.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "set",
+              "aliases": [],
+              "description": "Set one variable in an environment.",
+              "positionals": [
+                {
+                  "name": "key",
+                  "valueType": "file"
+                },
+                {
+                  "name": "value",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "environment",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Cloud Environment ID or local environment file path."
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Verbose output"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Read one variable value from an environment.",
+              "positionals": [
+                {
+                  "name": "key",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "environment",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Cloud Environment ID or local environment file path."
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Verbose output"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "unset",
+              "aliases": [],
+              "description": "Remove one variable from an environment.",
+              "positionals": [
+                {
+                  "name": "key",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "environment",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Cloud Environment ID or local environment file path."
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Verbose output"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
         {
           "name": "lint",
           "aliases": [],
@@ -1014,6 +1230,79 @@
               "valueType": "number",
               "valueName": "n",
               "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List local spec files under a path, or (no path) a workspace's cloud specs.",
+          "positionals": [
+            {
+              "name": "pathOrDir",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace ID (defaults to .postman/resources.yaml binding)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Read a spec definition, including every file of a multi-file spec.",
+          "positionals": [
+            {
+              "name": "spec...",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON (full spec definition)"
             },
             {
               "long": "--help",
@@ -2501,7 +2790,7 @@
         {
           "name": "generate",
           "aliases": [],
-          "description": "Generate a runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected. Omit the source to scaffold a sample mock with a GET /health endpoint. Writes a local mock by default, or a cloud mock with --workspace.",
+          "description": "Generate a runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected. Omit the source to scaffold a sample shopping-cart mock (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace.",
           "positionals": [
             {
               "name": "sourcePath",
@@ -3370,6 +3659,111 @@
                   "description": "display help for command"
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "context-graph",
+      "description": "Ask natural-language questions about your team's Context Graph.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "ask",
+          "aliases": [],
+          "description": "Ask a natural-language question about your team's Context Graph.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--wait",
+              "description": "Block until the answer arrives, then print it"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (falls back to POSTMAN_API_KEY, then a `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output the ask record as JSON"
+            },
+            {
+              "long": "--no-include-answer",
+              "description": "Do not ask the service to include the answer inline"
+            },
+            {
+              "long": "--max-steps",
+              "valueType": "string",
+              "valueName": "count",
+              "description": "Cap the reasoning steps the service may take (its default applies when omitted)"
+            },
+            {
+              "long": "--interval",
+              "valueType": "string",
+              "valueName": "seconds",
+              "description": "With --wait, seconds between polls (default: 2)"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "string",
+              "valueName": "seconds",
+              "description": "With --wait, seconds to wait before giving up (default: 300)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "aliases": [],
+          "description": "Check an ask submitted by `ask`, without blocking. Prints the answer when ready.",
+          "positionals": [
+            {
+              "name": "askId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (falls back to POSTMAN_API_KEY, then a `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output the ask record as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
             }
           ]
         }
@@ -5007,6 +5401,57 @@
                   "description": "display help for command"
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dependency",
+      "description": "Manage workspace dependencies (Postman entities reused from other workspaces).",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "add",
+          "aliases": [],
+          "description": "Add a Postman collection, environment, or mock as a workspace dependency.",
+          "positionals": [
+            {
+              "name": "type",
+              "valueType": "string"
+            },
+            {
+              "name": "nameOrId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace id to resolve a name in (defaults to the current workspace)."
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip all confirmation prompts."
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
             }
           ]
         }
