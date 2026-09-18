@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.57.0",
-  "introspectedAt": "2026-09-17T04:26:58Z",
+  "postmanCliVersion": "1.58.0",
+  "introspectedAt": "2026-09-18T04:10:49Z",
   "global": {
     "flags": [
       {
@@ -141,6 +141,21 @@
         {
           "long": "--report-events",
           "description": "Send init analytics to Postman (requires login)"
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "whoami",
+      "description": "Show the Postman account or guest session this CLI session is using.",
+      "flags": [
+        {
+          "long": "--json",
+          "description": "Print current identity as machine-readable JSON."
         },
         {
           "long": "--help",
@@ -620,23 +635,23 @@
             {
               "long": "--mock",
               "valueType": "file",
-              "valueName": "path",
+              "valueName": "pathOrId",
               "patterns": [
                 "*.json"
               ],
-              "description": "Start a mock server from manifest (.json, .yaml or .yml) file"
+              "description": "Start a mock server for the run, its path if it lives in your repository (relative or absolute, e.g. ./postman/mocks/orders) or its id if it lives in Postman cloud (fetched then run locally). An id needs `postman login` (or --postman-api-key)."
             },
             {
               "long": "--port",
               "valueType": "string",
               "valueName": "port",
-              "description": "Port for the --mock server; pass \"auto\" for an OS-assigned ephemeral port (default: configured port, falls back to an ephemeral one if busy). Only valid with --mock."
+              "description": "Port for the --mock server (e.g. 4010), or \"auto\" for a free one. Defaults to the mock's configured port. Only valid with --mock."
             },
             {
               "long": "--use-mock",
               "valueType": "string",
               "valueName": "mapping",
-              "description": "Redirect requests for a URL or {{variable}} to a mock during the run. Format: \"<url> mock|mock-server:<path|id> [scenario]\". Repeat the flag to redirect multiple URLs (one --use-mock per mock). Use \"mock:<path>\" for a local mock manifest (.json/.yaml/.yml), \"mock:<id>\" for a local mock by id (fetched from the cloud then run locally), or \"mock-server:<id>\" to redirect to a deployed mock server's URL. Id-based references require `postman login` (or --postman-api-key). The optional third field selects a scenario (defaults to \"default\"). (default: [])"
+              "description": "Redirect requests for a URL or {{variable}} to a mock during the run. Format: \"<url> mock|mock-server:<path|id> [scenario]\". Repeat the flag to redirect several URLs (one --use-mock each). Use \"mock:<path>\" for a mock in your repository (path relative or absolute, e.g. ./postman/mocks/orders), \"mock:<id>\" for a mock in Postman cloud (fetched then run locally), or \"mock-server:<id>\" to send requests to a deployed mock server. An id needs `postman login` (or --postman-api-key). The optional third field picks a scenario (defaults to \"default\"). (default: [])"
             },
             {
               "long": "--simulate",
@@ -828,6 +843,10 @@
                 {
                   "long": "--json",
                   "description": "JSON output"
+                },
+                {
+                  "long": "--show-secrets",
+                  "description": "Show secret variable values in output"
                 },
                 {
                   "long": "--help",
@@ -1058,7 +1077,7 @@
     },
     {
       "name": "runner",
-      "description": "Run runners on your own environments for monitoring your APIs",
+      "description": "Where your monitors execute: run and inspect your own self-hosted runners, and list the Postman-operated regions available to your team",
       "flags": [
         {
           "long": "--help",
@@ -1140,6 +1159,62 @@
             {
               "long": "--no-report-events",
               "description": "Do not send analytics to Postman"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List the team's registered self-hosted runners",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output the runner list as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "regions",
+          "aliases": [],
+          "description": "List the region and private-runner values valid for monitor create/update --runner, including a static IP where configured",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output the region list as JSON instead of a table"
             },
             {
               "long": "--help",
@@ -1310,12 +1385,212 @@
               "description": "display help for command"
             }
           ]
+        },
+        {
+          "name": "file",
+          "aliases": [],
+          "description": "Add, update, or remove files in a spec (cloud ID or local directory).",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "add",
+              "aliases": [],
+              "description": "Add a new file to a spec.",
+              "positionals": [
+                {
+                  "name": "spec",
+                  "valueType": "string"
+                },
+                {
+                  "name": "filePath",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--content",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "content",
+                  "description": "File content (reads from stdin if omitted)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "update",
+              "aliases": [],
+              "description": "Update an existing file in a spec.",
+              "positionals": [
+                {
+                  "name": "spec",
+                  "valueType": "string"
+                },
+                {
+                  "name": "filePath",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--content",
+                  "short": "-c",
+                  "valueType": "string",
+                  "valueName": "content",
+                  "description": "New file content (reads from stdin if omitted)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "rm",
+              "aliases": [],
+              "description": "Remove a file from a spec.",
+              "positionals": [
+                {
+                  "name": "spec",
+                  "valueType": "string"
+                },
+                {
+                  "name": "filePath",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--yes",
+                  "short": "-y",
+                  "description": "Skip confirmation prompt"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "aliases": [],
+          "description": "Create a new spec in a workspace, or (with path) scaffold a local spec file.",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--name",
+              "short": "-n",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Specification name / title"
+            },
+            {
+              "long": "--type",
+              "short": "-t",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Spec type: openapi, asyncapi, graphql, protobuf, smithy (default: openapi) (default: \"openapi\")"
+            },
+            {
+              "long": "--spec-version",
+              "valueType": "string",
+              "valueName": "ver",
+              "description": "Spec version (e.g. 3.1 for openapi, 3 for protobuf)"
+            },
+            {
+              "long": "--format",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "fmt",
+              "description": "File format: yaml or json (openapi/asyncapi only, default: yaml) (default: \"yaml\")"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace ID (cloud create, defaults to .postman/resources.yaml)"
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite an existing local file"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
     {
       "name": "monitor",
-      "description": "Invoke a monitor run and display results",
+      "description": "Run and manage Postman monitors.",
       "flags": [
         {
           "long": "--help",
@@ -1336,6 +1611,17 @@
           ],
           "flags": [
             {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to the `postman login` session)"
+            },
+            {
               "long": "--suppress-exit-code",
               "short": "-x",
               "description": "Specify whether or not to override the default exit code for the current run"
@@ -1346,6 +1632,708 @@
               "valueType": "number",
               "valueName": "ms",
               "description": "Maximum wait time for run completion in milliseconds (default: 15 minutes) (default: 900000)"
+            },
+            {
+              "long": "--async",
+              "description": "Submit the run and return immediately with its job id and Postman URL, without waiting for completion"
+            },
+            {
+              "long": "--json",
+              "description": "Output the run's verdict as JSON instead of a table, printing nothing else"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "aliases": [],
+          "description": "Create a collection-based monitor.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--collection",
+              "short": "-c",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Collection to monitor -- accepts the id shown in the Postman app, prefixed or bare"
+            },
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Monitor name (defaults to the linked collection's own name)"
+            },
+            {
+              "long": "--environment",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Environment to run the monitored collection with"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace to create the monitor in (defaults to the workspace named in the local .postman/resources.yaml manifest; required if neither is available)"
+            },
+            {
+              "long": "--schedule",
+              "valueType": "string",
+              "valueName": "cron",
+              "description": "Cron expression for the monitor's schedule"
+            },
+            {
+              "long": "--timezone",
+              "valueType": "string",
+              "valueName": "tz",
+              "description": "Time zone for --schedule, e.g. America/New_York (defaults to the host machine's own zone)"
+            },
+            {
+              "long": "--runner",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "A Postman region name (see `postman runner regions`) or the id of a self-hosted runner created in Postman (list existing ones with `postman runner list`) to run from (repeatable) (default: [])"
+            },
+            {
+              "long": "--notify-email",
+              "valueType": "string",
+              "valueName": "email",
+              "description": "Email to notify on a run failure or error (repeatable) (default: [])"
+            },
+            {
+              "long": "--notification-limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Cap consecutive notifications before they are muted (service range: 1-99)"
+            },
+            {
+              "long": "--retry",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Retries on a failed run (service caps this at 2)"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Request timeout in milliseconds"
+            },
+            {
+              "long": "--delay",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Delay between requests in milliseconds"
+            },
+            {
+              "long": "--strict-ssl",
+              "description": "Fail the run when the target's TLS certificate cannot be verified"
+            },
+            {
+              "long": "--insecure",
+              "description": "Skip TLS certificate verification for the monitored target"
+            },
+            {
+              "long": "--follow-redirects",
+              "description": "Follow HTTP redirects during the run"
+            },
+            {
+              "long": "--block-redirects",
+              "description": "Do not follow HTTP redirects during the run"
+            },
+            {
+              "long": "--dataset-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Dataset to use as iteration data (used together with --dataset-view-id)"
+            },
+            {
+              "long": "--dataset-view-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Dataset view to iterate (used together with --dataset-id)"
+            },
+            {
+              "long": "--iteration-count",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Number of iterations to run"
+            },
+            {
+              "long": "--iteration-strategy",
+              "valueType": "string",
+              "valueName": "strategy",
+              "description": "How iteration data is consumed, e.g. round_robin, repeat_last, stop_at_end (requires --iteration-count, --dataset-id and --dataset-view-id)"
+            },
+            {
+              "long": "--no-run-now",
+              "description": "Do not trigger an immediate run after creating the monitor"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "aliases": [],
+          "description": "Update a monitor's schedule, runner, notifications or run options.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "New monitor name"
+            },
+            {
+              "long": "--schedule",
+              "valueType": "string",
+              "valueName": "cron",
+              "description": "New cron expression for the monitor's schedule"
+            },
+            {
+              "long": "--timezone",
+              "valueType": "string",
+              "valueName": "tz",
+              "description": "Time zone for --schedule, e.g. America/New_York (defaults to the host machine's own zone)"
+            },
+            {
+              "long": "--runner",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "A Postman region name (see `postman runner regions`) or the id of a self-hosted runner created in Postman (list existing ones with `postman runner list`) to run from (repeatable; replaces the current set) (default: [])"
+            },
+            {
+              "long": "--notify-email",
+              "valueType": "string",
+              "valueName": "email",
+              "description": "Email to notify on a run failure or error (repeatable; replaces the current list) (default: [])"
+            },
+            {
+              "long": "--clear-notifications",
+              "description": "Remove every notification recipient"
+            },
+            {
+              "long": "--notification-limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Cap consecutive notifications before they are muted (service range: 1-99)"
+            },
+            {
+              "long": "--retry",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Retries on a failed run (service caps this at 2)"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Request timeout in milliseconds"
+            },
+            {
+              "long": "--delay",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Delay between requests in milliseconds"
+            },
+            {
+              "long": "--strict-ssl",
+              "description": "Fail the run when the target's TLS certificate cannot be verified"
+            },
+            {
+              "long": "--insecure",
+              "description": "Skip TLS certificate verification for the monitored target"
+            },
+            {
+              "long": "--follow-redirects",
+              "description": "Follow HTTP redirects during the run"
+            },
+            {
+              "long": "--block-redirects",
+              "description": "Do not follow HTTP redirects during the run"
+            },
+            {
+              "long": "--dataset-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Dataset to use as iteration data (used together with --dataset-view-id)"
+            },
+            {
+              "long": "--dataset-view-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Dataset view to iterate (used together with --dataset-id)"
+            },
+            {
+              "long": "--iteration-count",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Number of iterations to run"
+            },
+            {
+              "long": "--iteration-strategy",
+              "valueType": "string",
+              "valueName": "strategy",
+              "description": "How iteration data is consumed, e.g. round_robin, repeat_last, stop_at_end (requires --iteration-count, --dataset-id and --dataset-view-id)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Permanently delete a monitor. Prompts for confirmation unless --yes is passed.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip the confirmation prompt"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output the outcome, including any failure, as JSON instead of a plain message"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "jobs",
+          "aliases": [],
+          "description": "Inspect a monitor's jobs and their per-region runs.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "List a monitor's recent jobs.",
+              "positionals": [
+                {
+                  "name": "monitorId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
+                {
+                  "long": "--result",
+                  "valueType": "string",
+                  "valueName": "value",
+                  "description": "Filter by outcome, e.g. success, failure, error, abort (server-validated, not a fixed list)"
+                },
+                {
+                  "long": "--trigger",
+                  "valueType": "string",
+                  "valueName": "value",
+                  "description": "Filter by trigger, e.g. api, schedule, webhook, postman-cli (server-validated, not a fixed list)"
+                },
+                {
+                  "long": "--since",
+                  "valueType": "string",
+                  "valueName": "dateTime",
+                  "description": "Only jobs that finished at or after this ISO 8601 date-time"
+                },
+                {
+                  "long": "--limit",
+                  "valueType": "number",
+                  "valueName": "n",
+                  "description": "Maximum number of jobs to return"
+                },
+                {
+                  "long": "--cursor",
+                  "valueType": "string",
+                  "valueName": "token",
+                  "description": "Opaque pagination cursor"
+                },
+                {
+                  "long": "--json",
+                  "description": "Output as JSON instead of a table"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Report one job's terminal state and its per-region run outcomes.",
+              "positionals": [
+                {
+                  "name": "jobId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
+                {
+                  "long": "--json",
+                  "description": "Output as JSON instead of a table"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "runs",
+          "aliases": [],
+          "description": "Inspect a monitor run's attempts.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Report which test assertions ran during one attempt of a run, which failed, and why.",
+              "positionals": [
+                {
+                  "name": "runId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key (defaults to the `postman login` session)"
+                },
+                {
+                  "long": "--attempt",
+                  "valueType": "number",
+                  "valueName": "n",
+                  "description": "Which attempt of the run to show, counting from 0 (default: the latest)"
+                },
+                {
+                  "long": "--failed-only",
+                  "description": "Show only failed assertions"
+                },
+                {
+                  "long": "--json",
+                  "description": "Output as JSON instead of a table"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List the monitors visible to you.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Filter to monitors in this workspace"
+            },
+            {
+              "long": "--collection",
+              "short": "-c",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Filter to monitors on this collection"
+            },
+            {
+              "long": "--environment",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Filter to monitors on this environment"
+            },
+            {
+              "long": "--runner",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Filter to a Self-Hosted Runner ID (not a Postman Region). Cannot be combined with --workspace, --collection, --environment, --owner, --team or --active."
+            },
+            {
+              "long": "--owner",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Filter to monitors created by this user id (shown in the Owner column)"
+            },
+            {
+              "long": "--team",
+              "description": "Filter to monitors owned by your own team"
+            },
+            {
+              "long": "--active",
+              "valueType": "string",
+              "valueName": "true|false",
+              "description": "Filter by active state"
+            },
+            {
+              "long": "--limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Max monitors to return. The service caps page size and rejects a value above it with its own error."
+            },
+            {
+              "long": "--offset",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Not supported: the service accepts this parameter and silently ignores it. Refused locally. Use --cursor instead."
+            },
+            {
+              "long": "--cursor",
+              "valueType": "string",
+              "valueName": "token",
+              "description": "Pagination cursor from a previous page's response."
+            },
+            {
+              "long": "--columns",
+              "valueType": "string",
+              "valueName": "names",
+              "description": "Comma-separated columns to show. Defaults to Name, Status, ID, Schedule, Owner, Collection. Also available: State, Notifications, Environment, Runners."
+            },
+            {
+              "long": "--no-headers",
+              "description": "Omit the header row"
+            },
+            {
+              "long": "--filter",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "text",
+              "description": "Show only monitors whose name contains this text (applies to the returned page, case-insensitive)"
+            },
+            {
+              "long": "--sort",
+              "valueType": "string",
+              "valueName": "field",
+              "description": "Sort the returned page by \"name\" or \"active\""
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Show a monitor's configuration.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "pause",
+          "aliases": [],
+          "description": "Pause a monitor, so it stops firing on schedule.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "resume",
+          "aliases": [],
+          "description": "Resume a paused monitor, so it fires on schedule again.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
             },
             {
               "long": "--help",
@@ -2778,7 +3766,7 @@
     },
     {
       "name": "mock",
-      "description": "Run and manage Postman mocks, locally and in the cloud.",
+      "description": "Create, run, and manage Postman mocks — in your repository or in Postman cloud.",
       "flags": [
         {
           "long": "--help",
@@ -2790,7 +3778,7 @@
         {
           "name": "generate",
           "aliases": [],
-          "description": "Generate a runnable mock from a Postman collection (v2.0/v2.1/v3 file, or a git-native v3 collection directory) or an OpenAPI 3.0/3.1 spec file. The source type is auto-detected. Omit the source to scaffold a sample shopping-cart mock (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace.",
+          "description": "Generate a mock from a Postman collection or an OpenAPI file, or from a built-in sample shopping-cart mock (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace.",
           "positionals": [
             {
               "name": "sourcePath",
@@ -2806,24 +3794,24 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Output directory for the mock (default: postman/mocks/<slug>)"
+              "description": "Folder to save the mock in. Relative or absolute, e.g. ./postman/mocks/orders. Defaults to postman/mocks/<name>."
             },
             {
               "long": "--name",
               "short": "-n",
               "valueType": "string",
               "valueName": "name",
-              "description": "Display name for the generated mock. Optional with a source (derived from it); required when generating without a source."
+              "description": "Name for the mock. Taken from the source when you provide one; required for the sample."
             },
             {
               "long": "--port",
               "valueType": "string",
               "valueName": "port",
-              "description": "Port the mock server should listen on (default: 4500)"
+              "description": "Port the mock runs on (e.g. 4010) (default: 4500)"
             },
             {
               "long": "--force",
-              "description": "Overwrite the config.yaml/default.js in the output directory if it already exists"
+              "description": "Overwrite the mock's files if the target folder already has one"
             },
             {
               "long": "--update",
@@ -2833,14 +3821,14 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Update an existing mock in place from the source: path to its config.yaml (or the directory containing it). Regenerates the default scenario handler and preserves the existing name/port. Cannot be combined with --output."
+              "description": "Update an existing mock from the source instead of creating a new one. Path to the mock, relative or absolute, e.g. ./postman/mocks/orders. Cannot be used with --output."
             },
             {
               "long": "--workspace",
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Create a cloud mock in this Postman workspace instead of a local mock. Cannot be combined with --output/--force/--update."
+              "description": "Save the mock to this Postman cloud workspace (by id) instead of your repository. Cannot be used with --output, --force, or --update."
             },
             {
               "long": "--api-key",
@@ -2851,7 +3839,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key for --workspace (defaults to the `postman login` session)"
+              "description": "Postman API key to use with --workspace (defaults to your `postman login` session)"
             },
             {
               "long": "--suppress-exit-code",
@@ -2868,7 +3856,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Start a local mock server from a cloud mock id (fetched and run locally), a manifest file (JSON or YAML), a mock directory (postman/mocks/<slug>), or a .js handler.",
+          "description": "Start a mock using its path if it lives in your repository, or its id if it lives in Postman cloud (fetched and run locally).",
           "positionals": [
             {
               "name": "mockIdOrPath",
@@ -2884,7 +3872,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Path to an environment file (JSON or YAML) for pm.environment"
+              "description": "Path to a file of environment variables for the mock. Relative or absolute, e.g. ./postman/environments/dev.json"
             },
             {
               "long": "--globals",
@@ -2894,14 +3882,14 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Path to a globals file (JSON or YAML) for pm.globals"
+              "description": "Path to a file of global variables for the mock. Relative or absolute, e.g. ./globals.json"
             },
             {
               "long": "--port",
               "short": "-p",
               "valueType": "string",
               "valueName": "port",
-              "description": "Mock server port, or \"auto\" for an ephemeral one (default: configured port, falls back to an ephemeral one if busy)."
+              "description": "Port to run on (e.g. 4010), or \"auto\" for a free one. Defaults to the mock's configured port."
             },
             {
               "long": "--api-key",
@@ -2912,7 +3900,43 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key for cloud mock ids (defaults to the `postman login` session)"
+              "description": "Postman API key, used with a Postman cloud id (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "push",
+          "aliases": [],
+          "description": "Upload a mock from your repository to Postman cloud (creates it the first time, updates it after).",
+          "positionals": [
+            {
+              "name": "mockPath",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Postman cloud workspace to upload to, by id (defaults to the workspace already linked to this project)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--help",
@@ -2924,7 +3948,7 @@
         {
           "name": "deploy",
           "aliases": [],
-          "description": "Deploy a cloud mock into a mock server.",
+          "description": "Turn a mock in Postman cloud into a live mock server others can call over the internet.",
           "positionals": [
             {
               "name": "mockId",
@@ -2937,34 +3961,34 @@
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Workspace that will own the mock server (defaults to the workspace linked in .postman/resources.yaml)"
+              "description": "Postman cloud workspace that will own the server, by id (defaults to the workspace already linked to this project)"
             },
             {
               "long": "--name",
               "short": "-n",
               "valueType": "string",
               "valueName": "name",
-              "description": "Display name for the mock server (prompts when omitted)"
+              "description": "Name for the mock server (you are asked for one if you skip this)"
             },
             {
               "long": "--slug",
               "short": "-s",
               "valueType": "string",
               "valueName": "slug",
-              "description": "Slug for the deploy URL (prompts when omitted)"
+              "description": "Short label used in the server's web address, e.g. \"my-mock\" (you are asked for one if you skip this)"
             },
             {
               "long": "--public",
-              "description": "Deploy as a public mock (default is private; requires an x-api-key header)"
+              "description": "Let anyone with the link reach the server. Private by default (callers must send a Postman API key)."
             },
             {
               "long": "--auto-deploy",
-              "description": "Re-deploy the mock automatically whenever it changes (default off)"
+              "description": "Update the live server automatically whenever the mock changes (off by default)"
             },
             {
               "long": "--yes",
               "short": "-y",
-              "description": "Accept defaults and skip all prompts (private, no auto-deploy)"
+              "description": "Use the defaults and skip all questions (private, no auto-deploy)"
             },
             {
               "long": "--api-key",
@@ -2975,7 +3999,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to the `postman login` session)"
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--help",
@@ -2987,7 +4011,7 @@
         {
           "name": "get",
           "aliases": [],
-          "description": "Show a mock's details: a cloud mock by id, or a local mock by path.",
+          "description": "Show a mock's details using its path if it lives in your repository, or its id if it lives in Postman cloud.",
           "positionals": [
             {
               "name": "mockIdOrPath",
@@ -3004,11 +4028,11 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to the `postman login` session)"
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--json",
-              "description": "Output the mock details as JSON instead of a table"
+              "description": "Print the details as machine-readable data instead of a table"
             },
             {
               "long": "--help",
@@ -3020,7 +4044,7 @@
         {
           "name": "list",
           "aliases": [],
-          "description": "List a workspace's cloud mocks, or (with a path) local mocks under a directory.",
+          "description": "List the mocks in your Postman cloud workspace, or — with a folder path — the mocks in that folder in your repository.",
           "positionals": [
             {
               "name": "pathOrDir",
@@ -3033,7 +4057,7 @@
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Workspace whose cloud mocks to list (defaults to the workspace linked in .postman/resources.yaml)"
+              "description": "Postman cloud workspace whose mocks to list, by id (defaults to the workspace already linked to this project)"
             },
             {
               "long": "--api-key",
@@ -3044,11 +4068,11 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to the `postman login` session)"
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--json",
-              "description": "Output the mock list as JSON instead of a table"
+              "description": "Print the list as machine-readable data instead of a table"
             },
             {
               "long": "--help",
@@ -3060,7 +4084,7 @@
         {
           "name": "log",
           "aliases": [],
-          "description": "Browse a deployed mock server's request/response logs by its id (see `mock get`).",
+          "description": "Show the requests a live mock server has received and the responses it sent, using its id.",
           "positionals": [
             {
               "name": "mockServerId",
@@ -3072,37 +4096,37 @@
               "long": "--limit",
               "valueType": "number",
               "valueName": "n",
-              "description": "Maximum number of log entries to show (default 50 for --json/non-interactive output)"
+              "description": "Most entries to show (defaults to 50 when printing machine-readable output)"
             },
             {
               "long": "--method",
               "valueType": "string",
               "valueName": "method",
-              "description": "Filter by HTTP method (e.g. GET, POST)"
+              "description": "Show only requests of this type (e.g. GET, POST)"
             },
             {
               "long": "--status",
               "valueType": "string",
               "valueName": "code|range",
-              "description": "Filter by response status (e.g. 404 or 5xx)"
+              "description": "Show only these response codes (e.g. 404, or 5xx for any 500-series)"
             },
             {
               "long": "--path",
               "valueType": "string",
               "valueName": "pattern",
-              "description": "Filter by request path (supports * and ? wildcards)"
+              "description": "Show only requests to matching addresses (use * and ? as wildcards, e.g. /users/*)"
             },
             {
               "long": "--since",
               "valueType": "string",
               "valueName": "duration",
-              "description": "Show logs from this long ago onward (e.g. 2h = the last 2 hours)"
+              "description": "Show entries from this long ago until now (e.g. 2h = the last 2 hours)"
             },
             {
               "long": "--until",
               "valueType": "string",
               "valueName": "duration",
-              "description": "Stop this long ago (e.g. 30m = exclude the most recent 30 minutes)"
+              "description": "Hide entries newer than this (e.g. 30m = skip the most recent 30 minutes)"
             },
             {
               "long": "--api-key",
@@ -3113,11 +4137,11 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to the `postman login` session)"
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--json",
-              "description": "Output logs as JSON instead of the interactive pager"
+              "description": "Print entries as machine-readable data instead of the scrollable view"
             },
             {
               "long": "--help",
@@ -3129,7 +4153,7 @@
         {
           "name": "delete",
           "aliases": [],
-          "description": "Permanently remove a mock: a cloud mock by id, or a local mock artifact by path.",
+          "description": "Delete a mock using its path if it lives in your repository, or its id if it lives in Postman cloud. Cannot be undone.",
           "positionals": [
             {
               "name": "mockIdOrPath",
@@ -3140,7 +4164,7 @@
             {
               "long": "--yes",
               "short": "-y",
-              "description": "Skip the confirmation prompt"
+              "description": "Delete without asking for confirmation first"
             },
             {
               "long": "--api-key",
@@ -3151,7 +4175,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key for cloud mock ids (defaults to the `postman login` session)"
+              "description": "Postman API key, used with a Postman cloud id (defaults to your `postman login` session)"
             },
             {
               "long": "--help",
@@ -5443,6 +6467,85 @@
               "long": "--yes",
               "short": "-y",
               "description": "Skip all confirmation prompts."
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List the workspace dependencies declared in .postman/resources.yaml.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Only list dependencies of this type (collection, environment, or mock)."
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "install",
+          "aliases": [],
+          "description": "Materialise the dependencies declared in .postman/resources.yaml (all, or one).",
+          "positionals": [
+            {
+              "name": "nameOrId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Only install dependencies of this type (collection, environment, or mock)."
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "aliases": [],
+          "description": "Refresh declared dependencies to the latest content from their source (all, or one).",
+          "positionals": [
+            {
+              "name": "nameOrId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Only update dependencies of this type (collection, environment, or mock)."
             },
             {
               "long": "--json",
