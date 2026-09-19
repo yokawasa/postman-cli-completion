@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.58.0",
-  "introspectedAt": "2026-09-18T04:10:49Z",
+  "postmanCliVersion": "1.59.0",
+  "introspectedAt": "2026-09-19T04:07:54Z",
   "global": {
     "flags": [
       {
@@ -61,11 +61,19 @@
     },
     {
       "name": "signup",
-      "description": "Sign up to keep the work you created as a guest (claims your guest workspace). By default prints a single-use sign-up URL to open in a browser; --browser signs up in a browser and signs this CLI in.",
+      "description": "Sign up to keep the work you created as a guest (claims your guest workspace). Waits and signs this CLI in once the sign-up is completed in a browser — opening that browser here on a terminal, or printing the URL to hand over when output is piped.",
       "flags": [
         {
           "long": "--browser",
-          "description": "Open a browser to sign up and sign this CLI in, instead of printing a URL."
+          "description": "Always open the sign-up URL in a browser here, rather than printing it."
+        },
+        {
+          "long": "--wait",
+          "description": "Wait for the sign-up to complete even if no local browser is detected."
+        },
+        {
+          "long": "--no-wait",
+          "description": "Print the sign-up URL and exit without waiting. Leaves this CLI a guest."
         },
         {
           "long": "--json",
@@ -165,6 +173,17 @@
       ]
     },
     {
+      "name": "update",
+      "description": "Update Postman CLI using the original installation method.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
       "name": "skills",
       "description": "Check and update the agent skills in this repository.",
       "flags": [
@@ -244,6 +263,43 @@
         }
       ],
       "subcommands": [
+        {
+          "name": "new",
+          "aliases": [],
+          "description": "Scaffold a v3 collection on disk, or create one in a cloud Postman workspace with --workspace.",
+          "positionals": [
+            {
+              "name": "name",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Create the collection in a cloud Postman workspace instead of scaffolding it locally. Required when the current directory is not a local Postman workspace."
+            },
+            {
+              "long": "--force",
+              "description": "Rewrite the definition of an existing local collection. Existing request files are left alone."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
         {
           "name": "migrate",
           "aliases": [],
@@ -327,6 +383,78 @@
               "valueType": "number",
               "valueName": "n",
               "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Fetch a Postman collection in the V3 format and print it.",
+          "positionals": [
+            {
+              "name": "id",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the collection as machine-readable V3 JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List collections: your local project's collections by default, or a Postman cloud workspace's collections with --workspace.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "List a Postman cloud workspace's collections by id. Omit to list the local project's collections."
+            },
+            {
+              "long": "--filter",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Filter collections by name."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
             },
             {
               "long": "--help",
@@ -692,6 +820,43 @@
         }
       ],
       "subcommands": [
+        {
+          "name": "new",
+          "aliases": [],
+          "description": "Scaffold a local environment file, or create one in a Postman workspace with --workspace.",
+          "positionals": [
+            {
+              "name": "name",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Create the environment in a cloud Postman workspace instead of scaffolding it locally. Required when the current directory is not a local Postman workspace."
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite an existing local environment file."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
         {
           "name": "list",
           "aliases": [],
@@ -1185,6 +1350,13 @@
               "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
             },
             {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Filter to runners in this workspace"
+            },
+            {
               "long": "--json",
               "description": "Output the runner list as JSON instead of a table"
             },
@@ -1583,6 +1755,70 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "generate",
+          "aliases": [],
+          "description": "Generate artifacts from a specification.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "collection",
+              "aliases": [],
+              "description": "Generate a Postman collection from a specification.",
+              "positionals": [
+                {
+                  "name": "spec",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--name",
+                  "short": "-n",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Collection name"
+                },
+                {
+                  "long": "--folder-strategy",
+                  "valueType": "string",
+                  "valueName": "strategy",
+                  "description": "Folder strategy: Paths or Tags (default: Paths) (default: \"Paths\")"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Workspace ID (cloud mode)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         }
@@ -2277,6 +2513,64 @@
           ]
         },
         {
+          "name": "metrics",
+          "aliases": [],
+          "description": "Show per-request latency and outcome history for a monitor.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+            },
+            {
+              "long": "--since",
+              "valueType": "string",
+              "valueName": "dateTime",
+              "description": "Only executions at or after this ISO 8601 date-time. Defaults to 7 days ago."
+            },
+            {
+              "long": "--until",
+              "valueType": "string",
+              "valueName": "dateTime",
+              "description": "Only executions at or before this ISO 8601 date-time. Defaults to now."
+            },
+            {
+              "long": "--filter",
+              "short": "-f",
+              "valueType": "string",
+              "valueName": "text",
+              "description": "Show only requests whose name contains this text (case-insensitive)"
+            },
+            {
+              "long": "--limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Cap the number of rows shown: executions (newest first) under --json, or table rows (worst-behaving request first) otherwise. Not honoured by the service -- there is no server-side pagination on this route."
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "pause",
           "aliases": [],
           "description": "Pause a monitor, so it stops firing on schedule.",
@@ -2601,6 +2895,52 @@
               "description": "display help for command"
             }
           ]
+        },
+        {
+          "name": "diff",
+          "aliases": [],
+          "description": "Preview local-vs-cloud drift before pushing. Read-only: nothing is created, updated or deleted.",
+          "positionals": [
+            {
+              "name": "workspaceId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--push-strategy",
+              "valueType": "string",
+              "valueName": "strategy",
+              "description": "Strategy to preview. \"force-sync\" also shows cloud entities that would be DELETED. Defaults to \"force-sync\"."
+            },
+            {
+              "long": "--summary",
+              "description": "Skip content comparison. Faster, but updates are listed without checking whether they changed."
+            },
+            {
+              "long": "--json",
+              "description": "Print the diff as machine-readable JSON."
+            },
+            {
+              "long": "--exit-code",
+              "description": "Exit with code 1 when drift is found (for CI gates)."
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed logging"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Abort the run after this many milliseconds. Defaults to 120000."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
@@ -2722,6 +3062,47 @@
               "valueType": "string",
               "valueName": "mapping",
               "description": "Redirect a variable/host to a local code mock or cloud Mock Server (repeatable). Format: \"<{{var}}|host> mock|mock-server:<path|id> [scenario]\" (default: [])"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "runs",
+          "aliases": [],
+          "description": "List past performance runs for a collection, newest first.",
+          "positionals": [
+            {
+              "name": "id",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--collection-id",
+              "short": "-c",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Collection ID whose performance runs to list"
+            },
+            {
+              "long": "--cursor",
+              "valueType": "string",
+              "valueName": "token",
+              "description": "Pagination cursor from a previous page's response"
+            },
+            {
+              "long": "--json",
+              "description": "Output as JSON instead of a table"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for the service before failing (default: \"30000\")"
             },
             {
               "long": "--help",
@@ -4044,7 +4425,7 @@
         {
           "name": "list",
           "aliases": [],
-          "description": "List the mocks in your Postman cloud workspace, or — with a folder path — the mocks in that folder in your repository.",
+          "description": "List the mocks in your repository or Postman cloud workspace",
           "positionals": [
             {
               "name": "pathOrDir",
