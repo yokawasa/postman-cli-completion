@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.60.0",
-  "introspectedAt": "2026-09-22T04:20:39Z",
+  "postmanCliVersion": "1.62.0",
+  "introspectedAt": "2026-09-23T04:17:59Z",
   "global": {
     "flags": [
       {
@@ -156,6 +156,39 @@
         {
           "long": "--json",
           "description": "Print current identity as machine-readable JSON."
+        },
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ]
+    },
+    {
+      "name": "feedback",
+      "description": "Submit feedback about CLI usability, gaps, and improvement suggestions.",
+      "positionals": [
+        {
+          "name": "text",
+          "valueType": "string"
+        }
+      ],
+      "flags": [
+        {
+          "long": "--type",
+          "valueType": "string",
+          "valueName": "type",
+          "description": "Feedback type: cli_gap, improvement_suggestion, bug_report, feature_request, general (default: general)"
+        },
+        {
+          "long": "--context",
+          "valueType": "string",
+          "valueName": "context",
+          "description": "Command or feature context this feedback is about"
+        },
+        {
+          "long": "--json",
+          "description": "Print result as machine-readable JSON"
         },
         {
           "long": "--help",
@@ -417,6 +450,235 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "request",
+          "aliases": [],
+          "description": "Add, update, or remove requests in a local v3 collection.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "add",
+              "aliases": [],
+              "description": "Add an empty request to a local v3 collection (set its details later with `update`).",
+              "positionals": [
+                {
+                  "name": "request-name",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path. Required."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder within the collection, e.g. \"Users/Admin\". Defaults to the root."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Request type: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "update",
+              "aliases": [],
+              "description": "Update a request in a v3 collection (only the fields you pass).",
+              "positionals": [
+                {
+                  "name": "request",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path (cloud: id only). Required."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector, e.g. \"Users/Admin\" (local: name/path; cloud: id)."
+                },
+                {
+                  "long": "--rename",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Rename the request (moves its file). Any request type."
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Request URL. Any request type."
+                },
+                {
+                  "long": "--method",
+                  "valueType": "string",
+                  "valueName": "method",
+                  "description": "HTTP method (http requests only)."
+                },
+                {
+                  "long": "--param",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Replace query parameters. Repeatable (http requests only). (default: [])"
+                },
+                {
+                  "long": "--body",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "body",
+                  "description": "Request payload (inline, @file, or - for stdin), interpreted by request type. For http, an optional \"<type>:\" prefix picks the content type: json/text/xml/html/javascript, file:<path>, urlencoded:key=v&k2=v2, or formdata:key=v&file=@path."
+                },
+                {
+                  "long": "--variables",
+                  "valueType": "string",
+                  "valueName": "json",
+                  "description": "GraphQL variables JSON (graphql requests only)."
+                },
+                {
+                  "long": "--description",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Request description."
+                },
+                {
+                  "long": "--headers",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Replace request headers. Repeatable; any request type with headers. (default: [])"
+                },
+                {
+                  "long": "--auth",
+                  "valueType": "string",
+                  "valueName": "spec",
+                  "description": "Request auth: none, inherit, bearer:TOKEN, basic:USER:PASS, apikey:KEY:VALUE[:header|query], oauth2:TOKEN. Any request type."
+                },
+                {
+                  "long": "--scripts",
+                  "valueType": "string",
+                  "valueName": "event:script",
+                  "description": "Replace scripts. event is prerequest or test; script is @file, - for stdin, or inline. Repeatable; any request type. (default: [])"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "rm",
+              "aliases": [
+                "remove"
+              ],
+              "description": "Remove a request (any type) from a v3 collection.",
+              "positionals": [
+                {
+                  "name": "request",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path (cloud: id only). Required."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector, e.g. \"Users/Admin\" (local: name/path; cloud: id)."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         },
@@ -1857,7 +2119,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--suppress-exit-code",
@@ -2020,7 +2282,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--json",
@@ -2162,7 +2424,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--json",
@@ -2200,7 +2462,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--json",
@@ -2397,7 +2659,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--workspace",
@@ -2508,7 +2770,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--json",
@@ -2541,7 +2803,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--since",
@@ -2599,7 +2861,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--json",
@@ -2632,7 +2894,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
             },
             {
               "long": "--json",
@@ -2840,7 +3102,7 @@
               "long": "--visibility",
               "valueType": "string",
               "valueName": "status",
-              "description": "Required. Workspace visibility, e.g. personal or team"
+              "description": "Required. One of: personal, private, team, public, partner."
             },
             {
               "long": "--name",
@@ -2853,6 +3115,18 @@
               "valueType": "string",
               "valueName": "text",
               "description": "Optional workspace summary"
+            },
+            {
+              "long": "--team-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "The team inside your organisation the workspace belongs to. Required for a team workspace when your organisation has teams inside it. Find it with `postman team list`."
+            },
+            {
+              "long": "--team-role",
+              "valueType": "string",
+              "valueName": "level",
+              "description": "What a team or public workspace grants: view or edit. Applies to the team named by --team-id, or to your whole organisation when none is named. Defaults to your team's configured default."
             },
             {
               "long": "--path",
@@ -2986,6 +3260,46 @@
       ]
     },
     {
+      "name": "team",
+      "description": "Work with the teams inside your organisation.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List the teams inside your organisation.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--can-create-workspace",
+              "description": "Only list teams you could create a workspace in."
+            },
+            {
+              "long": "--json",
+              "description": "Print the list as machine-readable JSON."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Abort the run after this many milliseconds. Defaults to 30000."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "performance",
       "description": "Manage performance tests on your collections.",
       "flags": [
@@ -3085,6 +3399,12 @@
               "valueType": "string",
               "valueName": "apiKey",
               "description": "API Key used to load the resources from the Postman API (Only supported in the US region, use 'postman login --region' to authenticate instead)"
+            },
+            {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Output format for live results: auto (default, interactive dashboard) or ndjson (one JSON object per line on stdout, ending with a \"summary\" event — for CI or other non-interactive use) (default: \"auto\")"
             },
             {
               "long": "--runner",
@@ -4817,7 +5137,7 @@
       ]
     },
     {
-      "name": "context",
+      "name": "describe",
       "description": "[Beta] Get API context for AI coding agents directly from the command line.",
       "flags": [
         {
