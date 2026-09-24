@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.62.0",
-  "introspectedAt": "2026-09-23T04:17:59Z",
+  "postmanCliVersion": "1.63.0",
+  "introspectedAt": "2026-09-24T04:14:04Z",
   "global": {
     "flags": [
       {
@@ -132,7 +132,7 @@
           "long": "--visibility",
           "valueType": "string",
           "valueName": "status",
-          "description": "Create and bind a workspace non-interactively (personal or team)"
+          "description": "Create and bind a workspace non-interactively (personal, team)"
         },
         {
           "long": "--no-cloud",
@@ -668,6 +668,175 @@
                   "valueType": "string",
                   "valueName": "type",
                   "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "folder",
+          "aliases": [],
+          "description": "Add, update, or remove folders in a local v3 collection.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "add",
+              "aliases": [],
+              "description": "Add an empty folder to a local v3 collection (set its details later with `update`).",
+              "positionals": [
+                {
+                  "name": "folder-name",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path. Required."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent folder within the collection, e.g. \"Users/Admin\". Defaults to the root."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "update",
+              "aliases": [],
+              "description": "Update a folder in a v3 collection (only the fields you pass).",
+              "positionals": [
+                {
+                  "name": "folder",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path (cloud: id only). Required."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent folder to scope the selector, e.g. \"Users\" (local: name/path; cloud: id)."
+                },
+                {
+                  "long": "--name",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Rename the folder (moves its directory)."
+                },
+                {
+                  "long": "--description",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Folder description."
+                },
+                {
+                  "long": "--auth",
+                  "valueType": "string",
+                  "valueName": "spec",
+                  "description": "Folder auth: none, inherit, bearer:TOKEN, basic:USER:PASS, apikey:KEY:VALUE[:header|query], oauth2:TOKEN."
+                },
+                {
+                  "long": "--scripts",
+                  "valueType": "string",
+                  "valueName": "event:script",
+                  "description": "Replace folder scripts. event is prerequest or test; script is @file, - for stdin, or inline. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "rm",
+              "aliases": [
+                "remove"
+              ],
+              "description": "Remove a folder from a v3 collection (recursive: removes everything inside it).",
+              "positionals": [
+                {
+                  "name": "folder",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path (cloud: id only). Required."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent folder to scope the selector, e.g. \"Users\" (local: name/path; cloud: id)."
+                },
+                {
+                  "long": "--yes",
+                  "short": "-y",
+                  "description": "Skip the confirmation prompt (required when stdout is not a TTY)."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
                 },
                 {
                   "long": "--json",
@@ -4614,7 +4783,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Path to a file of environment variables for the mock. Relative or absolute, e.g. ./postman/environments/dev.json"
+              "description": "Path to a file of environment variables for the mock. Relative or absolute, e.g. ./postman/environments/dev.environment.yaml"
             },
             {
               "long": "--globals",
