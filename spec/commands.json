@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.63.0",
-  "introspectedAt": "2026-09-24T04:14:04Z",
+  "postmanCliVersion": "1.65.0",
+  "introspectedAt": "2026-09-26T04:30:58Z",
   "global": {
     "flags": [
       {
@@ -408,6 +408,15 @@
               "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
             },
             {
+              "long": "--export",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Write the report to this file instead of stdout. A directory receives the report under a name derived from the collection. Requires --output html."
+            },
+            {
               "long": "--min-score",
               "valueType": "number",
               "valueName": "n",
@@ -450,6 +459,120 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "generate",
+          "aliases": [],
+          "description": "Generate artifacts from a collection.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "spec",
+              "aliases": [],
+              "description": "Generate an OpenAPI specification from a Postman collection.",
+              "positionals": [
+                {
+                  "name": "collection",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--name",
+                  "short": "-n",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Specification name / title"
+                },
+                {
+                  "long": "--spec-version",
+                  "valueType": "string",
+                  "valueName": "ver",
+                  "description": "Target OpenAPI version: 3.1, 3.0, or 2.0 (default: 3.1) (default: \"3.1\")"
+                },
+                {
+                  "long": "--format",
+                  "short": "-f",
+                  "valueType": "string",
+                  "valueName": "fmt",
+                  "description": "Output format: yaml or json (default: yaml) (default: \"yaml\")"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "sync",
+          "aliases": [],
+          "description": "Sync artifacts generated from a collection.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "spec",
+              "aliases": [],
+              "description": "Sync a specification from a linked collection (local path or cloud UUID).",
+              "positionals": [
+                {
+                  "name": "collection",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--spec-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Specification ID to sync (required for cloud mode)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         },
@@ -1220,6 +1343,22 @@
               "description": "Start mock servers with fault-injection scenarios from a .sim.yaml file"
             },
             {
+              "long": "--simulation",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Simulation id to record start history against when using --simulate."
+            },
+            {
+              "long": "--simulate-workspace",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace that owns the --simulate run, for recording its start history."
+            },
+            {
+              "long": "--no-simulate-history",
+              "description": "Do not record the --simulate run in the simulation's start history."
+            },
+            {
               "long": "--report-events",
               "description": "Upload results for git-native v3 collection runs. Analytics are sent by default"
             },
@@ -1906,6 +2045,15 @@
               "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
             },
             {
+              "long": "--export",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Write the report to this file instead of stdout. A directory receives the report under a name derived from the specification. Requires --output html."
+            },
+            {
               "long": "--min-score",
               "valueType": "number",
               "valueName": "n",
@@ -2234,6 +2382,56 @@
                   "valueType": "string",
                   "valueName": "id",
                   "description": "Workspace ID (cloud mode)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "sync",
+          "aliases": [],
+          "description": "Sync a generated collection with its source specification.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "collection",
+              "aliases": [],
+              "description": "Sync a collection from a linked specification (local path or cloud UUID).",
+              "positionals": [
+                {
+                  "name": "spec",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Collection ID to sync (required for cloud mode)"
                 },
                 {
                   "long": "--api-key",
@@ -3322,6 +3520,43 @@
           ]
         },
         {
+          "name": "delete",
+          "aliases": [],
+          "description": "Permanently delete a workspace and everything in it. Prompts for confirmation unless --yes is passed.",
+          "positionals": [
+            {
+              "name": "workspaceId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip the confirmation prompt"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed logging"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Abort the run after this many milliseconds. Defaults to 30000."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "pull",
           "aliases": [],
           "description": "Pull workspace entities from a Postman workspace into the local git-native folder.",
@@ -3381,6 +3616,33 @@
           ]
         },
         {
+          "name": "disconnect-git",
+          "aliases": [],
+          "description": "Disconnect a Postman workspace from its local git repository.",
+          "positionals": [
+            {
+              "name": "workspaceId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip all confirmation prompts"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show detailed logging"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "diff",
           "aliases": [],
           "description": "Preview local-vs-cloud drift before pushing. Read-only: nothing is created, updated or deleted.",
@@ -3407,7 +3669,7 @@
             },
             {
               "long": "--exit-code",
-              "description": "Exit with code 1 when drift is found (for CI gates)."
+              "description": "Exit with code 1 when a verified difference is found (for CI gates). Entity types with no comparison path are reported but do not fail the gate."
             },
             {
               "long": "--verbose",
@@ -3508,13 +3770,13 @@
               "long": "--setup-collection",
               "valueType": "string",
               "valueName": "id",
-              "description": "Collection UID to run before the Postman Cloud performance test"
+              "description": "Collection UID to run before the performance test"
             },
             {
               "long": "--teardown-collection",
               "valueType": "string",
               "valueName": "id",
-              "description": "Collection UID to run after the Postman Cloud performance test"
+              "description": "Collection UID to run after the performance test"
             },
             {
               "long": "--vu-count",
@@ -3544,6 +3806,61 @@
                 "*.json"
               ],
               "description": "Path to a JSON or CSV data file to use with the collection"
+            },
+            {
+              "long": "--ssl-client-cert-list",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Path to a client certificates configuration file (JSON). Local runner only."
+            },
+            {
+              "long": "--ssl-client-cert",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Path to a client certificate (PEM) for mTLS targets. Local runner only."
+            },
+            {
+              "long": "--ssl-client-key",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Path to the client certificate private key. Local runner only."
+            },
+            {
+              "long": "--ssl-client-passphrase",
+              "valueType": "string",
+              "valueName": "passphrase",
+              "description": "Client certificate passphrase (for a protected key). Local runner only."
+            },
+            {
+              "long": "--insecure",
+              "short": "-k",
+              "description": "Disable SSL certificate verification for the target. Local runner only."
+            },
+            {
+              "long": "--ssl-extra-ca-certs",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Path to additionally trusted CA certificates (PEM) for the target. Local runner only."
             },
             {
               "long": "--dataset-id",
@@ -4814,6 +5131,17 @@
               "description": "Postman API key, used with a Postman cloud id (defaults to your `postman login` session)"
             },
             {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace that owns the run, for recording its start history. Auto-resolved for a Postman cloud id; required to record history for a path."
+            },
+            {
+              "long": "--no-history",
+              "description": "Do not record this run in the mock's start history."
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -5296,6 +5624,34 @@
             }
           ],
           "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace that owns the run, for recording its simulation start history."
+            },
+            {
+              "long": "--simulation",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Simulation id to record start history against (a local .sim.yaml has only a name). Required, with --workspace, to record history."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key for recording start history (defaults to your `postman login` session)."
+            },
+            {
+              "long": "--no-history",
+              "description": "Do not record this run in the simulation's start history."
+            },
             {
               "long": "--help",
               "short": "-h",
