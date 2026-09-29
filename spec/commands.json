@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.65.0",
-  "introspectedAt": "2026-09-26T04:30:58Z",
+  "postmanCliVersion": "1.66.0",
+  "introspectedAt": "2026-09-29T05:17:40Z",
   "global": {
     "flags": [
       {
@@ -1133,7 +1133,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to scripts as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. For a cloud collection, scripts address cloud datasets by id via pm.datasets(<id>) (resolved from your `postman login` session). SECURITY: for a cloud collection this does NOT scope access — a script can pm.datasets(<anyId>) for any dataset your session can read. Only run collections you trust against a logged-in cloud session. (default: [])"
+              "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to collection scripts and local mock handlers as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. For a cloud collection, scripts address cloud datasets by id via pm.datasets(<id>) (resolved from your `postman login` session). SECURITY: for a cloud collection this does NOT scope access — a script can pm.datasets(<anyId>) for any dataset your session can read. Only run collections you trust against a logged-in cloud session. (default: [])"
             },
             {
               "short": "-i",
@@ -2395,6 +2395,10 @@
                   "description": "Postman API key"
                 },
                 {
+                  "long": "--force",
+                  "description": "Overwrite the collection if one with this name already exists (local mode)"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
@@ -2450,6 +2454,40 @@
                   "description": "display help for command"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Delete a spec by its cloud ID or local file path. Cannot be undone.",
+          "positionals": [
+            {
+              "name": "spec",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Delete without asking for confirmation first"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key, used with a cloud ID (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
             }
           ]
         }
@@ -3911,6 +3949,15 @@
               "description": "Redirect a variable/host to a local code mock or cloud Mock Server (repeatable). Format: \"<{{var}}|host> mock|mock-server:<path|id> [scenario]\" (default: [])"
             },
             {
+              "long": "--dataset",
+              "valueType": "file",
+              "valueName": "pathOrDir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to the handlers of the local mocks started by --use-mock as pm.datasets(<id>). Local runner only. (default: [])"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -5140,6 +5187,15 @@
             {
               "long": "--no-history",
               "description": "Do not record this run in the mock's start history."
+            },
+            {
+              "long": "--dataset",
+              "valueType": "file",
+              "valueName": "pathOrDir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to the mock's handlers as pm.datasets(<id>). (default: [])"
             },
             {
               "long": "--help",
@@ -8101,6 +8157,39 @@
               "valueType": "string",
               "valueName": "type",
               "description": "Only update dependencies of this type (collection, environment, or mock)."
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "remove",
+          "aliases": [],
+          "description": "Remove a workspace dependency and delete its local files.",
+          "positionals": [
+            {
+              "name": "nameOrId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Only match dependencies of this type (collection, environment, or mock)."
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip the confirmation prompt (required outside an interactive terminal)."
             },
             {
               "long": "--json",
