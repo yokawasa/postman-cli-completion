@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.66.0",
-  "introspectedAt": "2026-09-29T05:17:40Z",
+  "postmanCliVersion": "1.67.0",
+  "introspectedAt": "2026-09-30T05:05:02Z",
   "global": {
     "flags": [
       {
@@ -390,46 +390,6 @@
           ]
         },
         {
-          "name": "ai-readiness",
-          "aliases": [],
-          "description": "Score a Postman collection for AI readiness by ID, local file path, or local-mode directory.",
-          "positionals": [
-            {
-              "name": "collectionId/Path",
-              "valueType": "file"
-            }
-          ],
-          "flags": [
-            {
-              "long": "--output",
-              "short": "-o",
-              "valueType": "string",
-              "valueName": "value",
-              "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
-            },
-            {
-              "long": "--export",
-              "valueType": "file",
-              "valueName": "path",
-              "patterns": [
-                "*.json"
-              ],
-              "description": "Write the report to this file instead of stdout. A directory receives the report under a name derived from the collection. Requires --output html."
-            },
-            {
-              "long": "--min-score",
-              "valueType": "number",
-              "valueName": "n",
-              "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
-            },
-            {
-              "long": "--help",
-              "short": "-h",
-              "description": "display help for command"
-            }
-          ]
-        },
-        {
           "name": "get",
           "aliases": [],
           "description": "Fetch a Postman collection in the V3 format and print it.",
@@ -454,6 +414,72 @@
             {
               "long": "--json",
               "description": "Print the collection as machine-readable V3 JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "publish",
+          "aliases": [],
+          "description": "Publish a cloud collection's documentation (or request Community Manager approval).",
+          "positionals": [
+            {
+              "name": "collection-id",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--target",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Where to publish (default: documentation) (default: \"documentation\")"
+            },
+            {
+              "long": "--environment",
+              "valueType": "file",
+              "valueName": "environment-id",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Cloud environment UID to bind to the docs"
+            },
+            {
+              "long": "--title",
+              "valueType": "string",
+              "valueName": "seo-title",
+              "description": "SEO title meta tag (max 120 characters)"
+            },
+            {
+              "long": "--description",
+              "valueType": "string",
+              "valueName": "seo-description",
+              "description": "SEO description meta tag (max 320 characters)"
+            },
+            {
+              "long": "--note",
+              "valueType": "string",
+              "valueName": "text",
+              "description": "Note for Community Managers (request-to-publish only)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Machine-readable JSON on stdout (errors on stderr)"
             },
             {
               "long": "--help",
@@ -669,7 +695,7 @@
                   "long": "--url",
                   "valueType": "string",
                   "valueName": "url",
-                  "description": "Request URL. Any request type."
+                  "description": "Request URL; its query string becomes the query parameters. Any request type."
                 },
                 {
                   "long": "--method",
@@ -686,7 +712,11 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Replace query parameters. Repeatable (http requests only). (default: [])"
+                  "description": "Replace all query parameters and the url query string. Repeatable (http requests only). (default: [])"
+                },
+                {
+                  "long": "--clear-params",
+                  "description": "Remove all query parameters and the url query string (http requests only)."
                 },
                 {
                   "long": "--body",
@@ -1118,13 +1148,13 @@
                 "*.json",
                 "*.csv"
               ],
-              "description": "[BETA] Path to a .dataset.yaml (local collection) or a cloud dataset id (cloud collection) whose view drives the iteration data. Mutually exclusive with --iteration-data. Requires --iteration-data-view."
+              "description": "Path to a .dataset.yaml (local collection) or a cloud dataset id (cloud collection) whose view drives the iteration data. Mutually exclusive with --iteration-data. Requires --iteration-data-view."
             },
             {
               "long": "--iteration-data-view",
               "valueType": "string",
               "valueName": "nameOrId",
-              "description": "[BETA] Name or id of the view to execute (within --iteration-data-dataset). The view's result set drives one iteration per row."
+              "description": "Name or id of the view to execute (within --iteration-data-dataset). The view's result set drives one iteration per row."
             },
             {
               "long": "--dataset",
@@ -1133,7 +1163,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "[BETA] Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to collection scripts and local mock handlers as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. For a cloud collection, scripts address cloud datasets by id via pm.datasets(<id>) (resolved from your `postman login` session). SECURITY: for a cloud collection this does NOT scope access — a script can pm.datasets(<anyId>) for any dataset your session can read. Only run collections you trust against a logged-in cloud session. (default: [])"
+              "description": "Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to collection scripts and local mock handlers as pm.datasets(<id>). When provided, auto-discovery of .dataset.yaml files from the collection's parent repo is disabled. For a cloud collection, scripts address cloud datasets by id via pm.datasets(<id>) (resolved from your `postman login` session). SECURITY: for a cloud collection this does NOT scope access — a script can pm.datasets(<anyId>) for any dataset your session can read. Only run collections you trust against a logged-in cloud session. (default: [])"
             },
             {
               "short": "-i",
@@ -2018,46 +2048,6 @@
             {
               "long": "--no-report-events",
               "description": "Do not send analytics to Postman"
-            },
-            {
-              "long": "--help",
-              "short": "-h",
-              "description": "display help for command"
-            }
-          ]
-        },
-        {
-          "name": "ai-readiness",
-          "aliases": [],
-          "description": "Score an OpenAPI specification for AI readiness by ID or local file path.",
-          "positionals": [
-            {
-              "name": "spec",
-              "valueType": "string"
-            }
-          ],
-          "flags": [
-            {
-              "long": "--output",
-              "short": "-o",
-              "valueType": "string",
-              "valueName": "value",
-              "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
-            },
-            {
-              "long": "--export",
-              "valueType": "file",
-              "valueName": "path",
-              "patterns": [
-                "*.json"
-              ],
-              "description": "Write the report to this file instead of stdout. A directory receives the report under a name derived from the specification. Requires --output html."
-            },
-            {
-              "long": "--min-score",
-              "valueType": "number",
-              "valueName": "n",
-              "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
             },
             {
               "long": "--help",
@@ -5189,6 +5179,12 @@
               "description": "Do not record this run in the mock's start history."
             },
             {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Live output format: auto (default, human-readable logs) or ndjson (one JSON event per line on stdout, ending with a \"summary\" event — for CI or other non-interactive use) (default: \"auto\")"
+            },
+            {
               "long": "--dataset",
               "valueType": "file",
               "valueName": "pathOrDir",
@@ -6883,7 +6879,7 @@
               "short": "-q",
               "valueType": "string",
               "valueName": "sql",
-              "description": "SQL query to execute (e.g. \"SELECT * FROM source_users LIMIT 10\")"
+              "description": "SQL query to execute (e.g. \"SELECT * FROM users LIMIT 10\")"
             },
             {
               "long": "--source",
@@ -7094,7 +7090,7 @@
                   "short": "-n",
                   "valueType": "string",
                   "valueName": "name",
-                  "description": "Logical name for the source (becomes the SQL table name)"
+                  "description": "Logical name for the source (becomes the SQL table name). Required for every source except a spreadsheet, whose worksheets are each named source_<worksheet>"
                 },
                 {
                   "long": "--source-id",
@@ -7105,8 +7101,8 @@
                 {
                   "long": "--format",
                   "valueType": "string",
-                  "valueName": "csv|json|mysql|postgres|sqlserver",
-                  "description": "Use this format instead of extension/type inference; file contents are not sniffed"
+                  "valueName": "csv|json|xlsx|xls|ods|jdbc|mysql|postgres|sqlserver",
+                  "description": "Use this format instead of extension/type inference; file contents are not sniffed. A spreadsheet (xlsx/xls/ods) is added as one source per worksheet, each named source_<worksheet>"
                 },
                 {
                   "long": "--type",
@@ -7121,7 +7117,7 @@
                   "patterns": [
                     "*.json"
                   ],
-                  "description": "Path to a local CSV/JSON file (absolute or cwd-relative)"
+                  "description": "Path to a local CSV/JSON/spreadsheet file (absolute or cwd-relative)"
                 },
                 {
                   "long": "--ref-only",
@@ -7133,7 +7129,7 @@
                 },
                 {
                   "long": "--upload",
-                  "description": "Cloud dataset only: upload --file as a postmancloudfile source (runs via /exec). Without --upload, --file is registered as a local_filesystem csv/json source read by the local engine."
+                  "description": "Cloud dataset only: upload --file as a postmancloudfile source (runs via /exec). Without --upload, --file is registered as a local_filesystem source read by the local engine. Either way a cloud dataset takes csv/json only — add a spreadsheet to a local .dataset.yaml, where each worksheet becomes its own source."
                 },
                 {
                   "long": "--driver-jar",
@@ -7428,8 +7424,8 @@
                 {
                   "long": "--format",
                   "valueType": "string",
-                  "valueName": "csv|json|mysql|postgres|sqlserver",
-                  "description": "Change the format (local dataset only; cloud source formats are immutable)"
+                  "valueName": "csv|json|jdbc|mysql|postgres|sqlserver",
+                  "description": "Change the format (local dataset only; cloud source formats are immutable). A spreadsheet format is not offered here: this command changes the format field alone and cannot pin a worksheet, so the source would not compile. Add the workbook with `dataset source add` instead, which makes one worksheet-pinned source per sheet"
                 },
                 {
                   "long": "--file",
