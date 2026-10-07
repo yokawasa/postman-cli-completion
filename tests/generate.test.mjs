@@ -109,11 +109,39 @@ test("applyOverrides — --auth-<type>-<param> expanded into the override flag l
   assert.ok(!req.flags.some((f) => f.long === "--auth-<type>-<param>"));
 });
 
-test("applyOverrides — --reporters has enum choices", () => {
-  const run = merged.commands.find((c) => c.name === "collection").subcommands.find((s) => s.name === "run");
+function collectionRunFromHelp(fixture) {
+  const flags = splitSections(stripAnsi(read(fixture))).options
+    .map((entry) => parseFlag(entry.head)).filter(Boolean);
+  const input = { commands: [{ name: "collection", subcommands: [{ name: "run", flags }] }] };
+  return applyOverrides(input, { "collection/run": overrides["collection/run"] })
+    .commands[0].subcommands[0];
+}
+
+test("applyOverrides — legacy --reporters has enum choices and dynamic reporter flags", () => {
+  const run = collectionRunFromHelp("tests/fixtures/help-collection-run.txt");
   const rep = run.flags.find((f) => f.long === "--reporters");
   assert.equal(rep.valueType, "enum");
   assert.deepEqual(rep.choices, ["cli", "json", "junit", "html"]);
+  for (const [template, dynamic] of Object.entries(overrides["collection/run"].dynamicFlags)) {
+    assert.ok(!run.flags.some((f) => f.long === template));
+    for (const long of dynamic.expansions) {
+      assert.equal(run.flags.filter((f) => f.long === long).length, 1, long);
+    }
+  }
+});
+
+test("applyOverrides — v1.69.0 does not resurrect removed reporter flags (issue #58)", () => {
+  const run = collectionRunFromHelp("tests/fixtures/help-collection-run-v169.txt");
+  assert.ok(run.flags.some((f) => f.long === "--output" && f.valueName === "folder"));
+  assert.ok(!run.flags.some((f) => f.long?.startsWith("--reporter")));
+  assert.deepEqual(run.flags.find((f) => f.long === "--bail").choices, ["folder", "failure"]);
+  const input = { postmanCliVersion: "1.69.0", global: { flags: [] },
+    commands: [{ name: "collection", subcommands: [run] }] };
+  for (const emit of [emitZsh, emitBash, emitFish]) {
+    const output = emit(input);
+    assert.doesNotMatch(output, /reporter/);
+    assert.match(output, /output/);
+  }
 });
 
 test("applyOverrides — global --color has enum choices", () => {

@@ -153,6 +153,15 @@ postman-cli-completion/
 
 `generate.mjs` merges `commands.json` with `overrides.json`. `introspect.mjs` never touches overrides.
 
+Overrides only enrich flags present in the introspected help. A dynamic template
+must exist before its expansions are added; enum choices likewise apply only to
+existing flags. This preserves support for older CLI versions without restoring
+options removed upstream. For example, v1.69.0 no longer lists `--reporters` or
+the `--reporter-*` templates in `collection run --help` and instead exposes
+`--output <folder>` ([issue #58](https://github.com/yokawasa/postman-cli-completion/issues/58)).
+Reporter override tests use frozen help fixtures for both CLI generations rather
+than requiring the latest introspected spec to contain legacy reporter options.
+
 ---
 
 ## 4. Introspection behavior

@@ -37,7 +37,9 @@ export function applyOverrides(spec, overrides) {
     if (ov.dynamicFlags) {
       for (const [template, dyn] of Object.entries(ov.dynamicFlags)) {
         const idx = cmd.flags.findIndex((f) => f.long === template);
-        if (idx >= 0) cmd.flags.splice(idx, 1);
+        // Overrides enrich discovered flags; do not resurrect removed options.
+        if (idx < 0) continue;
+        cmd.flags.splice(idx, 1);
         for (const long of dyn.expansions || []) {
           const flag = {
             long,
