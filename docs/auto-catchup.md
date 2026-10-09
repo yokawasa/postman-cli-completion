@@ -203,12 +203,33 @@ Procedure:
 
 | Suspicious pattern | Threshold |
 |---|---|
-| The number of top-level commands decreased | Any drop → fail |
+| The number of top-level commands decreased | Drop of more than 1 → fail |
 | The total flag count dropped by 30% or more | Sudden loss likely indicates a parse error |
-| A known fixed command (`collection`, `api`, `runner`, …) disappeared | Fail |
+| A **core** command (`login`, `logout`, `collection`, `api`, `spec`, `request`) disappeared | Fail |
+| An **expected** command (`runner`, `monitor`, `mock`, `simulation`, …) disappeared | Warn if the spec is otherwise healthy, else fail |
 | `postmanCliVersion` is going backwards (semver) | Fail |
 
 When this guard fires, the PR stays in `draft` state, the `automated` label is not applied, and a human must review.
+
+### Core vs. expected commands
+
+The guard distinguishes two tiers so that a legitimate upstream rename does not
+block the catch-up indefinitely:
+
+- **Core** commands have never been renamed upstream. If one vanishes, the cause
+  is almost certainly a broken introspection (failed install, unparseable help),
+  so this always fails.
+- **Expected** commands are ones upstream may rename or retire. A miss is
+  reported as a warning *only when the spec is otherwise healthy* — command
+  count and flag count both within tolerance. If the spec also looks degraded,
+  the miss is treated as an error, so a collapsed spec still fails loudly.
+
+v1.71.0 renamed top-level `simulate` → `simulation` and added `secret`
+([issue #59](https://github.com/yokawasa/postman-cli-completion/issues/59)).
+Under the original all-or-nothing list this blocked the catch-up with
+`fixed command missing: simulate` even though introspection was perfectly fine.
+Note that `collection run --simulate` is a *flag* and still exists; only the
+top-level command was renamed.
 
 ---
 
