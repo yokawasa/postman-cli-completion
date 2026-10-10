@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.67.0",
-  "introspectedAt": "2026-09-30T05:05:02Z",
+  "postmanCliVersion": "1.71.0",
+  "introspectedAt": "2026-10-09T12:15:18Z",
   "global": {
     "flags": [
       {
@@ -135,12 +135,13 @@
           "description": "Create and bind a workspace non-interactively (personal, team)"
         },
         {
-          "long": "--no-cloud",
-          "description": "Skip the workspace step entirely"
+          "long": "--yes",
+          "short": "-y",
+          "description": "Accept the default for every question instead of asking or stopping"
         },
         {
           "long": "--report-events",
-          "description": "Send init analytics to Postman (requires login)"
+          "description": "Dispatch init events to the API Catalog and Application Inventory ingestion pipelines (requires login)"
         },
         {
           "long": "--help",
@@ -390,6 +391,46 @@
           ]
         },
         {
+          "name": "ai-readiness",
+          "aliases": [],
+          "description": "Score a Postman collection for AI readiness by ID, local file path, or local-mode directory.",
+          "positionals": [
+            {
+              "name": "collectionId/Path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
+            },
+            {
+              "long": "--export",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Write the report to this file instead of stdout. A directory receives the report under a name derived from the collection. Requires --output html."
+            },
+            {
+              "long": "--min-score",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "get",
           "aliases": [],
           "description": "Fetch a Postman collection in the V3 format and print it.",
@@ -414,6 +455,48 @@
             {
               "long": "--json",
               "description": "Print the collection as machine-readable V3 JSON instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Delete a cloud collection by id or a local collection directory by path. Prompts unless --yes is passed.",
+          "positionals": [
+            {
+              "name": "idOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Delete without asking for confirmation first"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key, used when deleting a cloud collection"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON"
             },
             {
               "long": "--help",
@@ -605,7 +688,7 @@
         {
           "name": "request",
           "aliases": [],
-          "description": "Add, update, or remove requests in a local v3 collection.",
+          "description": "Add, get, update, or remove requests in a local v3 collection.",
           "positionals": [],
           "flags": [
             {
@@ -643,6 +726,47 @@
                   "valueType": "string",
                   "valueName": "type",
                   "description": "Request type: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Show a request (any type) in a v3 collection: its own fields, with examples and messages as references.",
+              "positionals": [
+                {
+                  "name": "request",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path. Required locally; optional in cloud mode (id only)."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope a bare-name request selector, e.g. \"Users/Admin\" (local mode only)."
                 },
                 {
                   "long": "--workspace",
@@ -838,7 +962,7 @@
         {
           "name": "folder",
           "aliases": [],
-          "description": "Add, update, or remove folders in a local v3 collection.",
+          "description": "Add, get, update, or remove folders in a local v3 collection.",
           "positionals": [],
           "flags": [
             {
@@ -870,6 +994,47 @@
                   "valueType": "string",
                   "valueName": "id|name|path",
                   "description": "Parent folder within the collection, e.g. \"Users/Admin\". Defaults to the root."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Show a folder in a v3 collection: its own fields and its direct children as references.",
+              "positionals": [
+                {
+                  "name": "folder",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path. Required locally; optional in cloud mode (id only)."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent folder to scope a bare-name selector, e.g. \"Users\" (local mode only)."
                 },
                 {
                   "long": "--workspace",
@@ -1005,6 +1170,438 @@
           ]
         },
         {
+          "name": "example",
+          "aliases": [],
+          "description": "Add, update, remove, get, or list examples (saved responses) under a request.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "add",
+              "aliases": [],
+              "description": "Add an empty example under a request (defaults to 200 OK; set details later with `update`).",
+              "positionals": [
+                {
+                  "name": "example-name",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection: name, directory, id, cloud id, or path. Required."
+                },
+                {
+                  "long": "--request",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent request (required). Local: name/path/id; cloud: id."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector, e.g. \"Users/Admin\"."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Example type: http (default). (default: \"http\")"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "update",
+              "aliases": [],
+              "description": "Update an example (only the fields you pass).",
+              "positionals": [
+                {
+                  "name": "example",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection. Required."
+                },
+                {
+                  "long": "--request",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent request (optional; disambiguates local names / --copy-request)."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector."
+                },
+                {
+                  "long": "--status-code",
+                  "valueType": "string",
+                  "valueName": "code",
+                  "description": "HTTP status code."
+                },
+                {
+                  "long": "--status-text",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "HTTP status text."
+                },
+                {
+                  "long": "--body",
+                  "short": "-d",
+                  "valueType": "string",
+                  "valueName": "body",
+                  "description": "Response body as contentType:content."
+                },
+                {
+                  "long": "--headers",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Replace response headers. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--description",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Example description."
+                },
+                {
+                  "long": "--rename",
+                  "valueType": "string",
+                  "valueName": "name",
+                  "description": "Rename the example."
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Example request snapshot URL."
+                },
+                {
+                  "long": "--method",
+                  "valueType": "string",
+                  "valueName": "method",
+                  "description": "Example request snapshot method."
+                },
+                {
+                  "long": "--request-headers",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Replace request-snapshot headers. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--request-param",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Replace request-snapshot query params. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--request-body",
+                  "valueType": "string",
+                  "valueName": "body",
+                  "description": "Example request snapshot body."
+                },
+                {
+                  "long": "--copy-request",
+                  "description": "Refresh example.request from the parent request."
+                },
+                {
+                  "long": "--clear-request",
+                  "description": "Remove the example.request snapshot."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Example type for cloud mode: http. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "rm",
+              "aliases": [
+                "remove"
+              ],
+              "description": "Remove an example from a request.",
+              "positionals": [
+                {
+                  "name": "example",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection. Required."
+                },
+                {
+                  "long": "--request",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent request (optional; disambiguates local names)."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Example type for cloud mode: http. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get a single example.",
+              "positionals": [
+                {
+                  "name": "example",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection. Required."
+                },
+                {
+                  "long": "--request",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent request (optional; disambiguates local names)."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Example type for cloud mode: http. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "List examples under a request.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--collection",
+                  "valueType": "string",
+                  "valueName": "id|name",
+                  "description": "Target collection. Required."
+                },
+                {
+                  "long": "--request",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Parent request (required)."
+                },
+                {
+                  "long": "--folder",
+                  "valueType": "string",
+                  "valueName": "id|name|path",
+                  "description": "Folder to scope the request selector."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Example type for cloud mode: http. (default: \"http\")"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "import",
+          "aliases": [],
+          "description": "Import a cURL or HAR source into a v3 collection (local, or cloud with --workspace).",
+          "positionals": [
+            {
+              "name": "src",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Source format: curl or har. Auto-detected from the extension/content when omitted."
+            },
+            {
+              "long": "--name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Collection display name. Defaults to a per-format fallback."
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "file",
+              "valueName": "dir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Output directory for the local collection (default: postman/collections/<name>)."
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Create the collection in a Postman cloud workspace by id (cloud mode)."
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite an existing local target directory."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Max time for a cloud import, in milliseconds (default 120000)."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output (cloud import diagnostics)."
+            },
+            {
+              "long": "--json",
+              "description": "JSON output."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "list",
           "aliases": [],
           "description": "List collections: your local project's collections by default, or a Postman cloud workspace's collections with --workspace.",
@@ -1075,52 +1672,10 @@
               "description": "Specify an Id or path to a file containing Postman Globals"
             },
             {
-              "long": "--reporters",
-              "short": "-r",
-              "valueType": "string",
-              "valueName": "reporter",
-              "valueOptional": true,
-              "description": "Specify the reporters to use for the run: cli,json,junit,html. For multiple reporters, provide their names as a comma-separated list (E.g., -r cli,json) (default: [\"cli\"])"
-            },
-            {
               "long": "--output",
               "valueType": "string",
               "valueName": "folder",
-              "description": "Write a YAML-based run report to the given folder. Creates a paired `<prefix>.collection-run-summary.yaml` (refreshed during the run) and streaming `<prefix>.collection-run-executions.yaml`, where prefix defaults to `<collection-slug>-<timestamp>`. Gotcha: --output streams run data to file and cannot be combined with the built-in reporters (-r/--reporter-*); doing so exits with an error. This keeps large runs from buffering an entire report in memory."
-            },
-            {
-              "long": "--reporter-[reporter]-export",
-              "valueType": "file",
-              "valueName": "path",
-              "patterns": [
-                "*.json"
-              ],
-              "description": "[Optional] Specify a path to save the report. By default, reports are saved to the /postman-cli-reports directory in your current working directory. If the directory doesn't exist, it will be created automatically. If the specified path is an existing directory, the report file will be saved within it. Supported reporters: json, junit and html.",
-              "dynamic": true
-            },
-            {
-              "long": "--reporter-json-structure",
-              "description": "[Optional] Generate JSON report using the Newman schema. By default, JSON reports use the native structure of Postman CLI."
-            },
-            {
-              "long": "--reporter-[reporter]-omitRequestBodies",
-              "description": "[Optional] Remove all request bodies from the report. Supported reporters: json, html.",
-              "dynamic": true
-            },
-            {
-              "long": "--reporter-[reporter]-omitResponseBodies",
-              "description": "[Optional] Remove all response bodies from the report. Supported reporters: json, html.",
-              "dynamic": true
-            },
-            {
-              "long": "--reporter-[reporter]-omitHeaders",
-              "description": "[Optional] Remove all request and response headers from the report. Supported reporters: json, html.",
-              "dynamic": true
-            },
-            {
-              "long": "--reporter-[reporter]-omitAllHeadersAndBody",
-              "description": "[Optional] Remove all request and response headers, as well as request and response bodies, from the report. Supported reporters: json, html.",
-              "dynamic": true
+              "description": "Write a YAML-based run report to the given folder. Creates a paired `<prefix>.collection-run-summary.yaml` (refreshed during the run) and streaming `<prefix>.collection-run-executions.yaml`, where prefix defaults to `<collection-slug>-<timestamp>`. Gotcha: --output streams run data to file, which keeps large runs from buffering an entire report in memory."
             },
             {
               "long": "--iteration-count",
@@ -1199,7 +1754,7 @@
               "long": "--alias",
               "valueType": "string",
               "valueName": "alias",
-              "description": "Specify the alias of the API key to fetch remote resources using it."
+              "description": "Specify the alias of the API key to fetch remote resources using it. (This option is discontinued and will be removed in a future release.)"
             },
             {
               "long": "--bail",
@@ -1390,11 +1945,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Upload results for git-native v3 collection runs. Analytics are sent by default"
+              "description": "Dispatch run events, including git-native v3 collection run results, to the API Catalog and Application Inventory ingestion pipelines (on by default)"
             },
             {
               "long": "--no-report-events",
-              "description": "Do not send analytics to Postman"
+              "description": "Do not dispatch run events to the API Catalog and Application Inventory ingestion pipelines"
             },
             {
               "long": "--help",
@@ -1513,8 +2068,35 @@
               "description": "JSON output"
             },
             {
-              "long": "--show-secrets",
-              "description": "Show secret variable values in output"
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Delete an environment by ID or local environment file path. Prompts unless --yes is passed.",
+          "positionals": [
+            {
+              "name": "environment",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Delete without asking for confirmation first"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
             },
             {
               "long": "--help",
@@ -1539,7 +2121,7 @@
             {
               "name": "set",
               "aliases": [],
-              "description": "Set one variable in an environment.",
+              "description": "Set one variable in an environment, or link it to a shared-vault secret.",
               "positionals": [
                 {
                   "name": "key",
@@ -1560,6 +2142,25 @@
                     "*.json"
                   ],
                   "description": "Cloud Environment ID or local environment file path."
+                },
+                {
+                  "long": "--secret-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Link this variable to a shared-vault secret instead of an inline value (from `secret create`'s output)."
+                },
+                {
+                  "long": "--vault-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Vault id for --secret-id (auto-resolved from --workspace when omitted)."
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Workspace to resolve --vault-id from when --secret-id is given without --vault-id (falls back to .postman/resources.yaml)."
                 },
                 {
                   "long": "--verbose",
@@ -1604,10 +2205,6 @@
                 {
                   "long": "--json",
                   "description": "JSON output"
-                },
-                {
-                  "long": "--show-secrets",
-                  "description": "Show secret variable values in output"
                 },
                 {
                   "long": "--help",
@@ -1690,7 +2287,7 @@
     },
     {
       "name": "globals",
-      "description": "Work with local Postman globals from the command line.",
+      "description": "Work with local Postman globals from the command line. Also read cloud globals by workspace.",
       "flags": [
         {
           "long": "--help",
@@ -1699,6 +2296,200 @@
         }
       ],
       "subcommands": [
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Read local workspace globals from the default file, or cloud globals with --workspace.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Workspace ID to read globals from."
+            },
+            {
+              "long": "--workspace-path",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Local Postman workspace path. Defaults to the current directory."
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "var",
+          "aliases": [],
+          "description": "Read and update variables in the workspace globals singleton.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "set",
+              "aliases": [],
+              "description": "Set one variable in local workspace globals, or link it to a shared-vault secret.",
+              "positionals": [
+                {
+                  "name": "key",
+                  "valueType": "file"
+                },
+                {
+                  "name": "value",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Workspace ID whose cloud globals should be updated."
+                },
+                {
+                  "long": "--secret-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Link this variable to a shared-vault secret instead of an inline value (from `secret create`'s output)."
+                },
+                {
+                  "long": "--vault-id",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Vault id for --secret-id (auto-resolved from --workspace when omitted)."
+                },
+                {
+                  "long": "--workspace-path",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Local Postman workspace path. Defaults to the current directory."
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Verbose output"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Read one variable from local workspace globals, or cloud globals with --workspace.",
+              "positionals": [
+                {
+                  "name": "key",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Workspace ID whose cloud globals should be read."
+                },
+                {
+                  "long": "--workspace-path",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Local Postman workspace path. Defaults to the current directory."
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Verbose output"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "unset",
+              "aliases": [],
+              "description": "Remove one variable from local workspace globals, or cloud globals with --workspace.",
+              "positionals": [
+                {
+                  "name": "key",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Workspace ID whose cloud globals should be updated."
+                },
+                {
+                  "long": "--workspace-path",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Local Postman workspace path. Defaults to the current directory."
+                },
+                {
+                  "long": "--verbose",
+                  "description": "Verbose output"
+                },
+                {
+                  "long": "--json",
+                  "description": "JSON output"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
         {
           "name": "lint",
           "aliases": [],
@@ -1921,11 +2712,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Accepted for compatibility; run events are reported by default"
+              "description": "Dispatch run events to the API Catalog and Application Inventory ingestion pipelines (on by default)"
             },
             {
               "long": "--no-report-events",
-              "description": "Do not report run events to Postman"
+              "description": "Do not dispatch run events to the API Catalog and Application Inventory ingestion pipelines"
             },
             {
               "long": "--help",
@@ -2043,11 +2834,51 @@
             },
             {
               "long": "--report-events",
-              "description": "Accepted for compatibility; analytics are sent by default"
+              "description": "Dispatch events to the API Catalog and Application Inventory ingestion pipelines (on by default)"
             },
             {
               "long": "--no-report-events",
-              "description": "Do not send analytics to Postman"
+              "description": "Do not dispatch events to the API Catalog and Application Inventory ingestion pipelines"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "ai-readiness",
+          "aliases": [],
+          "description": "Score an OpenAPI specification for AI readiness by ID or local file path.",
+          "positionals": [
+            {
+              "name": "spec",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "string",
+              "valueName": "value",
+              "description": "Output format for the results. [choices: \"cli\", \"json\", \"html\"]"
+            },
+            {
+              "long": "--export",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Write the report to this file instead of stdout. A directory receives the report under a name derived from the specification. Requires --output html."
+            },
+            {
+              "long": "--min-score",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Exit with a non-zero code if the overall score is below this threshold (0-100)."
             },
             {
               "long": "--help",
@@ -2132,7 +2963,7 @@
         {
           "name": "file",
           "aliases": [],
-          "description": "Add, update, or remove files in a spec (cloud ID or local directory).",
+          "description": "Get, add, update, or remove files in a spec (cloud ID or local directory).",
           "positionals": [],
           "flags": [
             {
@@ -2142,6 +2973,43 @@
             }
           ],
           "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Show a file in a spec: its path, size and content.",
+              "positionals": [
+                {
+                  "name": "spec",
+                  "valueType": "string"
+                },
+                {
+                  "name": "filePath",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Output as JSON"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
             {
               "name": "add",
               "aliases": [],
@@ -2439,6 +3307,10 @@
                   "description": "Postman API key"
                 },
                 {
+                  "long": "--force",
+                  "description": "Overwrite hand-written scripts that the spec would otherwise drop"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
@@ -2595,6 +3467,13 @@
               "description": "A Postman region name (see `postman runner regions`) or the id of a self-hosted runner created in Postman (list existing ones with `postman runner list`) to run from (repeatable) (default: [])"
             },
             {
+              "long": "--item",
+              "short": "-i",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Id of a request or folder in the collection to run, in the order given (repeatable; ids only, not names or paths; defaults to every request; list ids with `postman collection get <collection-id> --json`) (default: [])"
+            },
+            {
               "long": "--notify-email",
               "valueType": "string",
               "valueName": "email",
@@ -2693,7 +3572,7 @@
         {
           "name": "update",
           "aliases": [],
-          "description": "Update a monitor's schedule, runner, notifications or run options.",
+          "description": "Update a monitor's schedule, runner, notifications, request selection or run options.",
           "positionals": [
             {
               "name": "monitorId",
@@ -2724,6 +3603,17 @@
               "valueType": "string",
               "valueName": "value",
               "description": "A Postman region name (see `postman runner regions`) or the id of a self-hosted runner created in Postman (list existing ones with `postman runner list`) to run from (repeatable; replaces the current set) (default: [])"
+            },
+            {
+              "long": "--item",
+              "short": "-i",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Id of a request or folder in the collection to run, in the order given (repeatable; ids only, not names or paths; replaces the saved selection; list ids with `postman collection get <collection-id> --json`) (default: [])"
+            },
+            {
+              "long": "--clear-items",
+              "description": "Remove the saved selection so the monitor runs every request in its collection"
             },
             {
               "long": "--notify-email",
@@ -3339,6 +4229,12 @@
               "description": "Filter workspaces by visibility type: team, public, private, personal."
             },
             {
+              "long": "--cursor",
+              "valueType": "string",
+              "valueName": "cursor",
+              "description": "Fetch the page of workspaces that follows this cursor."
+            },
+            {
               "long": "--verbose",
               "description": "Verbose output"
             },
@@ -3366,6 +4262,10 @@
             {
               "long": "--verbose",
               "description": "Show detailed logging"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON."
             },
             {
               "long": "--help",
@@ -3396,16 +4296,20 @@
               "description": "Push strategy. \"force-sync\": mirror the whole workspace — also DELETE cloud entities that have no local counterpart (destructive). Defaults to \"default\" (create/update only)."
             },
             {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON. Implies non-interactive: use --yes to actually push."
+            },
+            {
               "long": "--verbose",
               "description": "Show detailed logging"
             },
             {
               "long": "--report-events",
-              "description": "Accepted for compatibility; analytics are sent by default"
+              "description": "Dispatch events to the API Catalog and Application Inventory ingestion pipelines (on by default)"
             },
             {
               "long": "--no-report-events",
-              "description": "Do not send analytics to Postman"
+              "description": "Do not dispatch events to the API Catalog and Application Inventory ingestion pipelines"
             },
             {
               "long": "--help",
@@ -3541,6 +4445,10 @@
               "description": "Create even when a workspace is already recorded for this repo"
             },
             {
+              "long": "--json",
+              "description": "Print the created workspace as machine-readable JSON."
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -3607,6 +4515,10 @@
               "description": "Pull from a different source workspace."
             },
             {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON. Implies non-interactive: use --yes to actually pull."
+            },
+            {
               "long": "--verbose",
               "description": "Show detailed logging"
             },
@@ -3637,6 +4549,10 @@
               "description": "Show detailed logging"
             },
             {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON."
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -3662,6 +4578,10 @@
             {
               "long": "--verbose",
               "description": "Show detailed logging"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON. Requires --yes to actually disconnect."
             },
             {
               "long": "--help",
@@ -3807,10 +4727,22 @@
               "description": "Collection UID to run after the performance test"
             },
             {
+              "long": "--peak-vu",
+              "valueType": "string",
+              "valueName": "count",
+              "description": "Peak (maximum) virtual users (default: 20)"
+            },
+            {
               "long": "--vu-count",
               "valueType": "string",
               "valueName": "count",
-              "description": "Number of virtual users (default: 20)"
+              "description": "Older name for --peak-vu"
+            },
+            {
+              "long": "--base-vu",
+              "valueType": "string",
+              "valueName": "count",
+              "description": "Base (floor) virtual users the run starts from, 1 or more. Not for --load-profile fixed, which runs flat"
             },
             {
               "long": "--duration",
@@ -3825,6 +4757,13 @@
               "valueType": "string",
               "valueName": "profile",
               "description": "Load profile type: fixed, ramp-up, spike, peak (default: \"ramp-up\")"
+            },
+            {
+              "long": "--load-segments",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "durations",
+              "description": "Duration of each phase of the profile, comma separated, in order. ramp-up takes 2, spike 3, peak 4; fixed takes none. See the load-segment section below for which position is which phase"
             },
             {
               "long": "--data-file",
@@ -3927,10 +4866,14 @@
               "description": "Runner to execute the performance test on: local, postman-cloud, or postman-cloud-static-ip (egress from your account region's static-IP cluster) (default: local)"
             },
             {
+              "long": "--disable-unicode",
+              "description": "Forces Unicode compliant symbols to be replaced by their plain text equivalents"
+            },
+            {
               "long": "--pass-if",
               "valueType": "string",
               "valueName": "condition",
-              "description": "Pass condition in format: function(metric, value). Functions: less_than, greater_than, less_than_eq, greater_than_eq. Metrics: avg, p90, p95, p99, error_rate, rps. Example: less_than(p95, 500) or less_than(error_rate, 5)"
+              "description": "Pass condition in format: function(metric, value) (repeatable; all conditions must hold). Functions: less_than, greater_than, less_than_eq, greater_than_eq. Metrics: avg, p90, p95, p99, error_rate, rps. Example: less_than(p95, 500)"
             },
             {
               "long": "--use-mock",
@@ -3979,8 +4922,48 @@
               "description": "Pagination cursor from a previous page's response"
             },
             {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Output format: table (default) or json (default: \"table\")"
+            },
+            {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Alias for --output json"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for the service before failing (default: \"30000\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Get one performance run by ID.",
+          "positionals": [
+            {
+              "name": "runId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Output format: table (default) or json (default: \"table\")"
+            },
+            {
+              "long": "--json",
+              "description": "Alias for --output json"
             },
             {
               "long": "--timeout",
@@ -4326,11 +5309,11 @@
             },
             {
               "long": "--report-events",
-              "description": "Accepted for compatibility; analytics are sent by default"
+              "description": "Dispatch events to the API Catalog and Application Inventory ingestion pipelines (on by default)"
             },
             {
               "long": "--no-report-events",
-              "description": "Do not send analytics to Postman"
+              "description": "Do not dispatch events to the API Catalog and Application Inventory ingestion pipelines"
             },
             {
               "long": "--verbose",
@@ -4563,6 +5546,79 @@
           "description": "Removes the Referer header when following redirects. By default, Referer header is sent with redirects."
         },
         {
+          "long": "--insecure",
+          "short": "-k",
+          "description": "Disable SSL certificate verification."
+        },
+        {
+          "long": "--ssl-client-cert-list",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.pem",
+            "*.crt",
+            "*.key"
+          ],
+          "description": "Specify the path to client certificate configurations (JSON)."
+        },
+        {
+          "long": "--ssl-client-cert",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.pem",
+            "*.crt",
+            "*.key"
+          ],
+          "description": "Specify the path to a client certificate (PEM)."
+        },
+        {
+          "long": "--ssl-client-key",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.pem",
+            "*.crt",
+            "*.key"
+          ],
+          "description": "Specify the path to a client certificate private key."
+        },
+        {
+          "long": "--ssl-client-passphrase",
+          "valueType": "string",
+          "valueName": "passphrase",
+          "description": "Specify the client certificate passphrase (for protected key)."
+        },
+        {
+          "long": "--ssl-extra-ca-certs",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.pem",
+            "*.crt",
+            "*.key"
+          ],
+          "description": "Specify additional trusted CA certificates (PEM)."
+        },
+        {
+          "long": "--cookie-jar",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.json"
+          ],
+          "description": "Specify the path to a custom cookie jar (serialized tough-cookie JSON)."
+        },
+        {
+          "long": "--export-cookie-jar",
+          "valueType": "file",
+          "valueName": "path",
+          "patterns": [
+            "*.json"
+          ],
+          "description": "Export the cookie jar to a file after completing the request."
+        },
+        {
           "long": "--retry",
           "valueType": "number",
           "valueName": "n",
@@ -4619,11 +5675,11 @@
         },
         {
           "long": "--report-events",
-          "description": "Accepted for compatibility; analytics are sent by default"
+          "description": "Dispatch events to the API Catalog and Application Inventory ingestion pipelines (on by default)"
         },
         {
           "long": "--no-report-events",
-          "description": "Do not send analytics to Postman"
+          "description": "Do not dispatch events to the API Catalog and Application Inventory ingestion pipelines"
         },
         {
           "long": "--help",
@@ -5606,18 +6662,18 @@
             },
             {
               "long": "--force",
-              "description": "Overwrite the output directory if it exists and is not empty (used with --capture-only)"
+              "description": "Deprecated: output directory is always overwritten on re-run (used with --capture-only)"
             },
             {
               "long": "--report-events",
               "valueType": "string",
               "valueName": "boolean",
               "valueOptional": true,
-              "description": "Send application test run results to Postman (default: true)"
+              "description": "Dispatch application test run results to the API Catalog and Application Inventory ingestion pipelines (on by default) (default: true)"
             },
             {
               "long": "--no-report-events",
-              "description": "Do not send run results or analytics to Postman"
+              "description": "Do not dispatch run results to the API Catalog and Application Inventory ingestion pipelines"
             },
             {
               "long": "--verbose",
@@ -5655,8 +6711,8 @@
       ]
     },
     {
-      "name": "simulate",
-      "description": "Start mock servers with simulated failure scenarios.",
+      "name": "simulation",
+      "description": "Create, run and manage simulations — serve several mocks behind one address.",
       "flags": [
         {
           "long": "--help",
@@ -5666,28 +6722,53 @@
       ],
       "subcommands": [
         {
-          "name": "run",
+          "name": "create",
           "aliases": [],
-          "description": "Start mocks with fault-injection scenarios defined in a .sim.yaml file",
-          "positionals": [
-            {
-              "name": "filepath",
-              "valueType": "file"
-            }
-          ],
+          "description": "Create a simulation that serves several mocks behind one address",
+          "positionals": [],
           "flags": [
+            {
+              "long": "--name",
+              "short": "-n",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Name for the simulation"
+            },
+            {
+              "long": "--mock",
+              "valueType": "file",
+              "valueName": "mockIdOrPath",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "A mock to include (repeatable). Use a local mock path to build the simulation in your repository, or a Postman mock id to create it in Postman cloud. Set its address with <mockIdOrPath>=<routeKey>. (default: [])"
+            },
+            {
+              "long": "--routing",
+              "valueType": "string",
+              "valueName": "header|path",
+              "description": "How callers reach each mock: header or path (default path)"
+            },
+            {
+              "long": "--output",
+              "short": "-o",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Where to save the simulation file in your repository, a file or folder (defaults to postman/simulations)"
+            },
+            {
+              "long": "--force",
+              "description": "Overwrite the simulation file if it already exists"
+            },
             {
               "long": "--workspace",
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Workspace that owns the run, for recording its simulation start history."
-            },
-            {
-              "long": "--simulation",
-              "valueType": "string",
-              "valueName": "id",
-              "description": "Simulation id to record start history against (a local .sim.yaml has only a name). Required, with --workspace, to record history."
+              "description": "Postman cloud workspace to create the simulation in, by id (defaults to the workspace already linked to this project)"
             },
             {
               "long": "--api-key",
@@ -5698,11 +6779,333 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key for recording start history (defaults to your `postman login` session)."
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List the simulations in your repository or Postman cloud workspace",
+          "positionals": [
+            {
+              "name": "pathOrDir",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Postman cloud workspace whose simulations to list, by id (defaults to the workspace already linked to this project)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the list as machine-readable data instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "aliases": [],
+          "description": "Show a simulation's details using its .sim.yaml path if it lives in your repository, or its id if it lives in Postman cloud.",
+          "positionals": [
+            {
+              "name": "simIdOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the details as machine-readable data instead of a table"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Serve a simulation's mocks on one local port, routing each by its routeKey. Pass a .sim.yaml path (local) or a Postman simulation id (fetched and run locally).",
+          "positionals": [
+            {
+              "name": "simIdOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to a file of environment variables for the mocks (relative or absolute)"
+            },
+            {
+              "long": "--globals",
+              "short": "-g",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Path to a file of global variables for the mocks (relative or absolute)"
+            },
+            {
+              "long": "--port",
+              "short": "-p",
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Port to serve on (e.g. 4010), or \"auto\" for a free one (default 3000)"
+            },
+            {
+              "long": "--dataset",
+              "valueType": "file",
+              "valueName": "pathOrDir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Dataset file or folder to load for pm.datasets (repeatable) (default: [])"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace for recording start history. Derived from a simulation id or the linked project; needed only for an unlinked .sim.yaml path."
+            },
+            {
+              "long": "--simulation",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Simulation id to record start history against for a .sim.yaml path (a local file has only a name). Not needed when running by simulation id, or when the file is linked to a cloud simulation (via workspace push)."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--no-history",
-              "description": "Do not record this run in the simulation's start history."
+              "description": "Do not record this run in the simulation's start history"
+            },
+            {
+              "long": "--output",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Live output format: auto (default, human-readable logs) or ndjson (one JSON event per line on stdout, ending with a \"summary\" event — for CI or other non-interactive use) (default: \"auto\")"
+            },
+            {
+              "long": "--proxy",
+              "description": "Serve the mocks behind a local HTTP(S) forward proxy instead of one routed port, so a repo under test can point HTTP_PROXY/HTTPS_PROXY at it and reach each mock by hostname without code changes. Requires a simulation.yaml (routing config), not a .sim.yaml."
+            },
+            {
+              "long": "--proxy-port",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Port for the proxy server. Distinct from --port, which is the one-port run's own port. (default: 7001)"
+            },
+            {
+              "long": "--scenario",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Scenario each mock serves, sent as both pm-mock-scenario and x-mock-scenario. (default: \"default\")"
+            },
+            {
+              "long": "--session",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Session id to select via the x-mock-session header (default: a generated id)."
+            },
+            {
+              "long": "--log-format",
+              "valueType": "string",
+              "valueName": "format",
+              "description": "Proxy request log format: text or json. (default: \"text\")"
+            },
+            {
+              "long": "--log-body",
+              "description": "Also log each response body (truncated). Buffers full responses in memory; meant for temporary debugging, not left on by default."
+            },
+            {
+              "long": "--doctor",
+              "description": "Start the proxy, probe each available HTTP client (fetch/undici/axios/node-fetch) to confirm it honors HTTP_PROXY/HTTPS_PROXY, then exit."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "push",
+          "aliases": [],
+          "description": "Upload a simulation from your repository to Postman cloud (creates it the first time, updates it after). Its member mocks are pushed too.",
+          "positionals": [
+            {
+              "name": "simPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Postman cloud workspace to upload to, by id (defaults to the workspace already linked to this project)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "deploy",
+          "aliases": [],
+          "description": "Turn a simulation in Postman cloud into a live mock server others can call over the internet.",
+          "positionals": [
+            {
+              "name": "simId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Postman cloud workspace that will own the server, by id (defaults to the workspace already linked to this project)"
+            },
+            {
+              "long": "--name",
+              "short": "-n",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Name for the mock server (you are asked for one if you skip this)"
+            },
+            {
+              "long": "--slug",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "slug",
+              "description": "Short label used in the server's web address, e.g. \"my-sim\" (you are asked for one if you skip this)"
+            },
+            {
+              "long": "--private",
+              "description": "Require a Postman API key to reach the server. Public by default."
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Use the defaults and skip all questions (public)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "aliases": [],
+          "description": "Delete a simulation using its .sim.yaml path if it lives in your repository, or its id if it lives in Postman cloud. Cannot be undone.",
+          "positionals": [
+            {
+              "name": "simIdOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Delete without asking for confirmation first"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key, used with a Postman cloud id (defaults to your `postman login` session)"
             },
             {
               "long": "--help",
@@ -7090,7 +8493,7 @@
                   "short": "-n",
                   "valueType": "string",
                   "valueName": "name",
-                  "description": "Logical name for the source (becomes the SQL table name). Required for every source except a spreadsheet, whose worksheets are each named source_<worksheet>"
+                  "description": "Logical name for the source (becomes the SQL table name when it loads a file or a database --table). Required for every source except a spreadsheet, whose worksheets are each named source_<worksheet>"
                 },
                 {
                   "long": "--source-id",
@@ -7248,7 +8651,7 @@
                   "long": "--table",
                   "valueType": "string",
                   "valueName": "table",
-                  "description": "DB table name (required for sqlserver)"
+                  "description": "DB table to load (required for sqlserver). Leave it out to connect to the whole database; query it with `dataset query -s <source>` or `dataset view create -s <source>`"
                 },
                 {
                   "long": "--ssh-host",
@@ -7559,7 +8962,7 @@
                   "long": "--table",
                   "valueType": "string",
                   "valueName": "table",
-                  "description": "Update DB table name"
+                  "description": "Update the DB table to load. A source without a table connects to the whole database; query it with `dataset query -s <source>` or `dataset view create -s <source>`"
                 },
                 {
                   "long": "--ssh-host",
@@ -8087,6 +9490,34 @@
           ]
         },
         {
+          "name": "get",
+          "aliases": [],
+          "description": "Show a declared workspace dependency from .postman/resources.yaml.",
+          "positionals": [
+            {
+              "name": "nameOrId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "type",
+              "description": "Only match dependencies of this type (collection, environment, or mock)."
+            },
+            {
+              "long": "--json",
+              "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "list",
           "aliases": [],
           "description": "List the workspace dependencies declared in .postman/resources.yaml.",
@@ -8190,6 +9621,110 @@
             {
               "long": "--json",
               "description": "Output the result as JSON."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "secret",
+      "description": "Create and manage Postman secrets in a team's shared vault.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "create",
+          "aliases": [],
+          "description": "Create a secret in a team's shared vault.",
+          "positionals": [
+            {
+              "name": "keys...",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--team-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Team id (defaults to your authenticated profile's team; must be your own team — the vault rejects any other team id, even one you otherwise have access to)"
+            },
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--terminal",
+              "description": "Enter one secret value through the terminal instead of the default browser form"
+            },
+            {
+              "long": "--value-stdin",
+              "description": "Read the secret value from stdin instead of prompting; implies --terminal"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "string",
+              "valueName": "seconds",
+              "description": "Seconds to wait for the browser form (default 300)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "aliases": [],
+          "description": "List the secrets in a workspace's shared vault: key, secret id, vault id, and allowed domains.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--workspace",
+              "short": "-w",
+              "valueType": "string",
+              "valueName": "workspaceId",
+              "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key"
+            },
+            {
+              "long": "--json",
+              "description": "Print the list as machine-readable JSON."
             },
             {
               "long": "--help",

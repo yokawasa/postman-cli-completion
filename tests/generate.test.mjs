@@ -1,8 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { tmpdir } from "node:os";
+import { spawnSync } from "node:child_process";
 
 import {
   stripAnsi, splitSections, parseEntries, parseFlag, parseCommandEntry,
@@ -92,7 +94,7 @@ test("introspect spec — postmanCliVersion is semver and required top-level com
   for (const required of [
     "login", "logout", "collection", "api", "runner", "spec",
     "monitor", "workspace", "performance", "flows", "request",
-    "sdk", "mock", "application", "simulate",
+    "sdk", "mock", "application", "simulation",
   ]) {
     assert.ok(names.includes(required), `missing top-level command: ${required}`);
   }
@@ -169,4 +171,100 @@ test("snapshot — bash emitter matches checked-in completions/bash/postman.bash
 
 test("snapshot — fish emitter matches checked-in completions/fish/postman.fish", () => {
   assert.equal(emitFish(merged), read("completions/fish/postman.fish"));
+});
+
+// --- validate-diff safety net (issue #59) ---------------------------------
+
+function runValidateDiff(oldSpec, newSpec) {
+  const dir = mkdtempSync(join(tmpdir(), "validate-diff-"));
+  const oldPath = join(dir, "old.json");
+  const newPath = join(dir, "new.json");
+  writeFileSync(oldPath, JSON.stringify(oldSpec));
+  writeFileSync(newPath, JSON.stringify(newSpec));
+  const res = spawnSync(
+    process.execPath,
+    [resolve(ROOT, "scripts/validate-diff.mjs"), oldPath, newPath],
+    { encoding: "utf8" }
+  );
+  rmSync(dir, { recursive: true, force: true });
+  return { status: res.status, stderr: res.stderr };
+}
+
+// Minimal spec with enough flags that the 30% drop threshold is not tripped
+// by the fixtures themselves.
+function specWith(names, { version = "1.0.0", flagsPerCommand = 10 } = {}) {
+  return {
+    postmanCliVersion: version,
+    global: { flags: [] },
+    commands: names.map((name) => ({
+      name,
+      flags: Array.from({ length: flagsPerCommand }, (_, i) => ({ long: `--f${i}` })),
+    })),
+  };
+}
+
+const CORE = ["login", "logout", "collection", "api", "spec", "request"];
+const EXPECTED = [
+  "runner", "monitor", "workspace", "performance", "flows",
+  "sdk", "mock", "application", "simulation",
+];
+const ALL = [...CORE, ...EXPECTED];
+
+test("validate-diff — healthy upgrade passes", () => {
+  const r = runValidateDiff(
+    specWith(ALL, { version: "1.67.0" }),
+    specWith(ALL, { version: "1.71.0" })
+  );
+  assert.equal(r.status, 0, r.stderr);
+});
+
+test("validate-diff — upstream rename of an expected command warns but passes (issue #59)", () => {
+  // v1.71.0 renamed top-level `simulate` → `simulation`. Introspection was
+  // fine, so the catch-up must not be blocked.
+  const older = specWith([...CORE, ...EXPECTED.filter((n) => n !== "simulation"), "simulate"], {
+    version: "1.67.0",
+  });
+  const newer = specWith([...ALL, "secret"], { version: "1.71.0" });
+  const r = runValidateDiff(older, newer);
+  assert.equal(r.status, 0, r.stderr);
+});
+
+test("validate-diff — missing expected command warns when spec is otherwise healthy", () => {
+  const newer = specWith([...ALL.filter((n) => n !== "mock"), "mocking"]);
+  const r = runValidateDiff(specWith(ALL), newer);
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stderr, /warning: expected command missing: mock/);
+});
+
+test("validate-diff — missing core command always fails, even if spec looks healthy", () => {
+  const newer = specWith([...ALL.filter((n) => n !== "collection"), "zz1", "zz2"]);
+  const r = runValidateDiff(specWith(ALL), newer);
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /core command missing: collection/);
+});
+
+test("validate-diff — collapsed spec fails and missing expected commands become errors", () => {
+  const r = runValidateDiff(specWith(ALL), specWith(CORE.slice(0, 2)));
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /top-level command count decreased/);
+  // Degraded spec ⇒ no longer excused as a rename.
+  assert.match(r.stderr, /- expected command missing: mock/);
+});
+
+test("validate-diff — gutted flags fail even with command names intact", () => {
+  const r = runValidateDiff(
+    specWith(ALL, { flagsPerCommand: 10 }),
+    specWith(ALL, { flagsPerCommand: 0 })
+  );
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /flag count dropped/);
+});
+
+test("validate-diff — version regression fails", () => {
+  const r = runValidateDiff(
+    specWith(ALL, { version: "1.71.0" }),
+    specWith(ALL, { version: "1.67.0" })
+  );
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /version regression/);
 });
