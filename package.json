@@ -8,6 +8,7 @@
   },
   "files": [
     "bin/",
+    "lib/",
     "completions/zsh/_postman",
     "completions/bash/postman.bash",
     "completions/fish/postman.fish",
@@ -19,6 +20,7 @@
     "generate": "node scripts/generate.mjs",
     "generate:check": "node scripts/generate.mjs --check",
     "check-version": "node scripts/check-version.mjs",
+    "postinstall": "node lib/postinstall.mjs",
     "test": "node --test tests/*.test.mjs",
     "prepublishOnly": "node scripts/generate.mjs --check && node --test tests/*.test.mjs"
   },
