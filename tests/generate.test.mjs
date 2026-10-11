@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync, rmSync, existsSync } from "node:fs";
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
@@ -8,6 +8,7 @@ import { spawnSync } from "node:child_process";
 
 import {
   stripAnsi, splitSections, parseEntries, parseFlag, parseCommandEntry,
+  isModernHelp, parseAliasEntries, restoreRootShortFlags,
 } from "../scripts/introspect.mjs";
 import { applyOverrides } from "../scripts/generate.mjs";
 import { emitZsh } from "../scripts/emitters/zsh.mjs";
@@ -78,6 +79,96 @@ test("splitSections — Usage and section bodies separated", () => {
   assert.ok(names.includes("migrate"));
   assert.ok(names.includes("lint"));
   assert.ok(names.includes("run"));
+});
+
+// --- v1.73.0 gh-style top-level help (issue #61) ---------------------------
+
+test("isModernHelp — distinguishes v1.73.0 root help from commander.js help", () => {
+  assert.ok(isModernHelp(stripAnsi(read("tests/fixtures/help-root-v173.txt"))));
+  assert.ok(!isModernHelp(stripAnsi(read("tests/fixtures/help-root.txt"))));
+  assert.ok(!isModernHelp(stripAnsi(read("tests/fixtures/help-collection.txt"))));
+});
+
+test("splitSections — v1.73.0 root help: every COMMANDS group contributes, colons stripped", () => {
+  const s = splitSections(stripAnsi(read("tests/fixtures/help-root-v173.txt")));
+  const names = s.commands.map((e) => parseCommandEntry(e).name);
+
+  // One command drawn from each of the four groups.
+  for (const [group, name] of [
+    ["CORE", "collection"], ["AGENT", "search"],
+    ["AUTHENTICATION", "login"], ["ADDITIONAL", "performance"],
+  ]) {
+    assert.ok(names.includes(name), `${group} COMMANDS not merged: missing ${name}`);
+  }
+  assert.equal(names.length, 31);
+  // Decorative trailing colons must not survive into command names.
+  assert.ok(!names.some((n) => n.includes(":")), `colon leaked: ${names.join(" ")}`);
+  assert.equal(s.usage, "postman <command> [subcommand] [flags]");
+});
+
+test("splitSections — v1.73.0 ALIAS COMMANDS kept out of the command list", () => {
+  const s = splitSections(stripAnsi(read("tests/fixtures/help-root-v173.txt")));
+  const names = s.commands.map((e) => parseCommandEntry(e).name);
+  for (const alias of ["app", "fl", "ws"]) {
+    assert.ok(!names.includes(alias), `alias leaked in as a command: ${alias}`);
+  }
+  assert.equal(s.aliases.length, 3);
+});
+
+test("splitSections — v1.73.0 FLAGS parsed and EXAMPLES/LEARN MORE ignored", () => {
+  const s = splitSections(stripAnsi(read("tests/fixtures/help-root-v173.txt")));
+  const longs = s.options.map((e) => parseFlag(e.head).long);
+  assert.deepEqual(longs.sort(), ["--color", "--help", "--silent", "--version"]);
+  // `$ postman init` under EXAMPLES must not be read as a flag or a command.
+  const heads = [...s.options, ...s.commands].map((e) => e.head);
+  assert.ok(!heads.some((h) => h.startsWith("$")), `EXAMPLES leaked: ${heads.join(" ")}`);
+});
+
+test("parseAliasEntries — ALIAS COMMANDS folded back onto their targets", () => {
+  const s = splitSections(stripAnsi(read("tests/fixtures/help-root-v173.txt")));
+  const byTarget = parseAliasEntries(s.aliases);
+  assert.deepEqual(byTarget.get("flows"), ["fl"]);
+  assert.deepEqual(byTarget.get("workspace"), ["ws"]);
+  assert.deepEqual(byTarget.get("application"), ["app"]);
+});
+
+test("restoreRootShortFlags — undocumented but working -v/-h re-attached", () => {
+  const flags = restoreRootShortFlags([
+    { long: "--version" }, { long: "--help" }, { long: "--silent" },
+  ]);
+  assert.equal(flags.find((f) => f.long === "--version").short, "-v");
+  assert.equal(flags.find((f) => f.long === "--help").short, "-h");
+  // Flags that never had a short form stay without one.
+  assert.equal(flags.find((f) => f.long === "--silent").short, undefined);
+});
+
+test("restoreRootShortFlags — does not clobber a short the help already documents", () => {
+  const flags = restoreRootShortFlags([{ long: "--help", short: "-?" }]);
+  assert.equal(flags[0].short, "-?");
+});
+
+// The bug behind issue #61 was not that parsing broke, but that introspect
+// wrote a 0-command spec anyway and let validate-diff report the symptom two
+// steps later. Parsing zero commands must fail at the source.
+test("introspect.mjs — unparseable help fails loudly instead of writing an empty spec", () => {
+  const dir = mkdtempSync(join(tmpdir(), "introspect-guard-"));
+  const stub = join(dir, "postman");
+  const out = join(dir, "commands.json");
+  writeFileSync(stub,
+    '#!/bin/sh\n' +
+    'case "$1" in --version) echo 9.9.9 ;; *) echo "a help layout we do not know" ;; esac\n',
+    { mode: 0o755 });
+
+  const res = spawnSync(
+    process.execPath,
+    [resolve(ROOT, "scripts/introspect.mjs"), "--out", out],
+    { encoding: "utf8", env: { ...process.env, POSTMAN_BIN: stub } }
+  );
+
+  assert.notEqual(res.status, 0, "introspect should exit non-zero");
+  assert.match(res.stderr, /0 top-level commands/);
+  assert.ok(!existsSync(out), "no spec file should be written");
+  rmSync(dir, { recursive: true, force: true });
 });
 
 test("parseEntries — deeply-indented --reporter-*-export captured as own entry", () => {
