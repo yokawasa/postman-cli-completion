@@ -8,6 +8,7 @@
   },
   "files": [
     "bin/",
+    "lib/",
     "completions/zsh/_postman",
     "completions/bash/postman.bash",
     "completions/fish/postman.fish",

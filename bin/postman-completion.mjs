@@ -2,6 +2,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkVersions } from "../lib/version-check.mjs";
 
 // bin/ lives one level under the package root. Resolve completion files relative
 // to this module (NOT process.cwd(), which is the user's shell directory).
@@ -13,6 +14,9 @@ const FILES = {
   fish: resolve(PKG_ROOT, "completions/fish/postman.fish"),
 };
 
+const SPEC_PATH = resolve(PKG_ROOT, "spec/commands.json");
+const PKG_JSON_PATH = resolve(PKG_ROOT, "package.json");
+
 const USAGE = `postman-completion — shell completions for the Postman CLI
 
 Note: this installs the command "postman-completion"; it does NOT shadow the
@@ -22,6 +26,8 @@ Usage:
   postman-completion <zsh|bash|fish>          Print the completion script to stdout
   postman-completion path <zsh|bash|fish>     Print the packaged file's absolute path
   postman-completion path <shell> --dir       Print the file's directory (for zsh fpath)
+  postman-completion doctor                   Check your Postman CLI version for updates
+  postman-completion doctor --offline         Same, without querying the npm registry
   postman-completion --help                   Show this help
 
 Wire it into your shell:
@@ -59,7 +65,30 @@ function printPath(args) {
   process.stdout.write(`${dirOnly ? dirname(file) : file}\n`);
 }
 
-function main(argv) {
+// Exit 0 when everything is current, 1 when the user should act (outdated CLI
+// or completions that no longer match it), so `doctor` is usable in a script.
+async function doctor(args) {
+  const offline = args.includes("--offline");
+  const report = await checkVersions({
+    specPath: SPEC_PATH,
+    packageJsonPath: PKG_JSON_PATH,
+    offline,
+  });
+
+  for (const line of report.lines) process.stdout.write(`${line}\n`);
+
+  // Surface *why* a comparison was skipped, but only when it hid information:
+  // an explicit --offline is the user's own choice and needs no explanation.
+  if (!offline && report.latestError) {
+    process.stderr.write(
+      `postman-completion: could not check npm for the latest version (${report.latestError})\n`,
+    );
+  }
+
+  process.exit(report.level === "warn" ? 1 : 0);
+}
+
+async function main(argv) {
   const [cmd, ...rest] = argv;
 
   if (!cmd || cmd === "--help" || cmd === "-h" || cmd === "help") {
@@ -72,6 +101,11 @@ function main(argv) {
     return;
   }
 
+  if (cmd === "doctor") {
+    await doctor(rest);
+    return;
+  }
+
   if (cmd in FILES) {
     emit(cmd);
     return;
@@ -80,4 +114,4 @@ function main(argv) {
   die(`unknown command: ${cmd}\n\n${USAGE}`);
 }
 
-main(process.argv.slice(2));
+main(process.argv.slice(2)).catch((err) => die(err.message));
