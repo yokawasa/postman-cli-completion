@@ -32,9 +32,62 @@ function getVersion() {
   return execFileSync(postmanBin, ["--version"], { encoding: "utf8" }).trim();
 }
 
-export function splitSections(text) {
+// Postman CLI v1.73.0 reformatted the *top-level* `postman --help` from
+// commander.js's "Usage:/Options:/Commands:" layout to a gh-style one with
+// uppercase headings, commands grouped across several "<GROUP> COMMANDS"
+// blocks, names suffixed with a colon (`api:`), and aliases split out into
+// their own ALIAS COMMANDS block (issue #61). Subcommand help is still
+// commander.js, so both layouts have to parse.
+const UPPERCASE_HEADING = /^[A-Z][A-Z ]*$/;
+
+export function isModernHelp(text) {
+  return text.split("\n").some((l) => /^USAGE\s*$/.test(l));
+}
+
+function splitSectionsModern(text) {
   const lines = text.split("\n");
-  const sections = { usage: "", arguments: [], options: [], commands: [] };
+  const sections = {
+    usage: "", arguments: [], options: [], commands: [], aliases: [],
+  };
+
+  // Command groups are additive: CORE/AGENT/AUTHENTICATION/ADDITIONAL all list
+  // real commands, so their entries accumulate into one list.
+  const acc = { arguments: [], options: [], commands: [], aliases: [] };
+  let current = null;
+
+  for (const line of lines) {
+    if (UPPERCASE_HEADING.test(line.trim()) && /^\S/.test(line)) {
+      const heading = line.trim();
+      if (heading === "USAGE") { current = "usage"; continue; }
+      if (heading === "FLAGS" || heading === "OPTIONS") { current = "options"; continue; }
+      if (heading === "ARGUMENTS") { current = "arguments"; continue; }
+      if (heading === "ALIAS COMMANDS") { current = "aliases"; continue; }
+      if (/ COMMANDS$/.test(heading)) { current = "commands"; continue; }
+      current = null;                       // EXAMPLES, LEARN MORE, …
+      continue;
+    }
+    if (current === "usage") {
+      if (!sections.usage && line.trim()) sections.usage = line.trim();
+      continue;
+    }
+    if (current && line.trim()) acc[current].push(line);
+  }
+
+  for (const key of ["arguments", "options", "commands", "aliases"]) {
+    if (acc[key].length) sections[key] = parseEntries(acc[key]);
+  }
+  // `api:` → `api`; the colon is purely decorative in this layout.
+  for (const key of ["commands", "aliases"]) {
+    for (const e of sections[key]) e.head = e.head.replace(/:$/, "");
+  }
+  return sections;
+}
+
+function splitSectionsLegacy(text) {
+  const lines = text.split("\n");
+  const sections = {
+    usage: "", arguments: [], options: [], commands: [], aliases: [],
+  };
   let i = 0;
 
   while (i < lines.length && !lines[i].startsWith("Usage:")) i++;
@@ -57,6 +110,41 @@ export function splitSections(text) {
   }
   flush();
   return sections;
+}
+
+export function splitSections(text) {
+  return isModernHelp(text)
+    ? splitSectionsModern(text)
+    : splitSectionsLegacy(text);
+}
+
+// The gh-style FLAGS block lists only long forms, but the shorts it dropped
+// (`postman -v`, `postman -h`) still work. Re-attach them so completions do not
+// regress; keyed by long flag, applied to the root command only.
+const ROOT_SHORT_FLAGS = { "--version": "-v", "--help": "-h" };
+
+export function restoreRootShortFlags(flags) {
+  for (const f of flags) {
+    const short = ROOT_SHORT_FLAGS[f.long];
+    if (short && !f.short) f.short = short;
+  }
+  return flags;
+}
+
+// ALIAS COMMANDS rows read `fl:  Alias for "flows"`. Fold them back onto the
+// target so completions keep offering the short forms, as they did when
+// commander.js rendered them inline (`flows|fl`).
+export function parseAliasEntries(entries) {
+  const byTarget = new Map();
+  for (const e of entries) {
+    const m = e.desc.match(/alias for ["'`]?([a-z][\w-]*)/i);
+    if (!m) continue;
+    const alias = e.head.replace(/:$/, "").trim();
+    if (!COMMAND_NAME.test(alias)) continue;
+    if (!byTarget.has(m[1])) byTarget.set(m[1], []);
+    byTarget.get(m[1]).push(alias);
+  }
+  return byTarget;
 }
 
 export function parseEntries(lines) {
@@ -97,10 +185,14 @@ export function parseEntries(lines) {
   return entries;
 }
 
+const USAGE_PLACEHOLDERS = new Set([
+  "[options]", "[command]", "[flags]", "[subcommand]", "<command>", "<subcommand>",
+]);
+
 function parsePositionals(usage) {
   const parts = usage.split(/\s+/).slice(2);
   return parts.flatMap((p) => {
-    if (p.startsWith("[options]") || p === "[command]") return [];
+    if (p.startsWith("[options]") || USAGE_PLACEHOLDERS.has(p)) return [];
     const m = p.match(/^[<\[](.+?)[>\]]$/);
     if (!m) return [];
     const name = m[1];
@@ -202,9 +294,13 @@ function introspectCommand(path, parentHelp = null) {
     })
     .filter(Boolean);
 
-  const node = { positionals, flags };
+  const node = {
+    positionals,
+    flags: path.length === 0 ? restoreRootShortFlags(flags) : flags,
+  };
 
   if (sections.commands.length) {
+    const aliasesByTarget = parseAliasEntries(sections.aliases || []);
     const subs = [];
     for (const e of sections.commands) {
       const meta = parseCommandEntry(e);
@@ -214,7 +310,7 @@ function introspectCommand(path, parentHelp = null) {
       if (child === null) continue;
       subs.push({
         name: meta.name,
-        aliases: meta.aliases,
+        aliases: [...meta.aliases, ...(aliasesByTarget.get(meta.name) || [])],
         description: meta.description,
         positionals: meta.positionals.length ? meta.positionals : child.positionals,
         flags: child.flags,
@@ -231,6 +327,16 @@ function main() {
   const version = getVersion();
   process.stderr.write(`Introspecting postman v${version}…\n`);
   const root = introspectCommand([]);
+
+  // An empty command list always means the help layout changed under us, never
+  // that `postman` genuinely has no commands. Fail here rather than writing a
+  // hollow spec and leaving validate-diff to report the symptom (issue #61).
+  if (!root?.subcommands?.length) {
+    throw new Error(
+      `parsed 0 top-level commands from \`${postmanBin} --help\` — ` +
+      `the help output format likely changed; update splitSections()`
+    );
+  }
 
   const spec = {
     postmanCliVersion: version,

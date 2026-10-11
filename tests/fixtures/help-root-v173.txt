@@ -1,0 +1,70 @@
+API engineering for your agents. Go faster from development to production with higher accuracy and fewer tokens
+
+Postman CLI v1.73.0
+Get Postman plugins for your agents. Run `npx @postman/postman-plugin install`
+
+USAGE
+  postman <command> [subcommand] [flags]
+
+CORE COMMANDS
+  api:          Publish and test your APIs directly from the command line
+  collection:   Run and test your Postman collections directly from the command line
+  dataset:      Work with Postman datasets in local YAML files or the cloud
+  environment:  Work with local and cloud Postman environments
+  flows:        Manage and interact with flows
+  globals:      Work with local and cloud Postman globals
+  mock:         Create, run, and manage Postman mocks
+  monitor:      Run and manage Postman monitors
+  request:      Send HTTP requests with full Postman capabilities
+  runner:       Start and inspect self-hosted runners, and list Postman-operated regions
+  sdk:          Generate and manage your SDKs directly from the command line
+  spec:         Lint and validate specifications from the command line
+  workspace:    Manage workspace resources
+
+AGENT COMMANDS
+  context-graph:  Ask natural-language questions about your team's Context Graph
+  describe:       Get API context for AI coding agents directly from the command line
+  init:           Set up Postman artifacts and agent instructions in a repository
+  search:         Search for Postman element types
+  skills:         Check and update the agent skills in this repository
+
+AUTHENTICATION COMMANDS
+  login:   Authenticate with Postman to access your resources
+  logout:  Delete the stored Postman API key
+  signup:  Sign up to keep the work you created as a guest
+  whoami:  Show the Postman account or guest session this CLI session is using
+
+ADDITIONAL COMMANDS
+  application:  Application-level commands: initialise config and run tests
+  dependency:   Manage workspace dependencies reused from other workspaces
+  feedback:     Submit feedback about CLI usability, gaps, and improvements
+  performance:  Manage performance tests on your collections
+  secret:       Create and manage Postman secrets in a team's shared vault
+  simulation:   Create, run and manage simulations
+  team:         Work with the teams inside your organisation
+  update:       Update Postman CLI using the original installation method
+  webhook:      Create and manage Postman webhooks
+
+ALIAS COMMANDS
+  app:  Alias for "application"
+  fl:   Alias for "flows"
+  ws:   Alias for "workspace"
+
+FLAGS
+  --color <value>  Enable/Disable colored output (auto|on|off)
+  --help           Show help for command
+  --silent         Silences all terminal output
+  --version        Show postman version
+
+EXAMPLES
+  $ postman init
+  $ postman request GET https://postman-echo.com/get
+  $ postman collection run ./postman/collections/quickstart
+
+LEARN MORE
+  Use `postman <command> --help` for more information about a command.
+  Read the documentation at https://learning.postman.com/docs/postman-cli/postman-cli-overview/
+  View the command reference at https://learning.postman.com/docs/postman-cli/postman-cli-options/
+  Read release notes at https://www.postman.com/release-notes/postman-cli/
+  Coming from Newman? See https://learning.postman.com/docs/reference/newman-cli/migrate-to-postman-cli/
+  Get support at https://support.postman.com/ or file issues at https://github.com/postmanlabs/postman-app-support/issues
