@@ -157,6 +157,36 @@ it) and **0** when everything is current, so it works as a shell-startup or CI c
 missing Postman CLI is reported as a notice and exits 0. A failed registry lookup never
 fails the command — it degrades to the offline check and explains itself on stderr.
 
+### Automatic notice on install
+
+You do not have to remember to run `doctor`. Installing or updating this package prints a
+notice if your Postman CLI does not match the version the completions were built for:
+
+```console
+$ npm install -g postman-cli-completion
+
+postman-cli-completion:
+  These completions were generated for Postman CLI 1.73.0, but 1.60.0 is installed.
+    Completions may offer commands your CLI does not have.
+    Update them with: npm install -g postman-cli-completion@latest
+
+  Silence this check with POSTMAN_COMPLETION_NO_VERSION_CHECK=1
+```
+
+This check is deliberately conservative:
+
+- **Never fails the install** — it exits 0 on every path, including unexpected errors.
+- **Never touches the network** — the comparison is local, so installs stay fast and
+  offline-safe. The "is my CLI older than the latest release?" question needs the
+  registry, so it belongs to `doctor`.
+- **Silent unless it matters** — nothing is printed when the versions match, when the
+  Postman CLI is not installed, in CI, for non-global installs, or when stderr is not a
+  terminal. Set `POSTMAN_COMPLETION_NO_VERSION_CHECK=1` to disable it entirely.
+
+Because it runs at install time, it catches drift when you install or update this package.
+If you upgrade the Postman CLI itself some time later, run `postman-completion doctor` to
+check on demand.
+
 ## Versioning
 
 The completion scripts are auto-generated from a single source of truth (`spec/commands.json`) and tracked against the upstream Postman CLI by two GitHub Actions workflows:

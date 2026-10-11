@@ -16,6 +16,7 @@ import {
   resolveTargetVersion,
   UPGRADE_COMMAND,
 } from "../lib/version-check.mjs";
+import { shouldSuppress, formatNotice } from "../lib/postinstall.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const BIN = resolve(ROOT, "bin/postman-completion.mjs");
@@ -349,4 +350,86 @@ test("--help documents the doctor subcommand", () => {
   const { status, stdout } = runBin({}, "--help");
   assert.equal(status, 0);
   assert.match(stdout, /doctor/);
+});
+
+// --- postinstall notice -----------------------------------------------------
+
+test("shouldSuppress stays quiet unless this is an interactive global install", () => {
+  const globalTTY = { npm_config_global: "true" };
+
+  // The one case that should speak.
+  assert.equal(shouldSuppress(globalTTY, true), false);
+
+  // Explicit opt-out.
+  assert.equal(
+    shouldSuppress({ ...globalTTY, POSTMAN_COMPLETION_NO_VERSION_CHECK: "1" }, true),
+    true,
+  );
+  // CI: the notice is for humans, not build logs.
+  assert.equal(shouldSuppress({ ...globalTTY, CI: "true" }, true), true);
+  assert.equal(shouldSuppress({ ...globalTTY, CI: "1" }, true), true);
+  // CI=false is not CI.
+  assert.equal(shouldSuppress({ ...globalTTY, CI: "false" }, true), false);
+  // Local install: usually a dependency artifact, not a user choice.
+  assert.equal(shouldSuppress({}, true), true);
+  assert.equal(shouldSuppress({ npm_config_global: "false" }, true), true);
+  // Piped / non-interactive install.
+  assert.equal(shouldSuppress(globalTTY, false), true);
+});
+
+test("formatNotice indents the lines and documents the opt-out", () => {
+  const out = formatNotice(["first line", "second line"]);
+  assert.match(out, /postman-cli-completion:/);
+  assert.match(out, /^ {2}first line$/m);
+  assert.match(out, /^ {2}second line$/m);
+  assert.match(out, /POSTMAN_COMPLETION_NO_VERSION_CHECK=1/);
+});
+
+// Run the postinstall script as npm would, with a controlled env.
+function runPostinstall(env) {
+  const r = execFileSync(
+    process.execPath,
+    [resolve(ROOT, "lib/postinstall.mjs")],
+    { encoding: "utf8", env: { ...process.env, ...env }, stdio: ["ignore", "pipe", "pipe"] },
+  );
+  return r;
+}
+
+test("postinstall always exits 0 and never breaks the install", () => {
+  const stale = stubCli("#!/bin/sh\necho 1.0.0\n");
+  // A drifted CLI, a broken CLI, and a hanging CLI must all exit 0.
+  const broken = stubCli("#!/bin/sh\nexit 9\n");
+  for (const dir of [stale, broken]) {
+    assert.doesNotThrow(
+      () => runPostinstall({ PATH: `${dir}:${process.env.PATH}`, npm_config_global: "true" }),
+      "postinstall must never fail the install",
+    );
+  }
+});
+
+test("postinstall prints nothing when suppressed", () => {
+  const stale = stubCli("#!/bin/sh\necho 1.0.0\n");
+  const out = runPostinstall({
+    PATH: `${stale}:${process.env.PATH}`,
+    npm_config_global: "true",
+    POSTMAN_COMPLETION_NO_VERSION_CHECK: "1",
+  });
+  assert.equal(out, "", "opt-out must silence the notice");
+});
+
+test("postinstall makes no network request", async () => {
+  // The install path must be offline: checkVersions is called with offline:true,
+  // so a fetchImpl that throws on use proves nothing reached the registry.
+  const dir = stubCli("#!/bin/sh\necho 1.0.0\n");
+  const r = await checkVersions({
+    specPath: SPEC,
+    packageJsonPath: resolve(ROOT, "package.json"),
+    offline: true,
+    command: resolve(dir, "postman"),
+    fetchImpl: () => {
+      throw new Error("postinstall must not hit the network");
+    },
+  });
+  assert.equal(r.latest, null);
+  assert.equal(r.drifted, true);
 });
