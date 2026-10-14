@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.73.0",
-  "introspectedAt": "2026-10-11T07:11:37Z",
+  "postmanCliVersion": "1.74.0",
+  "introspectedAt": "2026-10-14T04:27:30Z",
   "global": {
     "flags": [
       {
@@ -3782,6 +3782,41 @@
           ]
         },
         {
+          "name": "delete",
+          "aliases": [],
+          "description": "Delete a flow. A flow id deletes the cloud flow; a local flow file path deletes that file only. Prompts for confirmation unless --yes is passed.",
+          "positionals": [
+            {
+              "name": "flowIdOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Skip the confirmation prompt"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "list-runs",
           "aliases": [],
           "description": "List run history for a deployed flow",
@@ -4155,6 +4190,10 @@
               "valueType": "string",
               "valueName": "port",
               "description": "Port the mock runs on (e.g. 4010) (default: 4500)"
+            },
+            {
+              "long": "--stateful",
+              "description": "Generate pm.state-backed CRUD handlers (create/read/list/update/delete) instead of static example responses. Endpoints that are not CRUD-shaped stay static. Applies to collection or spec sources."
             },
             {
               "long": "--force",
@@ -6226,6 +6265,15 @@
               "description": "The workspace ID to use for fetching governance rulesets."
             },
             {
+              "long": "--ruleset",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Lint against a local Spectral ruleset."
+            },
+            {
               "long": "--report-events",
               "description": "Dispatch events to the API Catalog and Application Inventory ingestion pipelines (on by default)"
             },
@@ -6701,7 +6749,11 @@
                 },
                 {
                   "long": "--force",
-                  "description": "Overwrite hand-written scripts that the spec would otherwise drop"
+                  "description": "Overwrite hand-written scripts, headers and descriptions that the spec would otherwise drop"
+                },
+                {
+                  "long": "--dry-run",
+                  "description": "Report what sync would change and remove without writing anything"
                 },
                 {
                   "long": "--help",
@@ -8114,6 +8166,10 @@
           "description": "Start working as an anonymous guest instead of signing up — no account or browser needed, so it works anywhere. Your work is saved to a temporary workspace you can keep later by running `postman signup`."
         },
         {
+          "long": "--no-push",
+          "description": "Do not push local work to your guest workspace before signing up. By default, work saved under postman/ is pushed first, so the workspace you keep is not empty."
+        },
+        {
           "long": "--json",
           "description": "Print the sign-up details as machine-readable JSON."
         },
@@ -8554,7 +8610,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Run a performance test on a collection",
+          "description": "Run a performance test on a collection (cloud collection UID or local collection path)",
           "positionals": [
             {
               "name": "collectionId",
