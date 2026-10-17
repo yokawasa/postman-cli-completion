@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.74.0",
-  "introspectedAt": "2026-10-14T04:27:30Z",
+  "postmanCliVersion": "1.75.0",
+  "introspectedAt": "2026-10-17T03:56:35Z",
   "global": {
     "flags": [
       {
@@ -4306,6 +4306,10 @@
               "description": "Live output format: auto (default, human-readable logs) or ndjson (one JSON event per line on stdout, ending with a \"summary\" event — for CI or other non-interactive use) (default: \"auto\")"
             },
             {
+              "long": "--verbose",
+              "description": "Show request and response headers and bodies for each request. By default each request prints one line, plus any applied scenario or error."
+            },
+            {
               "long": "--dataset",
               "valueType": "file",
               "valueName": "pathOrDir",
@@ -6998,6 +7002,62 @@
           ]
         },
         {
+          "name": "activity",
+          "aliases": [],
+          "description": "Read a workspace's activity feed.",
+          "positionals": [
+            {
+              "name": "id",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "types",
+              "description": "Comma-separated element types to filter on, e.g. \"api,collection\"."
+            },
+            {
+              "long": "--contributor",
+              "valueType": "string",
+              "valueName": "ids",
+              "description": "Comma-separated user ids to filter on."
+            },
+            {
+              "long": "--cursor",
+              "valueType": "string",
+              "valueName": "cursor",
+              "description": "Fetch the page of entries that follows this cursor."
+            },
+            {
+              "long": "--limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Max entries to return."
+            },
+            {
+              "long": "--markdown",
+              "description": "Ask the API for a human-readable description of each entry."
+            },
+            {
+              "long": "--json",
+              "description": "Print the feed as machine-readable JSON."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for the API (default 30000)."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "create",
           "aliases": [],
           "description": "Create a Postman workspace and bind it to this git repository.",
@@ -8338,6 +8398,15 @@
               "description": "Do not dispatch run results to the API Catalog and Application Inventory ingestion pipelines"
             },
             {
+              "long": "--generate-collection",
+              "description": "Capture traffic and generate a collection with tests from it, then test with it. Saved to postman.config.cjs only when the target lists no collections."
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Do not prompt for collection, command, or capture-plugin setup: generate a collection from test traffic when none is configured, run `npx playwright test` when neither --command nor the config sets a command (Playwright projects only), and install/patch the capture plugin. Workspace setup is unchanged and may still prompt in an interactive terminal."
+            },
+            {
               "long": "--verbose",
               "description": "Show detailed per-request matching, sandbox errors, and debug information"
             },
@@ -8362,6 +8431,15 @@
                 "*.json"
               ],
               "description": "Path to playwright.config.* to patch (default: auto-detect)"
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "Install and patch without asking for confirmation (required outside an interactive terminal)"
+            },
+            {
+              "long": "--dry-run",
+              "description": "Show the current capture setup and list what would be installed or patched, without changing files"
             },
             {
               "long": "--help",
@@ -9233,6 +9311,10 @@
               "valueType": "string",
               "valueName": "format",
               "description": "Live output format: auto (default, human-readable logs) or ndjson (one JSON event per line on stdout, ending with a \"summary\" event — for CI or other non-interactive use) (default: \"auto\")"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show request and response headers and bodies for each request. By default each request prints one line, plus any applied scenario or error."
             },
             {
               "long": "--proxy",
