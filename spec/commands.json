@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.75.0",
-  "introspectedAt": "2026-10-17T03:56:35Z",
+  "postmanCliVersion": "1.76.0",
+  "introspectedAt": "2026-10-23T04:17:59Z",
   "global": {
     "flags": [
       {
@@ -161,6 +161,13 @@
             {
               "long": "--force",
               "description": "Rewrite the definition of an existing local collection. Existing request files are left alone."
+            },
+            {
+              "long": "--message",
+              "short": "-m",
+              "valueType": "string",
+              "valueName": "text",
+              "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode (--workspace) only."
             },
             {
               "long": "--verbose",
@@ -336,6 +343,13 @@
                 "*.key"
               ],
               "description": "Postman API key, used when deleting a cloud collection"
+            },
+            {
+              "long": "--message",
+              "short": "-m",
+              "valueType": "string",
+              "valueName": "text",
+              "description": "Short note on why, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud collections only."
             },
             {
               "long": "--verbose",
@@ -582,6 +596,13 @@
                   "description": "Target a Postman cloud workspace by id (cloud mode)."
                 },
                 {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
+                },
+                {
                   "long": "--json",
                   "description": "JSON output."
                 },
@@ -745,6 +766,13 @@
                   "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
                 },
                 {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
+                },
+                {
                   "long": "--json",
                   "description": "JSON output."
                 },
@@ -792,6 +820,13 @@
                   "valueType": "string",
                   "valueName": "type",
                   "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                },
+                {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
                 },
                 {
                   "long": "--json",
@@ -848,6 +883,13 @@
                   "valueType": "string",
                   "valueName": "id",
                   "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
                 },
                 {
                   "long": "--json",
@@ -956,6 +998,13 @@
                   "description": "Target a Postman cloud workspace by id (cloud mode)."
                 },
                 {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
+                },
+                {
                   "long": "--json",
                   "description": "JSON output."
                 },
@@ -1002,6 +1051,13 @@
                   "valueType": "string",
                   "valueName": "id",
                   "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
                 },
                 {
                   "long": "--json",
@@ -1070,6 +1126,13 @@
                   "valueType": "string",
                   "valueName": "id",
                   "description": "Target a Postman cloud workspace by id (cloud mode)."
+                },
+                {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
                 },
                 {
                   "long": "--json",
@@ -1215,6 +1278,13 @@
                   "description": "Example type for cloud mode: http. (default: \"http\")"
                 },
                 {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
+                },
+                {
                   "long": "--json",
                   "description": "JSON output."
                 },
@@ -1268,6 +1338,13 @@
                   "valueType": "string",
                   "valueName": "type",
                   "description": "Example type for cloud mode: http. (default: \"http\")"
+                },
+                {
+                  "long": "--message",
+                  "short": "-m",
+                  "valueType": "string",
+                  "valueName": "text",
+                  "description": "Short note on what changed, like a commit message (max 500 characters). Shown on the workspace activity feed. Cloud mode only."
                 },
                 {
                   "long": "--json",
@@ -1743,19 +1820,10 @@
               "description": "Show detailed information of collection run and each request sent"
             },
             {
-              "long": "--mock",
-              "valueType": "file",
-              "valueName": "pathOrId",
-              "patterns": [
-                "*.json"
-              ],
-              "description": "Start a mock server for the run, its path if it lives in your repository (relative or absolute, e.g. ./postman/mocks/orders) or its id if it lives in Postman cloud (fetched then run locally). An id needs `postman login` (or --postman-api-key)."
-            },
-            {
               "long": "--port",
               "valueType": "string",
               "valueName": "port",
-              "description": "Port for the --mock server or --simulation (e.g. 4010), or \"auto\" for a free one. Defaults to the configured port. Only valid with --mock or --simulation."
+              "description": "Port for the --simulation server (e.g. 4010), or \"auto\" for a free one. Defaults to the configured port. Only valid with --simulation."
             },
             {
               "long": "--use-mock",
@@ -1929,7 +1997,7 @@
             },
             {
               "long": "--json",
-              "description": "Output rows as JSON instead of a table"
+              "description": "Output rows as JSON instead of a table; a failure prints a JSON error on stdout"
             },
             {
               "long": "--debug",
@@ -2183,13 +2251,13 @@
                   "long": "--var",
                   "valueType": "string",
                   "valueName": "name=value...",
-                  "description": "Value for a {{placeholder}}. Repeatable. Use vault:<vaultId>/<secretId> for a secret. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud). Prefer a Shared Vault reference."
+                  "description": "Value for a {{placeholder}}. Repeatable. Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud)."
                 },
                 {
                   "long": "--prop",
                   "valueType": "string",
                   "valueName": "name=value...",
-                  "description": "Driver connection property. Repeatable. Same vault: syntax as --var"
+                  "description": "Driver connection property. Repeatable. Same secret syntax as --var"
                 },
                 {
                   "long": "--vars-file",
@@ -2198,7 +2266,14 @@
                   "patterns": [
                     "*.json"
                   ],
-                  "description": "JSON object of --var values; \"-\" reads stdin. Supports {\"$vaultId\":..,\"$secretId\":..} objects, and keeps secrets out of argv entirely"
+                  "description": "JSON object of values; \"-\" reads stdin. Keys are host, port, user, password, database (mysql/postgresql/sqlserver), or --var names for jdbc, with optional \"vars\"/\"props\" objects for template variables / connection properties. Values take the same secret syntax, or {\"$vaultId\":..,\"$secretId\":..} objects, and keep secrets out of argv entirely"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Workspace whose Shared Vault resolves vault:<KEY> (falls back to .postman/resources.yaml in the current directory)"
                 },
                 {
                   "long": "--from-source",
@@ -2239,7 +2314,7 @@
                   "long": "--host",
                   "valueType": "string",
                   "valueName": "host",
-                  "description": "DB host (mysql/postgresql/sqlserver)"
+                  "description": "DB host (mysql/postgresql/sqlserver). Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below."
                 },
                 {
                   "long": "--port",
@@ -2251,13 +2326,13 @@
                   "long": "--user",
                   "valueType": "string",
                   "valueName": "user",
-                  "description": "DB user. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud). Prefer a Shared Vault reference."
+                  "description": "DB user. Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud)."
                 },
                 {
                   "long": "--password",
                   "valueType": "string",
                   "valueName": "password",
-                  "description": "DB password. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud). Prefer a Shared Vault reference."
+                  "description": "DB password. Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud)."
                 },
                 {
                   "long": "--database",
@@ -2496,13 +2571,13 @@
                   "long": "--var",
                   "valueType": "string",
                   "valueName": "name=value...",
-                  "description": "Set a JDBC template variable. Merges onto the existing values. Use vault:<vaultId>/<secretId> for a secret. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud). Prefer a Shared Vault reference."
+                  "description": "Set a JDBC template variable. Merges onto the existing values. Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud)."
                 },
                 {
                   "long": "--prop",
                   "valueType": "string",
                   "valueName": "name=value...",
-                  "description": "Set a JDBC connection property. Merges, same vault: syntax"
+                  "description": "Set a JDBC connection property. Merges, same secret syntax"
                 },
                 {
                   "long": "--unset-var",
@@ -2523,7 +2598,14 @@
                   "patterns": [
                     "*.json"
                   ],
-                  "description": "JSON object of --var values; \"-\" reads stdin"
+                  "description": "JSON object of values to merge; \"-\" reads stdin. Keys are host, port, user, password, database (mysql/postgresql/sqlserver), or --var names for jdbc, with optional \"vars\"/\"props\" objects. Values take the same secret syntax"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Workspace whose Shared Vault resolves vault:<KEY> (falls back to .postman/resources.yaml in the current directory)"
                 },
                 {
                   "long": "--ssh-target-host-variable",
@@ -2550,7 +2632,7 @@
                   "long": "--host",
                   "valueType": "string",
                   "valueName": "host",
-                  "description": "Update DB host (mysql/postgresql/sqlserver)"
+                  "description": "Update DB host (mysql/postgresql/sqlserver). Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below."
                 },
                 {
                   "long": "--port",
@@ -2562,13 +2644,13 @@
                   "long": "--user",
                   "valueType": "string",
                   "valueName": "user",
-                  "description": "Update DB user. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud). Prefer a Shared Vault reference."
+                  "description": "Update DB user. Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud)."
                 },
                 {
                   "long": "--password",
                   "valueType": "string",
                   "valueName": "password",
-                  "description": "Update DB password. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud). Prefer a Shared Vault reference."
+                  "description": "Update DB password. Accepts a secret reference: vault:<KEY> (preferred), vault:<vaultId>/<secretId>, or env:<NAME> — see \"Secrets\" below. WARNING: a literal value is visible in `ps` output and shell history, and is stored in clear text in the dataset YAML (local) or sent in the request body (cloud)."
                 },
                 {
                   "long": "--database",
@@ -4160,7 +4242,7 @@
         {
           "name": "generate",
           "aliases": [],
-          "description": "Generate a mock from a Postman collection or an OpenAPI file, or from a built-in sample shopping-cart mock (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace.",
+          "description": "Generate a mock from a Postman collection or an OpenAPI file, or from a built-in sample shopping-cart mock (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace. Add --deploy to also make it a live mock server.",
           "positionals": [
             {
               "name": "sourcePath",
@@ -4214,7 +4296,26 @@
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Save the mock to this Postman cloud workspace (by id) instead of your repository. Cannot be used with --output, --force, or --update."
+              "description": "Save the mock to this Postman cloud workspace (by id) instead of your repository. Cannot be used with --output, --force, or --update, except with --deploy, where it only picks the workspace."
+            },
+            {
+              "long": "--deploy",
+              "description": "After generating, upload the mock to Postman cloud and deploy it to a live mock server (private by default). Uses --workspace, else the workspace linked to this project."
+            },
+            {
+              "long": "--public",
+              "description": "With --deploy, let anyone with the link reach the server (default: callers need an API key)"
+            },
+            {
+              "long": "--slug",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "slug",
+              "description": "With --deploy, the short label used in the server's web address"
+            },
+            {
+              "long": "--json",
+              "description": "With --deploy, print the live server details as machine-readable data instead of a summary"
             },
             {
               "long": "--api-key",
@@ -4225,7 +4326,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key to use with --workspace (defaults to your `postman login` session)"
+              "description": "Postman API key to use with --workspace or --deploy (defaults to your `postman login` session)"
             },
             {
               "long": "--suppress-exit-code",
@@ -4416,6 +4517,10 @@
                 "*.key"
               ],
               "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the live server details as machine-readable data instead of a summary (asks no questions)"
             },
             {
               "long": "--help",
@@ -7350,12 +7455,6 @@
               "description": "Do not ask the service to include the answer inline"
             },
             {
-              "long": "--max-steps",
-              "valueType": "string",
-              "valueName": "count",
-              "description": "Cap the reasoning steps the service may take (its default applies when omitted)"
-            },
-            {
               "long": "--interval",
               "valueType": "string",
               "valueName": "seconds",
@@ -9037,6 +9136,10 @@
               "description": "Seconds to wait for the browser form (default 300)"
             },
             {
+              "long": "--json",
+              "description": "Print the created secrets as machine-readable JSON (never the values)"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -9094,7 +9197,7 @@
         {
           "name": "create",
           "aliases": [],
-          "description": "Create a simulation that serves several mocks behind one address",
+          "description": "Create a simulation that serves several mocks behind one address. Add --deploy to also make it a live mock server.",
           "positionals": [],
           "flags": [
             {
@@ -9138,7 +9241,26 @@
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Postman cloud workspace to create the simulation in, by id (defaults to the workspace already linked to this project)"
+              "description": "Postman cloud workspace to create the simulation in (or deploy it to, with --deploy), by id (defaults to the workspace already linked to this project)"
+            },
+            {
+              "long": "--deploy",
+              "description": "After creating, upload the simulation (and its mocks) to Postman cloud and deploy it to a live mock server (private by default)."
+            },
+            {
+              "long": "--public",
+              "description": "With --deploy, let anyone with the link reach the server (default: callers need an API key)"
+            },
+            {
+              "long": "--slug",
+              "short": "-s",
+              "valueType": "string",
+              "valueName": "slug",
+              "description": "With --deploy, the short label used in the server's web address"
+            },
+            {
+              "long": "--json",
+              "description": "With --deploy, print the live server details as machine-readable data instead of a summary"
             },
             {
               "long": "--api-key",
@@ -9318,7 +9440,7 @@
             },
             {
               "long": "--proxy",
-              "description": "Serve the mocks behind a local HTTP(S) forward proxy instead of one routed port, so a repo under test can point HTTP_PROXY/HTTPS_PROXY at it and reach each mock by hostname without code changes. Requires a simulation.yaml (routing config), not a .sim.yaml."
+              "description": "Serve the mocks behind a local HTTP(S) forward proxy instead of one routed port, so a repo under test can point HTTP_PROXY/HTTPS_PROXY at it and reach each mock by hostname without code changes. Each mock is reached on the hostnames its `origin:` declares; a request to any other host reaches the real host unchanged."
             },
             {
               "long": "--proxy-port",
@@ -9428,13 +9550,17 @@
               "description": "Short label used in the server's web address, e.g. \"my-sim\" (you are asked for one if you skip this)"
             },
             {
+              "long": "--public",
+              "description": "Let anyone with the link reach the server. Private by default (callers must send a Postman API key)."
+            },
+            {
               "long": "--private",
-              "description": "Require a Postman API key to reach the server. Public by default."
+              "description": "Require a Postman API key to reach the server (the default; kept for compatibility)."
             },
             {
               "long": "--yes",
               "short": "-y",
-              "description": "Use the defaults and skip all questions (public)"
+              "description": "Use the defaults and skip all questions (private)"
             },
             {
               "long": "--api-key",
@@ -9446,6 +9572,10 @@
                 "*.key"
               ],
               "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the live server details as machine-readable data instead of a summary (asks no questions)"
             },
             {
               "long": "--help",
