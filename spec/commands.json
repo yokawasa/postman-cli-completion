@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.76.0",
-  "introspectedAt": "2026-10-23T04:17:59Z",
+  "postmanCliVersion": "1.77.0",
+  "introspectedAt": "2026-10-27T04:35:35Z",
   "global": {
     "flags": [
       {
@@ -543,6 +543,57 @@
                   "description": "display help for command"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "share",
+          "aliases": [],
+          "description": "Grant a role on a collection to one or more people.",
+          "positionals": [
+            {
+              "name": "id",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--user",
+              "valueType": "string",
+              "valueName": "email|id",
+              "description": "Who to share with. Repeatable, and each value may be a comma-separated list. A value containing @ is treated as an email address, anything else as a Postman user id."
+            },
+            {
+              "long": "--role",
+              "valueType": "string",
+              "valueName": "viewer|editor",
+              "description": "The role to grant. (default: \"viewer\")"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for Postman. Defaults to 30000."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
             }
           ]
         },
@@ -3255,6 +3306,57 @@
           ]
         },
         {
+          "name": "share",
+          "aliases": [],
+          "description": "Grant a role on a cloud environment to one or more people.",
+          "positionals": [
+            {
+              "name": "environmentId",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--user",
+              "valueType": "string",
+              "valueName": "email|id",
+              "description": "Who to share with. Repeatable, and each value may be a comma-separated list. A value containing @ is treated as an email address, anything else as a Postman user id."
+            },
+            {
+              "long": "--role",
+              "valueType": "string",
+              "valueName": "viewer|editor",
+              "description": "The role to grant. (default: \"viewer\")"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for Postman. Defaults to 30000."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "delete",
           "aliases": [],
           "description": "Delete an environment by ID or local environment file path. Prompts unless --yes is passed.",
@@ -4315,7 +4417,7 @@
             },
             {
               "long": "--json",
-              "description": "With --deploy, print the live server details as machine-readable data instead of a summary"
+              "description": "Print the result (with --deploy, the live server details) as machine-readable data instead of a summary"
             },
             {
               "long": "--api-key",
@@ -4456,6 +4558,10 @@
               "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
+              "long": "--json",
+              "description": "Print the result as machine-readable data"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -4553,7 +4659,7 @@
             },
             {
               "long": "--json",
-              "description": "Print the details as machine-readable data instead of a table"
+              "description": "Print the details as machine-readable data instead of a summary"
             },
             {
               "long": "--help",
@@ -4699,6 +4805,10 @@
               "description": "Postman API key, used with a Postman cloud id (defaults to your `postman login` session)"
             },
             {
+              "long": "--json",
+              "description": "Print the result as machine-readable data (requires --yes)"
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -4721,7 +4831,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Invoke a monitor run and display results.",
+          "description": "Run a monitor now and report the result.",
           "positionals": [
             {
               "name": "monitorId",
@@ -4743,22 +4853,22 @@
             {
               "long": "--suppress-exit-code",
               "short": "-x",
-              "description": "Specify whether or not to override the default exit code for the current run"
+              "description": "Always exit 0, whatever the run's result or the failure"
             },
             {
               "long": "--timeout",
               "short": "-t",
               "valueType": "number",
               "valueName": "ms",
-              "description": "Maximum wait time for run completion in milliseconds (default: 15 minutes) (default: 900000)"
+              "description": "How long to wait for the run to finish, in milliseconds (default: 900000)"
             },
             {
               "long": "--async",
-              "description": "Submit the run and return immediately with its job id and Postman URL, without waiting for completion"
+              "description": "Submit the run and print its job id and Postman URL without waiting for it to finish"
             },
             {
               "long": "--json",
-              "description": "Output the run's verdict as JSON instead of a table, printing nothing else"
+              "description": "Print { state, monitorId, jobId, url, stats } as JSON, and nothing else"
             },
             {
               "long": "--help",
@@ -4778,7 +4888,7 @@
               "short": "-c",
               "valueType": "string",
               "valueName": "id",
-              "description": "Collection to monitor -- accepts the id shown in the Postman app, prefixed or bare"
+              "description": "Collection to monitor: its id or uid, from the Postman app or `postman collection list`"
             },
             {
               "long": "--name",
@@ -4791,20 +4901,20 @@
               "short": "-e",
               "valueType": "string",
               "valueName": "id",
-              "description": "Environment to run the monitored collection with"
+              "description": "Environment to run the collection with: its uid, from the Postman app or `postman environment list`"
             },
             {
               "long": "--workspace",
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Workspace to create the monitor in (defaults to the workspace named in the local .postman/resources.yaml manifest; required if neither is available)"
+              "description": "Workspace to create the monitor in, from `postman workspace list` (defaults to the workspace named in the local .postman/resources.yaml manifest; required if neither is available)"
             },
             {
               "long": "--schedule",
               "valueType": "string",
               "valueName": "cron",
-              "description": "Cron expression for the monitor's schedule"
+              "description": "Cron expression for the monitor's schedule, five fields: minute hour day-of-month month day-of-week, for example \"0 9 * * MON\". Leave month as * unless the monitor should run only in certain months; then write the month as a name (jan-dec)"
             },
             {
               "long": "--timezone",
@@ -4841,13 +4951,13 @@
               "long": "--retry",
               "valueType": "number",
               "valueName": "n",
-              "description": "Times to retry a failed run"
+              "description": "Times to retry a failed run: --retry 2 allows up to 3 attempts"
             },
             {
               "long": "--timeout",
               "valueType": "number",
               "valueName": "ms",
-              "description": "Request timeout in milliseconds"
+              "description": "Per-request timeout the monitor applies when it runs, in milliseconds (this command does not wait for a run; `postman monitor run --timeout` sets how long that waits)"
             },
             {
               "long": "--delay",
@@ -4912,7 +5022,7 @@
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print the outcome, the created monitor's id, uid, name and active state, and the job of its first run, as JSON"
             },
             {
               "long": "--help",
@@ -4942,7 +5052,7 @@
               "long": "--schedule",
               "valueType": "string",
               "valueName": "cron",
-              "description": "New cron expression for the monitor's schedule"
+              "description": "New cron expression for the monitor's schedule, five fields: minute hour day-of-month month day-of-week, for example \"0 9 * * MON\". Leave month as * unless the monitor should run only in certain months; then write the month as a name (jan-dec)"
             },
             {
               "long": "--timezone",
@@ -4982,7 +5092,7 @@
               "short": "-e",
               "valueType": "string",
               "valueName": "id",
-              "description": "Environment to run the monitored collection with (replaces the current one)"
+              "description": "Environment to run the collection with, replacing the current one: its uid, from `postman environment list`"
             },
             {
               "long": "--clear-environment",
@@ -4998,13 +5108,13 @@
               "long": "--retry",
               "valueType": "number",
               "valueName": "n",
-              "description": "Times to retry a failed run"
+              "description": "Times to retry a failed run: --retry 2 allows up to 3 attempts"
             },
             {
               "long": "--timeout",
               "valueType": "number",
               "valueName": "ms",
-              "description": "Request timeout in milliseconds"
+              "description": "Per-request timeout the monitor applies when it runs, in milliseconds (this command does not wait for a run; `postman monitor run --timeout` sets how long that waits)"
             },
             {
               "long": "--delay",
@@ -5065,7 +5175,7 @@
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print the outcome and the monitor's id, uid, name and active state as JSON"
             },
             {
               "long": "--help",
@@ -5088,7 +5198,7 @@
             {
               "long": "--yes",
               "short": "-y",
-              "description": "Skip the confirmation prompt"
+              "description": "Skip the confirmation prompt; required when there is no interactive terminal or with --silent"
             },
             {
               "long": "--api-key",
@@ -5103,7 +5213,7 @@
             },
             {
               "long": "--json",
-              "description": "Output the outcome, including any failure, as JSON instead of a plain message"
+              "description": "Print the outcome (deleted or aborted) and the monitor id as JSON"
             },
             {
               "long": "--help",
@@ -5115,7 +5225,7 @@
         {
           "name": "jobs",
           "aliases": [],
-          "description": "Inspect a monitor's jobs and their per-region runs.",
+          "description": "Inspect a monitor's jobs (also called executions) and their per-runner runs.",
           "positionals": [],
           "flags": [
             {
@@ -5128,7 +5238,7 @@
             {
               "name": "list",
               "aliases": [],
-              "description": "List a monitor's recent jobs.",
+              "description": "List a monitor's recent jobs, newest first. A job (also called an execution) is one firing of the monitor, with one run per runner.",
               "positionals": [
                 {
                   "name": "monitorId",
@@ -5145,19 +5255,19 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
                 },
                 {
                   "long": "--result",
                   "valueType": "string",
-                  "valueName": "value",
-                  "description": "Filter by outcome, for example success, failure, error or abort"
+                  "valueName": "state",
+                  "description": "Only jobs that finished in this state: success, failure, error or abort; any other value is rejected before any request"
                 },
                 {
                   "long": "--trigger",
                   "valueType": "string",
                   "valueName": "value",
-                  "description": "Filter by trigger, for example api, schedule, webhook or postman-cli"
+                  "description": "Only jobs started by this trigger: api, schedule, webhook or postman-cli; any other value is rejected before any request"
                 },
                 {
                   "long": "--since",
@@ -5169,17 +5279,17 @@
                   "long": "--limit",
                   "valueType": "number",
                   "valueName": "n",
-                  "description": "Maximum number of jobs to return"
+                  "description": "Jobs per page, 1-25 (default: 25)"
                 },
                 {
                   "long": "--cursor",
                   "valueType": "string",
-                  "valueName": "token",
-                  "description": "Opaque pagination cursor"
+                  "valueName": "page",
+                  "description": "Page number to read, from the \"Next page\" line or `nextCursor` under --json of a previous listing; pass the same --limit and filters"
                 },
                 {
                   "long": "--json",
-                  "description": "Output as JSON instead of a table"
+                  "description": "Print { monitorId, jobs, nextCursor } as JSON, each job with its runs"
                 },
                 {
                   "long": "--help",
@@ -5191,7 +5301,7 @@
             {
               "name": "get",
               "aliases": [],
-              "description": "Report one job's terminal state and its per-region run outcomes.",
+              "description": "Show one job (also called an execution) and the state, runner and duration of each of its runs. A run's duration covers every attempt, including retries.",
               "positionals": [
                 {
                   "name": "jobId",
@@ -5208,11 +5318,11 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
                 },
                 {
                   "long": "--json",
-                  "description": "Output as JSON instead of a table"
+                  "description": "Print the job as JSON, with each run's state, runner, counts, duration and attempts"
                 },
                 {
                   "long": "--help",
@@ -5226,7 +5336,7 @@
         {
           "name": "runs",
           "aliases": [],
-          "description": "Inspect a monitor run's attempts.",
+          "description": "Inspect one run of a monitor job: its requests, assertions and attempts.",
           "positionals": [],
           "flags": [
             {
@@ -5239,7 +5349,7 @@
             {
               "name": "get",
               "aliases": [],
-              "description": "Report which test assertions ran during one attempt of a run, which failed, and why.",
+              "description": "Show one attempt of a run: each request with its response or error, and its assertions, console lines and exceptions. A retried run has several attempts, numbered from 0; the latest is shown unless --attempt names another. Console, assertion and exception messages are the collection's own output, printed as the run recorded them.",
               "positionals": [
                 {
                   "name": "runId",
@@ -5256,21 +5366,21 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session)"
+                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
                 },
                 {
                   "long": "--attempt",
                   "valueType": "number",
                   "valueName": "n",
-                  "description": "Which attempt of the run to show, where 0 is the first (default: the most recent)"
+                  "description": "Which attempt to show, from 0 for the first (default: the latest)"
                 },
                 {
                   "long": "--failed-only",
-                  "description": "Show only failed assertions"
+                  "description": "Show only requests with a failed assertion, an exception or a network error"
                 },
                 {
                   "long": "--json",
-                  "description": "Output as JSON instead of a table"
+                  "description": "Print the run as JSON: its state, attempt, assertion counts and every request with its entries"
                 },
                 {
                   "long": "--help",
@@ -5284,7 +5394,7 @@
         {
           "name": "list",
           "aliases": [],
-          "description": "List the monitors visible to you.",
+          "description": "List the monitors visible to you, one page at a time.",
           "positionals": [],
           "flags": [
             {
@@ -5303,72 +5413,68 @@
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Filter to monitors in this workspace"
+              "description": "Only monitors in this workspace (ids from `postman workspace list`)"
             },
             {
               "long": "--collection",
               "short": "-c",
               "valueType": "string",
               "valueName": "id",
-              "description": "Filter to monitors on this collection"
+              "description": "Only monitors on this collection: its id or uid"
             },
             {
               "long": "--environment",
               "short": "-e",
               "valueType": "string",
               "valueName": "id",
-              "description": "Filter to monitors on this environment"
+              "description": "Only monitors on this environment: its uid"
             },
             {
               "long": "--runner",
               "valueType": "string",
               "valueName": "id",
-              "description": "Filter to a self-hosted runner id, not a Postman region. Cannot be combined with --workspace, --collection, --environment, --owner, --team or --active"
+              "description": "Only monitors on this self-hosted runner id, from `postman runner list` (not a Postman region). Cannot be combined with --workspace, --collection, --environment, --owner or --active"
             },
             {
               "long": "--owner",
               "valueType": "string",
               "valueName": "id",
-              "description": "Filter to monitors created by this user id (shown in the Owner column)"
-            },
-            {
-              "long": "--team",
-              "description": "Filter to monitors owned by your own team"
+              "description": "Only monitors created by this user id: the `owner` field under --json"
             },
             {
               "long": "--active",
               "valueType": "string",
               "valueName": "true|false",
-              "description": "Filter by active state"
+              "description": "Only active (true) or paused (false) monitors"
             },
             {
               "long": "--limit",
               "valueType": "number",
               "valueName": "n",
-              "description": "Maximum number of monitors to return (Postman caps the page size and rejects a larger value)"
+              "description": "Monitors per page, 1-25"
             },
             {
               "long": "--cursor",
               "valueType": "string",
               "valueName": "token",
-              "description": "Pagination cursor from a previous page's response"
+              "description": "Page to read: the cursor from the \"Next page\" line of a previous listing, or `nextCursor` under --json; pass the same filters and --limit"
             },
             {
               "long": "--columns",
               "valueType": "string",
               "valueName": "names",
-              "description": "Comma-separated columns to show. Defaults to Name, Status, ID, Schedule, Owner, Collection. Also available: State, Notifications, Environment, Runners"
+              "description": "Comma-separated columns to show. Defaults to Name, ID, State, Health, Schedule, Owner, Collection, dropping Collection, Owner, Schedule in that order when the table is wider than the terminal. Also available: Environment, Runners, Notifications"
             },
             {
               "long": "--no-headers",
-              "description": "Omit the header row"
+              "description": "Omit the header row and its rule"
             },
             {
               "long": "--filter",
               "short": "-f",
               "valueType": "string",
               "valueName": "text",
-              "description": "Show only monitors whose name contains this text (applies to the returned page, case-insensitive)"
+              "description": "Only monitors whose name contains this text, case-insensitive (applies to the returned page)"
             },
             {
               "long": "--sort",
@@ -5378,7 +5484,7 @@
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print { monitors, nextCursor } as JSON, every monitor field except lastRun present (null when unset); monitor get carries lastRun"
             },
             {
               "long": "--help",
@@ -5390,7 +5496,7 @@
         {
           "name": "get",
           "aliases": [],
-          "description": "Show a monitor's configuration.",
+          "description": "Show a monitor's configuration and its last run.",
           "positionals": [
             {
               "name": "monitorId",
@@ -5411,7 +5517,7 @@
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print the monitor as JSON, every field present (null when unset)"
             },
             {
               "long": "--help",
@@ -5465,11 +5571,11 @@
               "long": "--limit",
               "valueType": "number",
               "valueName": "n",
-              "description": "Maximum number of rows to show: executions, newest first, under --json, or requests, worst-behaving first, in the table. Applied to the results after they are fetched, so it does not make the command faster"
+              "description": "Rows to show, any positive whole number: the worst-behaving requests in the table, or the newest executions under --json. Applied after the results are fetched"
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print { monitorId, window, metricsAvailable, executions } as JSON, one entry per request per job per runner"
             },
             {
               "long": "--help",
@@ -5502,7 +5608,7 @@
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print the outcome and the monitor's id, uid, name and active state as JSON"
             },
             {
               "long": "--help",
@@ -5535,7 +5641,58 @@
             },
             {
               "long": "--json",
-              "description": "Output as JSON instead of a table"
+              "description": "Print the outcome and the monitor's id, uid, name and active state as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "share",
+          "aliases": [],
+          "description": "Grant a role on a monitor to one or more people.",
+          "positionals": [
+            {
+              "name": "monitorId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--user",
+              "valueType": "string",
+              "valueName": "email|id",
+              "description": "Who to share with. Repeatable, and each value may be a comma-separated list. A value containing @ is treated as an email address, anything else as a Postman user id."
+            },
+            {
+              "long": "--role",
+              "valueType": "string",
+              "valueName": "viewer|editor",
+              "description": "The role to grant. (default: \"viewer\")"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for Postman. Defaults to 30000."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
             },
             {
               "long": "--help",
@@ -5803,7 +5960,7 @@
               "long": "--region",
               "valueType": "string",
               "valueName": "region",
-              "description": "Region this runner reports to -- use \"eu\" for the EU region"
+              "description": "Data residency of the Postman account the runner belongs to: \"us\" (default) or \"eu\". This is not a monitor runner region"
             },
             {
               "long": "--proxy",
@@ -5885,11 +6042,11 @@
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Filter to runners in this workspace"
+              "description": "Only runners this workspace can use: runners scoped to it and runners shared with the whole team"
             },
             {
               "long": "--json",
-              "description": "Output the runner list as JSON instead of a table"
+              "description": "Print { runners } as JSON, every field present (null when unset)"
             },
             {
               "long": "--help",
@@ -5917,7 +6074,7 @@
             },
             {
               "long": "--json",
-              "description": "Output the region list as JSON instead of a table"
+              "description": "Print { regions } as JSON, every field present (null when unset)"
             },
             {
               "long": "--help",
@@ -6763,7 +6920,7 @@
             {
               "name": "collection",
               "aliases": [],
-              "description": "Generate a Postman collection from a specification.",
+              "description": "Generate a Postman collection from an OpenAPI or AsyncAPI (Kafka) specification. Only Kafka AsyncAPI 2.x and 3.0 specs are supported: the spec must declare a kafka or kafka-secure server.",
               "positionals": [
                 {
                   "name": "spec",
@@ -6782,7 +6939,7 @@
                   "long": "--folder-strategy",
                   "valueType": "string",
                   "valueName": "strategy",
-                  "description": "Folder strategy: Paths or Tags (default: Paths) (default: \"Paths\")"
+                  "description": "Folder strategy: Paths or Tags (default: Paths). OpenAPI only (default: \"Paths\")"
                 },
                 {
                   "long": "--workspace",
@@ -6858,11 +7015,11 @@
                 },
                 {
                   "long": "--force",
-                  "description": "Overwrite hand-written scripts, headers and descriptions that the spec would otherwise drop"
+                  "description": "Overwrite hand-written scripts, headers and descriptions that the spec would otherwise drop (OpenAPI), or collection files that could not be read (AsyncAPI)"
                 },
                 {
                   "long": "--dry-run",
-                  "description": "Report what sync would change and remove without writing anything"
+                  "description": "Report what sync would change and remove without writing anything (OpenAPI only)"
                 },
                 {
                   "long": "--help",
@@ -7264,9 +7421,60 @@
           ]
         },
         {
+          "name": "share",
+          "aliases": [],
+          "description": "Grant a role on a workspace to one or more people.",
+          "positionals": [
+            {
+              "name": "workspaceId",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--user",
+              "valueType": "string",
+              "valueName": "email|id",
+              "description": "Who to share with. Repeatable, and each value may be a comma-separated list. A value containing @ is treated as an email address, anything else as a Postman user id."
+            },
+            {
+              "long": "--role",
+              "valueType": "string",
+              "valueName": "viewer|editor",
+              "description": "The role to grant. (default: \"viewer\")"
+            },
+            {
+              "long": "--json",
+              "description": "Print the outcome as machine-readable JSON."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for Postman. Defaults to 30000."
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
           "name": "pull",
           "aliases": [],
-          "description": "Pull workspace entities from a Postman workspace into the local git-native folder.",
+          "description": "Pull workspace entities from a Postman workspace into the local folder.",
           "positionals": [
             {
               "name": "workspaceId",
@@ -7964,10 +8172,6 @@
         {
           "long": "--dry-run",
           "description": "Report what would happen without writing anything"
-        },
-        {
-          "long": "--no-fetch",
-          "description": "Use the skills bundled with this CLI instead of fetching the latest"
         },
         {
           "long": "--spec",
@@ -9260,7 +9464,7 @@
             },
             {
               "long": "--json",
-              "description": "With --deploy, print the live server details as machine-readable data instead of a summary"
+              "description": "Print the result (with --deploy, the live server details) as machine-readable data instead of a summary"
             },
             {
               "long": "--api-key",
@@ -9344,7 +9548,7 @@
             },
             {
               "long": "--json",
-              "description": "Print the details as machine-readable data instead of a table"
+              "description": "Print the details as machine-readable data instead of a summary"
             },
             {
               "long": "--help",
@@ -9509,6 +9713,10 @@
                 "*.key"
               ],
               "description": "Postman API key (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the result as machine-readable data"
             },
             {
               "long": "--help",
@@ -9751,6 +9959,10 @@
                 "*.key"
               ],
               "description": "Postman API key, used with a Postman cloud id (defaults to your `postman login` session)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the result as machine-readable data (requires --yes)"
             },
             {
               "long": "--help",
