@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.80.0",
-  "introspectedAt": "2026-10-28T05:06:21Z",
+  "postmanCliVersion": "1.82.0",
+  "introspectedAt": "2026-10-29T05:19:34Z",
   "global": {
     "flags": [
       {
@@ -1514,7 +1514,7 @@
         {
           "name": "import",
           "aliases": [],
-          "description": "Import a cURL or HAR source into a v3 collection (local, or cloud with --workspace).",
+          "description": "Import a cURL, HAR, or JMeter (.jmx) source into a v3 collection (local, or cloud with --workspace).",
           "positionals": [
             {
               "name": "src",
@@ -1526,7 +1526,7 @@
               "long": "--type",
               "valueType": "string",
               "valueName": "format",
-              "description": "Source format: curl or har. Auto-detected from the extension/content when omitted."
+              "description": "Source format: curl, har, or jmeter. Auto-detected from the extension/content when omitted."
             },
             {
               "long": "--name",
@@ -3581,6 +3581,38 @@
         }
       ],
       "subcommands": [
+        {
+          "name": "create",
+          "aliases": [],
+          "description": "Create a flow in the current repository, the same way \"New flow\" does in the Postman app. Run it from the root of a repository connected to a Postman workspace.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--name",
+              "short": "-n",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Specify the flow name (default: \"New flow\")"
+            },
+            {
+              "long": "--verbose",
+              "description": "Verbose output"
+            },
+            {
+              "long": "--debug",
+              "description": "Debug output"
+            },
+            {
+              "long": "--json",
+              "description": "JSON output"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
         {
           "name": "list",
           "aliases": [],
@@ -7311,10 +7343,78 @@
         },
         {
           "name": "context",
-          "aliases": [
-            "activity"
+          "aliases": [],
+          "description": "Everything about a workspace: collections, environments, monitors, mocks, specs and flows, and how they relate (which monitor runs which collection). Add `--section activity` for the change feed. Prints JSON when piped.",
+          "positionals": [
+            {
+              "name": "id",
+              "valueType": "string"
+            }
           ],
-          "description": "Read a workspace's recent activity: who changed what, and the messages left on pushes. Also available as `activity`.",
+          "flags": [
+            {
+              "long": "--section",
+              "valueType": "string",
+              "valueName": "names",
+              "description": "Comma-separated sections to show (collection, environment, monitor, mock, spec, flow, activity). Default: everything but activity. Counts are always reported for every inventory section."
+            },
+            {
+              "long": "--limit",
+              "valueType": "number",
+              "valueName": "n",
+              "description": "Max items per section, or entries for activity (default 25 items). A cut section says how many were left out."
+            },
+            {
+              "long": "--type",
+              "valueType": "string",
+              "valueName": "types",
+              "description": "Activity only: comma-separated element types, e.g. \"api,collection\". Use \"workspacePush\" for the messages left with `workspace push -m`."
+            },
+            {
+              "long": "--contributor",
+              "valueType": "string",
+              "valueName": "ids",
+              "description": "Activity only: comma-separated user ids."
+            },
+            {
+              "long": "--cursor",
+              "valueType": "string",
+              "valueName": "cursor",
+              "description": "Activity only: the page of entries that follows this cursor."
+            },
+            {
+              "long": "--markdown",
+              "description": "Activity only: ask the API for a human-readable description of each entry."
+            },
+            {
+              "long": "--brief",
+              "description": "With only `--section activity`: one plain line per entry (time, who, message)."
+            },
+            {
+              "long": "--json",
+              "description": "Print JSON (schemaVersion 1.0). This is already the default when piped."
+            },
+            {
+              "long": "--text",
+              "description": "Print prose even when piped."
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Milliseconds to wait for the API (default 30000)."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "activity",
+          "aliases": [],
+          "description": "Shorthand for `workspace context --section activity`: who changed what, and the messages left on pushes.",
           "positionals": [
             {
               "name": "id",
@@ -8545,6 +8645,14 @@
           "description": "Specify the region for authentication. Use \"eu\" for EU region."
         },
         {
+          "long": "--migrate-guest-workspace",
+          "description": "Copy this repository's local work into a new workspace in the account you sign in to, even when this session is no longer a guest (for example after a logout)."
+        },
+        {
+          "long": "--no-migrate-guest-workspace",
+          "description": "Do not copy a guest's local work into the account you sign in to. By default a guest's local work is copied."
+        },
+        {
           "long": "--verbose",
           "description": "Show detailed error information"
         },
@@ -9242,6 +9350,12 @@
               "description": "Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to the handlers of the local mocks started by --use-mock as pm.datasets(<id>). Local runner only. (default: [])"
             },
             {
+              "long": "--workspace-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Workspace that owns the shared vault for the collection's v12 secret variables. Required on cloud runs to resolve those secrets; omit if the run uses no vault secrets."
+            },
+            {
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
@@ -9700,9 +9814,9 @@
             },
             {
               "long": "--proxy-port",
-              "valueType": "number",
-              "valueName": "n",
-              "description": "Port for the proxy server. Distinct from --port, which is the one-port run's own port. Bound to 127.0.0.1, so point clients there rather than at \"localhost\" — a client that resolves localhost to ::1 first will not reach it. A busy port exits 1. (default: 7001)"
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Port for the proxy server, or \"auto\" for a free one. Omitted, it prefers 7001 but falls back to a free port when that one is busy, so an omitted port is not guaranteed: pass one to pin it, or read the bound port from the startup banner. A port passed here exits 1 when it is busy. Distinct from --port, which is the one-port run's own port. Bound to 127.0.0.1, so point clients there rather than at \"localhost\" — a client that resolves localhost to ::1 first will not reach it."
             },
             {
               "long": "--scenario",
