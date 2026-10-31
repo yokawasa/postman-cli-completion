@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.82.0",
-  "introspectedAt": "2026-10-29T05:19:34Z",
+  "postmanCliVersion": "1.83.0",
+  "introspectedAt": "2026-10-31T05:02:52Z",
   "global": {
     "flags": [
       {
@@ -1618,7 +1618,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Initiate a Postman collection run from a given ID or path.",
+          "description": "Run a collection by ID or path, or a request file.",
           "positionals": [
             {
               "name": "collectionId/Path",
@@ -4919,7 +4919,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--suppress-exit-code",
@@ -5089,7 +5089,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--json",
@@ -5242,7 +5242,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--json",
@@ -5269,7 +5269,7 @@
             {
               "long": "--yes",
               "short": "-y",
-              "description": "Skip the confirmation prompt; required when there is no interactive terminal or with --silent"
+              "description": "Skip the confirmation prompt; required when there is no interactive terminal"
             },
             {
               "long": "--api-key",
@@ -5280,7 +5280,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--json",
@@ -5326,7 +5326,7 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
                 },
                 {
                   "long": "--result",
@@ -5389,7 +5389,7 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
                 },
                 {
                   "long": "--json",
@@ -5437,7 +5437,7 @@
                     "*.crt",
                     "*.key"
                   ],
-                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+                  "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
                 },
                 {
                   "long": "--attempt",
@@ -5477,7 +5477,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--workspace",
@@ -5584,7 +5584,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--json",
@@ -5617,7 +5617,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--since",
@@ -5675,7 +5675,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--json",
@@ -5708,7 +5708,7 @@
                 "*.crt",
                 "*.key"
               ],
-              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a guest session)"
+              "description": "Postman API key (defaults to POSTMAN_API_KEY, then the `postman login` session, then a session started by `postman init`)"
             },
             {
               "long": "--json",
@@ -5783,8 +5783,8 @@
           "valueType": "string"
         },
         {
-          "name": "URL",
-          "valueType": "string"
+          "name": "URL|request-file",
+          "valueType": "file"
         }
       ],
       "flags": [
@@ -7344,7 +7344,7 @@
         {
           "name": "context",
           "aliases": [],
-          "description": "Everything about a workspace: collections, environments, monitors, mocks, specs and flows, and how they relate (which monitor runs which collection). Add `--section activity` for the change feed. Prints JSON when piped.",
+          "description": "Everything about a workspace: collections, environments, monitors, mocks, specs, flows and simulations, and how they relate (which monitor runs which collection). Add `--section activity` for the change feed. Prints JSON when piped.",
           "positionals": [
             {
               "name": "id",
@@ -7356,7 +7356,7 @@
               "long": "--section",
               "valueType": "string",
               "valueName": "names",
-              "description": "Comma-separated sections to show (collection, environment, monitor, mock, spec, flow, activity). Default: everything but activity. Counts are always reported for every inventory section."
+              "description": "Comma-separated sections to show (collection, environment, monitor, mock, spec, flow, simulation, activity). Default: everything but activity. Counts are always reported for every inventory section."
             },
             {
               "long": "--limit",
@@ -7392,7 +7392,7 @@
             },
             {
               "long": "--json",
-              "description": "Print JSON (schemaVersion 1.0). This is already the default when piped."
+              "description": "Print JSON (schemaVersion 1.1). This is already the default when piped."
             },
             {
               "long": "--text",
@@ -8646,11 +8646,11 @@
         },
         {
           "long": "--migrate-guest-workspace",
-          "description": "Copy this repository's local work into a new workspace in the account you sign in to, even when this session is no longer a guest (for example after a logout)."
+          "description": "Copy this repository's local work into a new workspace in the account you sign in to, even after the previous session has ended (for example after a logout)."
         },
         {
           "long": "--no-migrate-guest-workspace",
-          "description": "Do not copy a guest's local work into the account you sign in to. By default a guest's local work is copied."
+          "description": "Do not copy local work into the account you sign in to. By default local work is copied."
         },
         {
           "long": "--verbose",
@@ -8682,15 +8682,15 @@
     },
     {
       "name": "signup",
-      "description": "Sign up to keep the work you created as a guest",
+      "description": "Sign up to keep your work",
       "flags": [
         {
           "long": "--guest",
-          "description": "Start working as an anonymous guest instead of signing up — no account or browser needed, so it works anywhere. Your work is saved to a temporary workspace you can keep later by running `postman signup`."
+          "description": "Start a session without signing up — no account or browser needed, so it works anywhere. Your work is saved to a temporary workspace you can keep later by running `postman signup`."
         },
         {
           "long": "--no-push",
-          "description": "Do not push local work to your guest workspace before signing up. By default, work saved under postman/ is pushed first, so the workspace you keep is not empty."
+          "description": "Do not push local work to your workspace before signing up. By default, work saved under postman/ is pushed first, so the workspace you keep is not empty."
         },
         {
           "long": "--json",
@@ -8705,7 +8705,7 @@
     },
     {
       "name": "whoami",
-      "description": "Show the Postman account or guest session this CLI session is using",
+      "description": "Show the Postman account or session this CLI is using",
       "flags": [
         {
           "long": "--json",
