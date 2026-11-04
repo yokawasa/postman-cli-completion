@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.84.0",
-  "introspectedAt": "2026-11-03T06:09:58Z",
+  "postmanCliVersion": "1.85.0",
+  "introspectedAt": "2026-11-04T05:49:05Z",
   "global": {
     "flags": [
       {
@@ -4376,7 +4376,7 @@
         {
           "name": "generate",
           "aliases": [],
-          "description": "Generate a mock from a Postman collection, an OpenAPI file or a dataset, or from a built-in sample shopping-cart mock (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace. Add --deploy to also make it a live mock server.",
+          "description": "Generate a mock from a Postman collection, an OpenAPI file or a dataset, or a static mock from a built-in sample shopping cart (POST /cart/items, GET /cart, POST /checkout). Writes a local mock by default, or a cloud mock with --workspace. Add --deploy to also make it a live mock server.",
           "positionals": [
             {
               "name": "sourcePath",
@@ -4399,13 +4399,13 @@
               "short": "-n",
               "valueType": "string",
               "valueName": "name",
-              "description": "Name for the mock. Taken from the source when you provide one; required for the sample."
+              "description": "Name for the mock. Taken from the source when you provide one; required for the sample. With --update, renames the mock."
             },
             {
               "long": "--port",
               "valueType": "string",
               "valueName": "port",
-              "description": "Port the mock runs on (e.g. 4010) (default: 4500)"
+              "description": "Port the mock runs on (e.g. 4010; default 4500). With --update, changes the mock's port."
             },
             {
               "long": "--mode",
@@ -4421,7 +4421,11 @@
               "long": "--instructions",
               "valueType": "string",
               "valueName": "text",
-              "description": "With --mode ai: guidance for the AI, e.g. \"Orders can only be cancelled before they ship\"."
+              "description": "With --mode ai: guidance for the AI, up to 2000 characters, e.g. \"Orders can only be cancelled before they ship\". Recorded with the mock, so --update reuses them."
+            },
+            {
+              "long": "--strict",
+              "description": "With --mode ai: fail instead of falling back. Postman refuses a mock it would build without AI (exit 1, nothing written or saved). A mock whose AI rules reached only some operations, or one an older Postman built without AI anyway, is kept but exits 4."
             },
             {
               "long": "--spec",
@@ -4446,24 +4450,24 @@
             },
             {
               "long": "--force",
-              "description": "Overwrite the mock's files if the target folder already has one"
+              "description": "Replace the mock's files if the target folder already holds a mock. A folder with other files and no mock is never written to."
             },
             {
               "long": "--update",
               "short": "-u",
               "valueType": "file",
-              "valueName": "mockPath",
+              "valueName": "mockPathOrId",
               "patterns": [
                 "*.json"
               ],
-              "description": "Regenerate an existing mock in place, e.g. ./postman/mocks/orders. Without a source or --mode, it uses the ones the mock recorded. Cannot be used with --output."
+              "description": "Regenerate an existing mock in place: one in your repository by path (e.g. ./postman/mocks/orders), or one in Postman cloud by id. Without a source or --mode, it uses the ones the mock recorded (and an ai mock's instructions). Cannot be used with --output."
             },
             {
               "long": "--workspace",
               "short": "-w",
               "valueType": "string",
               "valueName": "id",
-              "description": "Save the mock to this Postman cloud workspace (by id) instead of your repository. Cannot be used with --output, --force, or --update, except with --deploy, where it only picks the workspace."
+              "description": "Save the mock to this Postman cloud workspace (by id) instead of your repository. Cannot be used with --output, --force, or --update <mockPath>; with --deploy it only picks the workspace, and with --update <cloudMockId> it names the workspace the mock is in."
             },
             {
               "long": "--deploy",
@@ -4471,14 +4475,14 @@
             },
             {
               "long": "--public",
-              "description": "With --deploy, let anyone with the link reach the server (default: callers need an API key)"
+              "description": "With --deploy, let anyone with the link reach the server (default: callers need an API key). Requires --deploy."
             },
             {
               "long": "--slug",
               "short": "-s",
               "valueType": "string",
               "valueName": "slug",
-              "description": "With --deploy, the short label used in the server's web address"
+              "description": "With --deploy, the short label used in the server's web address. Requires --deploy."
             },
             {
               "long": "--timeout",
@@ -10684,6 +10688,265 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "environment",
+          "aliases": [],
+          "description": "Get or set the cloud environment associated with a webhook.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Print the associated cloud environment ID.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key for CLI authentication"
+                },
+                {
+                  "long": "--timeout",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Request timeout in milliseconds (default: 30000)"
+                },
+                {
+                  "long": "--json",
+                  "description": "Print the result as JSON"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "set",
+              "aliases": [],
+              "description": "Associate a cloud environment ID with a webhook; local files are not supported.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                },
+                {
+                  "name": "environmentId",
+                  "valueType": "file"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key for CLI authentication"
+                },
+                {
+                  "long": "--timeout",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Request timeout in milliseconds (default: 30000)"
+                },
+                {
+                  "long": "--json",
+                  "description": "Print the result as JSON"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "auth",
+          "aliases": [],
+          "description": "Get or set authentication for incoming webhook requests.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Show webhook authentication details without credential values.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key for CLI authentication"
+                },
+                {
+                  "long": "--timeout",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Request timeout in milliseconds (default: 30000)"
+                },
+                {
+                  "long": "--json",
+                  "description": "Print the result as JSON"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "set",
+              "aliases": [],
+              "description": "Set Basic or API key authentication, or disable authentication.",
+              "positionals": [
+                {
+                  "name": "webhookId",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--type",
+                  "valueType": "string",
+                  "valueName": "type",
+                  "description": "Authentication type (choices: \"basic\", \"api-key\", \"none\")"
+                },
+                {
+                  "long": "--username",
+                  "valueType": "string",
+                  "valueName": "username",
+                  "description": "Basic auth username or variable reference"
+                },
+                {
+                  "long": "--password",
+                  "valueType": "string",
+                  "valueName": "password",
+                  "description": "Basic auth password or variable reference"
+                },
+                {
+                  "long": "--secret",
+                  "valueType": "string",
+                  "valueName": "secret",
+                  "description": "Webhook API key value or variable reference"
+                },
+                {
+                  "long": "--source",
+                  "valueType": "string",
+                  "valueName": "source",
+                  "description": "Where incoming credentials are read (choices: \"headers\", \"query\", default: \"headers\")"
+                },
+                {
+                  "long": "--key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Header or query parameter name (default: Authorization for Basic, x-api-key for API key)"
+                },
+                {
+                  "long": "--workspace",
+                  "short": "-w",
+                  "valueType": "string",
+                  "valueName": "workspaceId",
+                  "description": "Postman workspace ID (falls back to .postman/resources.yaml or .postman/config.json)"
+                },
+                {
+                  "long": "--api-key",
+                  "valueType": "file",
+                  "valueName": "key",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Postman API key for CLI authentication"
+                },
+                {
+                  "long": "--timeout",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Request timeout in milliseconds (default: 30000)"
+                },
+                {
+                  "long": "--json",
+                  "description": "Print the result as JSON"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         }
