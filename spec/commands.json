@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.85.0",
-  "introspectedAt": "2026-11-04T05:49:05Z",
+  "postmanCliVersion": "1.86.0",
+  "introspectedAt": "2026-11-05T06:06:44Z",
   "global": {
     "flags": [
       {
@@ -4595,6 +4595,34 @@
                 "*.json"
               ],
               "description": "Pass --dataset multiple times to load several .dataset.yaml files (or directories containing them). Each is made available to the mock's handlers as pm.datasets(<id>). (default: [])"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "stop",
+          "aliases": [],
+          "description": "Stop a mock started with `postman mock run` on this machine, and wait until it has exited and released its port.",
+          "positionals": [
+            {
+              "name": "mockIdOrPath",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--timeout",
+              "valueType": "string",
+              "valueName": "seconds",
+              "description": "Seconds to wait for a graceful shutdown before force-killing the mock (default 15)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the result as machine-readable data"
             },
             {
               "long": "--help",
@@ -9853,6 +9881,34 @@
               "valueType": "string",
               "valueName": "cmd",
               "description": "Start this command behind the proxy with HTTP_PROXY, HTTPS_PROXY and NODE_EXTRA_CA_CERTS already set in its environment, instead of printing them for you to export by hand. Runs as a child process, so the variables reach the code making the calls rather than the CLI. The proxy lives exactly as long as the command and exits with its exit code."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "stop",
+          "aliases": [],
+          "description": "Stop a simulation started with `postman simulation run` on this machine, and wait until it has exited and released its port.",
+          "positionals": [
+            {
+              "name": "simIdOrPath",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--timeout",
+              "valueType": "string",
+              "valueName": "seconds",
+              "description": "Seconds to wait for a graceful shutdown before force-killing the simulation (default 15)"
+            },
+            {
+              "long": "--json",
+              "description": "Print the result as machine-readable data"
             },
             {
               "long": "--help",
