@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.86.0",
-  "introspectedAt": "2026-11-05T06:06:44Z",
+  "postmanCliVersion": "1.87.0",
+  "introspectedAt": "2026-11-09T05:45:53Z",
   "global": {
     "flags": [
       {
@@ -287,11 +287,11 @@
         {
           "name": "get",
           "aliases": [],
-          "description": "Fetch a Postman collection in the V3 format and print it.",
+          "description": "Read a local collection path or fetch a cloud collection by id, and print V3 JSON.",
           "positionals": [
             {
-              "name": "id",
-              "valueType": "string"
+              "name": "id-or-path",
+              "valueType": "file"
             }
           ],
           "flags": [
@@ -1990,7 +1990,7 @@
             },
             {
               "long": "--no-populate",
-              "description": "Skip fetching datasources/views for a cloud dataset"
+              "description": "Skip the table/column structure for a local dataset, or datasources/views for a cloud one"
             },
             {
               "long": "--json",
@@ -2257,7 +2257,7 @@
                   "patterns": [
                     "*.json"
                   ],
-                  "description": "Path to a local CSV/JSON/spreadsheet file (absolute or cwd-relative)"
+                  "description": "Path to a local CSV/JSON/NDJSON/spreadsheet file (absolute or cwd-relative); .ndjson and .jsonl are read as json"
                 },
                 {
                   "long": "--ref-only",
@@ -2968,7 +2968,7 @@
                 },
                 {
                   "long": "--json",
-                  "description": "Output rows as JSON instead of a table"
+                  "description": "Output rows as JSON instead of a table; a failure prints a JSON error on stdout"
                 },
                 {
                   "long": "--debug",
@@ -3020,6 +3020,10 @@
                   "valueType": "string",
                   "valueName": "uuid",
                   "description": "Override the generated view id (local only; cloud assigns its own)"
+                },
+                {
+                  "long": "--no-validate",
+                  "description": "Save the view without first checking that its query runs against the dataset"
                 },
                 {
                   "long": "--json",
@@ -5808,7 +5812,7 @@
     },
     {
       "name": "request",
-      "description": "Send HTTP requests with full Postman capabilities",
+      "description": "Send HTTP and gRPC requests with full Postman capabilities",
       "positionals": [
         {
           "name": "METHOD",
@@ -6022,6 +6026,97 @@
           "long": "--help",
           "short": "-h",
           "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "grpc",
+          "aliases": [],
+          "description": "Invoke a gRPC method, or list and describe the methods a server exposes. The service definition comes from server reflection unless --proto or --protoset is given.",
+          "positionals": [
+            {
+              "name": "urlOrFile",
+              "valueType": "string"
+            },
+            {
+              "name": "method",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--list-methods",
+              "description": "List the services and methods instead of invoking one, with each method's streaming kind and message types."
+            },
+            {
+              "long": "--describe",
+              "description": "Describe the method instead of invoking it: its message types and a request message template to fill in."
+            },
+            {
+              "long": "--proto",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Read the service definition from a .proto file (or URL) instead of server reflection. Can be used multiple times. (default: [])"
+            },
+            {
+              "long": "--import-path",
+              "valueType": "file",
+              "valueName": "dir",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Directory to resolve --proto imports from. Can be used multiple times. (default: [])"
+            },
+            {
+              "long": "--protoset",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Read the service definition from a compiled FileDescriptorSet (protoc --descriptor_set_out, buf build -o). Can be used multiple times. (default: [])"
+            },
+            {
+              "long": "--tls",
+              "description": "Connect with TLS to an address without a scheme, the same as grpcs://."
+            },
+            {
+              "long": "--server-name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Name to verify the server's TLS certificate against, when it differs from the address."
+            },
+            {
+              "long": "--emit-defaults",
+              "description": "Include fields that hold their default value in response messages."
+            },
+            {
+              "long": "--script-before-invoke",
+              "valueType": "string",
+              "valueName": "script",
+              "description": "Script run before the call is invoked. Inline JavaScript or @path. pm.request holds the message and metadata."
+            },
+            {
+              "long": "--script-on-message",
+              "valueType": "string",
+              "valueName": "script",
+              "description": "Script run on every response message as it arrives. Inline JavaScript or @path. pm.message holds the message."
+            },
+            {
+              "long": "--script-after-response",
+              "valueType": "string",
+              "valueName": "script",
+              "description": "Script run once the call has ended. Inline JavaScript or @path. pm.response holds the status, metadata and messages; pm.test() results are reported."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
