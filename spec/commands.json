@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.87.0",
-  "introspectedAt": "2026-11-09T05:45:53Z",
+  "postmanCliVersion": "1.88.0",
+  "introspectedAt": "2026-11-12T06:47:57Z",
   "global": {
     "flags": [
       {
@@ -637,7 +637,7 @@
                   "long": "--type",
                   "valueType": "string",
                   "valueName": "type",
-                  "description": "Request type: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                  "description": "Request type: http, graphql, grpc, websocket, socketio, mcp. (default: \"http\")"
                 },
                 {
                   "long": "--workspace",
@@ -738,7 +738,24 @@
                   "long": "--url",
                   "valueType": "string",
                   "valueName": "url",
-                  "description": "Request URL; its query string becomes the query parameters. Any request type."
+                  "description": "Request URL; its query string becomes the query parameters. Any request type; moves an mcp request to the HTTP transport."
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Command that starts a local MCP server; moves an mcp request to the stdio transport (mcp requests only, local mode)."
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Replace the environment variables of a stdio mcp request's server. Repeatable (local mode). (default: [])"
                 },
                 {
                   "long": "--method",
@@ -801,7 +818,7 @@
                   "long": "--scripts",
                   "valueType": "string",
                   "valueName": "event:script",
-                  "description": "Replace scripts. event is prerequest or test; script is @file, - for stdin, or inline. Repeatable; any request type. (default: [])"
+                  "description": "Replace scripts. event is prerequest or test, or on an mcp request beforeConnect, afterConnect, afterResponse or afterDisconnect; script is @file, - for stdin, or inline. Repeatable; any request type. (default: [])"
                 },
                 {
                   "long": "--workspace",
@@ -814,7 +831,7 @@
                   "long": "--type",
                   "valueType": "string",
                   "valueName": "type",
-                  "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                  "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio, mcp. (default: \"http\")"
                 },
                 {
                   "long": "--message",
@@ -870,7 +887,7 @@
                   "long": "--type",
                   "valueType": "string",
                   "valueName": "type",
-                  "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio. (default: \"http\")"
+                  "description": "Request type for cloud mode: http, graphql, grpc, websocket, socketio, mcp. (default: \"http\")"
                 },
                 {
                   "long": "--message",
@@ -4128,6 +4145,193 @@
       ]
     },
     {
+      "name": "fn",
+      "description": "Build code-based workflows",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "init",
+          "aliases": [],
+          "description": "Create a starter workflow in the current or chosen directory (requires Postman login)",
+          "positionals": [
+            {
+              "name": "path",
+              "valueType": "file"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output JSON (default when stdout is piped)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (otherwise use postman login or POSTMAN_API_KEY)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "describe",
+          "aliases": [],
+          "description": "Describe workflow primitives and blocks (requires Postman login)",
+          "positionals": [
+            {
+              "name": "subject",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output JSON (default when stdout is piped)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (otherwise use postman login or POSTMAN_API_KEY)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "check",
+          "aliases": [],
+          "description": "Validate a workflow definition without running its steps (requires Postman login)",
+          "positionals": [
+            {
+              "name": "workflow.ts",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Output JSON (default when stdout is piped)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (otherwise use postman login or POSTMAN_API_KEY)"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Maximum time to load and validate the workflow (default: \"30000\")"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "run",
+          "aliases": [],
+          "description": "Run a workflow using Postman login for AI and evals",
+          "positionals": [
+            {
+              "name": "workflow.ts",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--input",
+              "valueType": "string",
+              "valueName": "input.json",
+              "description": "JSON array of workflow inputs"
+            },
+            {
+              "long": "--config",
+              "valueType": "string",
+              "valueName": "config.json",
+              "description": "Workflow configuration JSON file"
+            },
+            {
+              "long": "--json",
+              "description": "Output JSON (default when stdout is piped)"
+            },
+            {
+              "long": "--api-key",
+              "valueType": "file",
+              "valueName": "key",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Postman API key (otherwise use postman login or POSTMAN_API_KEY)"
+            },
+            {
+              "long": "--timeout",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Maximum time to load and run the workflow (default: \"300000\")"
+            },
+            {
+              "long": "--verbose",
+              "description": "Show workflow logs and step details without changing the workflow log level"
+            },
+            {
+              "long": "--stream",
+              "description": "Stream JSON events and workflow logs followed by a summary"
+            },
+            {
+              "long": "--visualize",
+              "description": "Write an HTML visualization of the execution"
+            },
+            {
+              "long": "--out",
+              "valueType": "string",
+              "valueName": "output.html",
+              "description": "New visualization file path (requires --visualize)"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "globals",
       "description": "Work with local and cloud Postman globals",
       "flags": [
@@ -4429,7 +4633,7 @@
             },
             {
               "long": "--strict",
-              "description": "With --mode ai: fail instead of falling back. Postman refuses a mock it would build without AI (exit 1, nothing written or saved). A mock whose AI rules reached only some operations, or one an older Postman built without AI anyway, is kept but exits 4."
+              "description": "With --mode ai: fail instead of falling back. Postman refuses a mock it would build without AI (exit 1, nothing written or saved). A mock whose AI rules reached only some operations, or one an older Postman built without AI anyway, is kept but exits 4. A cloud mock is saved before AI runs, so when AI fails it keeps its contract-derived version (exit 1)."
             },
             {
               "long": "--spec",
@@ -4454,7 +4658,7 @@
             },
             {
               "long": "--force",
-              "description": "Replace the mock's files if the target folder already holds a mock. A folder with other files and no mock is never written to."
+              "description": "Replace the mock's files if the target folder already holds a mock. A folder with other files and no mock is never written to. With --update, regenerate a handler that was edited by hand."
             },
             {
               "long": "--update",
@@ -4492,7 +4696,7 @@
               "long": "--timeout",
               "valueType": "number",
               "valueName": "ms",
-              "description": "How long to wait for Postman to generate the mock, in milliseconds (default 75000)."
+              "description": "How long to wait for Postman to answer the generate request, in milliseconds (default 75000). With --mode ai, the AI step that follows is waited for up to 10 minutes."
             },
             {
               "long": "--api-key",
@@ -9265,6 +9469,1032 @@
       ]
     },
     {
+      "name": "mcp",
+      "description": "Explore MCP servers: inspect them, list and call tools, read resources, and get prompts",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "inspect",
+          "aliases": [],
+          "description": "Show what an MCP server reports at initialize: capabilities and counts of tools, resources, resource templates and prompts (initialize, then every */list)",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Print the report as JSON"
+            },
+            {
+              "long": "--debug",
+              "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+            },
+            {
+              "long": "--request",
+              "valueType": "file",
+              "valueName": "path|id",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+            },
+            {
+              "long": "--url",
+              "valueType": "string",
+              "valueName": "url",
+              "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+            },
+            {
+              "long": "--header",
+              "short": "-H",
+              "valueType": "file",
+              "valueName": "key:value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+            },
+            {
+              "long": "--transport",
+              "valueType": "string",
+              "valueName": "transport",
+              "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+            },
+            {
+              "long": "--command",
+              "valueType": "string",
+              "valueName": "command",
+              "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+            },
+            {
+              "long": "--command-env",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+            },
+            {
+              "long": "--allow-stdio",
+              "description": "Allow starting a local process for a stdio server"
+            },
+            {
+              "long": "--insecure",
+              "short": "-k",
+              "description": "Disable TLS certificate verification for HTTP servers"
+            },
+            {
+              "long": "--timeout-request",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+            },
+            {
+              "long": "--protocol-version",
+              "valueType": "string",
+              "valueName": "version",
+              "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+            },
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Resolve {{variables}} from a local environment file"
+            },
+            {
+              "long": "--env-var",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "tools",
+          "aliases": [],
+          "description": "List and call the tools an MCP server offers",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "List the tools an MCP server offers (tools/list)",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print { tools } as JSON"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                },
+                {
+                  "long": "--request",
+                  "valueType": "file",
+                  "valueName": "path|id",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                },
+                {
+                  "long": "--header",
+                  "short": "-H",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--transport",
+                  "valueType": "string",
+                  "valueName": "transport",
+                  "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--allow-stdio",
+                  "description": "Allow starting a local process for a stdio server"
+                },
+                {
+                  "long": "--insecure",
+                  "short": "-k",
+                  "description": "Disable TLS certificate verification for HTTP servers"
+                },
+                {
+                  "long": "--timeout-request",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                },
+                {
+                  "long": "--protocol-version",
+                  "valueType": "string",
+                  "valueName": "version",
+                  "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                },
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Resolve {{variables}} from a local environment file"
+                },
+                {
+                  "long": "--env-var",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "call",
+              "aliases": [],
+              "description": "Call one tool and print its result (tools/call)",
+              "positionals": [
+                {
+                  "name": "tool",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--args",
+                  "valueType": "string",
+                  "valueName": "json|@file|-",
+                  "description": "Tool arguments as a JSON object, @path to a JSON file, or - for stdin. Defaults to the --request message's saved arguments for the same tool"
+                },
+                {
+                  "long": "--arg",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "One tool argument, typed by the tool's inputSchema (a number, boolean, JSON object or array, or a string). Repeatable; a repeated key keeps the last value. Not with --args (default: [])"
+                },
+                {
+                  "long": "--json",
+                  "description": "Print the CallToolResult as JSON"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                },
+                {
+                  "long": "--request",
+                  "valueType": "file",
+                  "valueName": "path|id",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                },
+                {
+                  "long": "--header",
+                  "short": "-H",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--transport",
+                  "valueType": "string",
+                  "valueName": "transport",
+                  "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--allow-stdio",
+                  "description": "Allow starting a local process for a stdio server"
+                },
+                {
+                  "long": "--insecure",
+                  "short": "-k",
+                  "description": "Disable TLS certificate verification for HTTP servers"
+                },
+                {
+                  "long": "--timeout-request",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                },
+                {
+                  "long": "--protocol-version",
+                  "valueType": "string",
+                  "valueName": "version",
+                  "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                },
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Resolve {{variables}} from a local environment file"
+                },
+                {
+                  "long": "--env-var",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "resources",
+          "aliases": [],
+          "description": "List and read the resources an MCP server offers",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "List the resources an MCP server offers (resources/list)",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print { resources } as JSON"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                },
+                {
+                  "long": "--request",
+                  "valueType": "file",
+                  "valueName": "path|id",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                },
+                {
+                  "long": "--header",
+                  "short": "-H",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--transport",
+                  "valueType": "string",
+                  "valueName": "transport",
+                  "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--allow-stdio",
+                  "description": "Allow starting a local process for a stdio server"
+                },
+                {
+                  "long": "--insecure",
+                  "short": "-k",
+                  "description": "Disable TLS certificate verification for HTTP servers"
+                },
+                {
+                  "long": "--timeout-request",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                },
+                {
+                  "long": "--protocol-version",
+                  "valueType": "string",
+                  "valueName": "version",
+                  "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                },
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Resolve {{variables}} from a local environment file"
+                },
+                {
+                  "long": "--env-var",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "templates",
+              "aliases": [],
+              "description": "List the resource templates an MCP server offers",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ],
+              "subcommands": [
+                {
+                  "name": "list",
+                  "aliases": [],
+                  "description": "List the resource templates an MCP server offers (resources/templates/list)",
+                  "positionals": [],
+                  "flags": [
+                    {
+                      "long": "--json",
+                      "description": "Print { resourceTemplates } as JSON"
+                    },
+                    {
+                      "long": "--debug",
+                      "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                    },
+                    {
+                      "long": "--request",
+                      "valueType": "file",
+                      "valueName": "path|id",
+                      "patterns": [
+                        "*.json"
+                      ],
+                      "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                    },
+                    {
+                      "long": "--url",
+                      "valueType": "string",
+                      "valueName": "url",
+                      "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                    },
+                    {
+                      "long": "--header",
+                      "short": "-H",
+                      "valueType": "file",
+                      "valueName": "key:value",
+                      "patterns": [
+                        "*.pem",
+                        "*.crt",
+                        "*.key"
+                      ],
+                      "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                    },
+                    {
+                      "long": "--transport",
+                      "valueType": "string",
+                      "valueName": "transport",
+                      "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                    },
+                    {
+                      "long": "--command",
+                      "valueType": "string",
+                      "valueName": "command",
+                      "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                    },
+                    {
+                      "long": "--command-env",
+                      "valueType": "file",
+                      "valueName": "key=value",
+                      "patterns": [
+                        "*.pem",
+                        "*.crt",
+                        "*.key"
+                      ],
+                      "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                    },
+                    {
+                      "long": "--allow-stdio",
+                      "description": "Allow starting a local process for a stdio server"
+                    },
+                    {
+                      "long": "--insecure",
+                      "short": "-k",
+                      "description": "Disable TLS certificate verification for HTTP servers"
+                    },
+                    {
+                      "long": "--timeout-request",
+                      "valueType": "number",
+                      "valueName": "ms",
+                      "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                    },
+                    {
+                      "long": "--protocol-version",
+                      "valueType": "string",
+                      "valueName": "version",
+                      "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                    },
+                    {
+                      "long": "--environment",
+                      "short": "-e",
+                      "valueType": "file",
+                      "valueName": "path",
+                      "patterns": [
+                        "*.json"
+                      ],
+                      "description": "Resolve {{variables}} from a local environment file"
+                    },
+                    {
+                      "long": "--env-var",
+                      "valueType": "file",
+                      "valueName": "key=value",
+                      "patterns": [
+                        "*.pem",
+                        "*.crt",
+                        "*.key"
+                      ],
+                      "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                    },
+                    {
+                      "long": "--help",
+                      "short": "-h",
+                      "description": "display help for command"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "read",
+              "aliases": [],
+              "description": "Read one resource and print its contents (resources/read)",
+              "positionals": [
+                {
+                  "name": "uri",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print the ReadResourceResult as JSON (blob contents stay base64)"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                },
+                {
+                  "long": "--request",
+                  "valueType": "file",
+                  "valueName": "path|id",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                },
+                {
+                  "long": "--header",
+                  "short": "-H",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--transport",
+                  "valueType": "string",
+                  "valueName": "transport",
+                  "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--allow-stdio",
+                  "description": "Allow starting a local process for a stdio server"
+                },
+                {
+                  "long": "--insecure",
+                  "short": "-k",
+                  "description": "Disable TLS certificate verification for HTTP servers"
+                },
+                {
+                  "long": "--timeout-request",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                },
+                {
+                  "long": "--protocol-version",
+                  "valueType": "string",
+                  "valueName": "version",
+                  "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                },
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Resolve {{variables}} from a local environment file"
+                },
+                {
+                  "long": "--env-var",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "prompts",
+          "aliases": [],
+          "description": "List and get the prompts an MCP server offers",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "list",
+              "aliases": [],
+              "description": "List the prompts an MCP server offers (prompts/list)",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print { prompts } as JSON"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                },
+                {
+                  "long": "--request",
+                  "valueType": "file",
+                  "valueName": "path|id",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                },
+                {
+                  "long": "--header",
+                  "short": "-H",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--transport",
+                  "valueType": "string",
+                  "valueName": "transport",
+                  "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--allow-stdio",
+                  "description": "Allow starting a local process for a stdio server"
+                },
+                {
+                  "long": "--insecure",
+                  "short": "-k",
+                  "description": "Disable TLS certificate verification for HTTP servers"
+                },
+                {
+                  "long": "--timeout-request",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                },
+                {
+                  "long": "--protocol-version",
+                  "valueType": "string",
+                  "valueName": "version",
+                  "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                },
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Resolve {{variables}} from a local environment file"
+                },
+                {
+                  "long": "--env-var",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "get",
+              "aliases": [],
+              "description": "Get one prompt with its arguments filled in (prompts/get)",
+              "positionals": [
+                {
+                  "name": "name",
+                  "valueType": "string"
+                }
+              ],
+              "flags": [
+                {
+                  "long": "--args",
+                  "valueType": "string",
+                  "valueName": "json|@file|-",
+                  "description": "Prompt arguments as a JSON object of strings, @path, or - for stdin"
+                },
+                {
+                  "long": "--arg",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "One prompt argument, always sent as a string. Repeatable; a repeated key keeps the last value. Not with --args (default: [])"
+                },
+                {
+                  "long": "--json",
+                  "description": "Print the GetPromptResult as JSON"
+                },
+                {
+                  "long": "--debug",
+                  "description": "Print each @postman/runtime event, and the MCP client's debug messages, to stderr"
+                },
+                {
+                  "long": "--request",
+                  "valueType": "file",
+                  "valueName": "path|id",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Reuse a saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+                },
+                {
+                  "long": "--url",
+                  "valueType": "string",
+                  "valueName": "url",
+                  "description": "Connect to a remote MCP server over HTTP (streamable HTTP, falling back to legacy SSE)"
+                },
+                {
+                  "long": "--header",
+                  "short": "-H",
+                  "valueType": "file",
+                  "valueName": "key:value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Add an HTTP header in key:value format. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--transport",
+                  "valueType": "string",
+                  "valueName": "transport",
+                  "description": "Check the transport the target uses (choices: \"http\", \"stdio\")"
+                },
+                {
+                  "long": "--command",
+                  "valueType": "string",
+                  "valueName": "command",
+                  "description": "Start a local MCP server and talk to it over stdio. Needs --allow-stdio. Or pass the command and its arguments after --"
+                },
+                {
+                  "long": "--command-env",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for the --command server. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--allow-stdio",
+                  "description": "Allow starting a local process for a stdio server"
+                },
+                {
+                  "long": "--insecure",
+                  "short": "-k",
+                  "description": "Disable TLS certificate verification for HTTP servers"
+                },
+                {
+                  "long": "--timeout-request",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Time limit for each MCP operation in ms (default: 60000, 0 for none)"
+                },
+                {
+                  "long": "--protocol-version",
+                  "valueType": "string",
+                  "valueName": "version",
+                  "description": "Protocol version negotiation (default: auto) (choices: \"auto\", \"legacy\", \"2026-07-28\")"
+                },
+                {
+                  "long": "--environment",
+                  "short": "-e",
+                  "valueType": "file",
+                  "valueName": "path",
+                  "patterns": [
+                    "*.json"
+                  ],
+                  "description": "Resolve {{variables}} from a local environment file"
+                },
+                {
+                  "long": "--env-var",
+                  "valueType": "file",
+                  "valueName": "key=value",
+                  "patterns": [
+                    "*.pem",
+                    "*.crt",
+                    "*.key"
+                  ],
+                  "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "performance",
       "description": "Manage performance tests on your collections",
       "flags": [
@@ -10368,6 +11598,12 @@
         {
           "long": "--check",
           "description": "Check whether a Postman CLI update is available."
+        },
+        {
+          "long": "--timeout",
+          "valueType": "number",
+          "valueName": "ms",
+          "description": "Timeout for the update check in milliseconds (default: 30000)."
         },
         {
           "long": "--help",
