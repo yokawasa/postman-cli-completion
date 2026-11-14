@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.88.0",
-  "introspectedAt": "2026-11-12T06:47:57Z",
+  "postmanCliVersion": "1.90.0",
+  "introspectedAt": "2026-11-14T05:53:41Z",
   "global": {
     "flags": [
       {
@@ -236,6 +236,14 @@
               "valueType": "string",
               "valueName": "value",
               "description": "Output format: cli (human-readable) or json. (default: \"cli\")"
+            },
+            {
+              "long": "--readyapi",
+              "description": "Lint a ReadyAPI-imported collection: every script parses as JavaScript, uses only real pm.* APIs, and has no unresolved Groovy placeholder."
+            },
+            {
+              "long": "--allow-pending",
+              "description": "With --readyapi, treat un-translated Groovy placeholders as warnings, not errors."
             },
             {
               "long": "--help",
@@ -1531,7 +1539,7 @@
         {
           "name": "import",
           "aliases": [],
-          "description": "Import a cURL, HAR, or JMeter (.jmx) source into a v3 collection (local, or cloud with --workspace).",
+          "description": "Import a cURL, HAR, JMeter (.jmx), or ReadyAPI/SoapUI (.xml) source into a v3 collection (local, or cloud with --workspace).",
           "positionals": [
             {
               "name": "src",
@@ -1543,7 +1551,7 @@
               "long": "--type",
               "valueType": "string",
               "valueName": "format",
-              "description": "Source format: curl, har, or jmeter. Auto-detected from the extension/content when omitted."
+              "description": "Source format: curl, har, jmeter, or readyapi. Auto-detected from the extension/content when omitted."
             },
             {
               "long": "--name",
@@ -1814,6 +1822,10 @@
               "long": "--insecure",
               "short": "-k",
               "description": "Disables SSL validations"
+            },
+            {
+              "long": "--allow-stdio",
+              "description": "Allow MCP requests on the stdio transport to start their local server process"
             },
             {
               "long": "--ssl-client-cert-list",
@@ -9470,7 +9482,7 @@
     },
     {
       "name": "mcp",
-      "description": "Explore MCP servers: inspect them, list and call tools, read resources, and get prompts",
+      "description": "Explore MCP servers: inspect them, list and call tools, read resources, get prompts, and sign in to servers that use OAuth",
       "flags": [
         {
           "long": "--help",
@@ -9584,6 +9596,14 @@
                 "*.key"
               ],
               "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+            },
+            {
+              "long": "--login",
+              "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+            },
+            {
+              "long": "--no-login",
+              "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
             },
             {
               "long": "--help",
@@ -9710,6 +9730,14 @@
                     "*.key"
                   ],
                   "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--login",
+                  "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                },
+                {
+                  "long": "--no-login",
+                  "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
                 },
                 {
                   "long": "--help",
@@ -9847,6 +9875,14 @@
                   "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
                 },
                 {
+                  "long": "--login",
+                  "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                },
+                {
+                  "long": "--no-login",
+                  "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
@@ -9975,6 +10011,14 @@
                   "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
                 },
                 {
+                  "long": "--login",
+                  "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                },
+                {
+                  "long": "--no-login",
+                  "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
@@ -10101,6 +10145,14 @@
                       "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
                     },
                     {
+                      "long": "--login",
+                      "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                    },
+                    {
+                      "long": "--no-login",
+                      "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
+                    },
+                    {
                       "long": "--help",
                       "short": "-h",
                       "description": "display help for command"
@@ -10219,6 +10271,14 @@
                     "*.key"
                   ],
                   "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--login",
+                  "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                },
+                {
+                  "long": "--no-login",
+                  "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
                 },
                 {
                   "long": "--help",
@@ -10347,6 +10407,14 @@
                     "*.key"
                   ],
                   "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+                },
+                {
+                  "long": "--login",
+                  "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                },
+                {
+                  "long": "--no-login",
+                  "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
                 },
                 {
                   "long": "--help",
@@ -10484,11 +10552,225 @@
                   "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
                 },
                 {
+                  "long": "--login",
+                  "description": "When an HTTP server needs an OAuth sign-in, sign in without asking (opens a browser)"
+                },
+                {
+                  "long": "--no-login",
+                  "description": "Never ask to sign in; exit 3 when an HTTP server needs one"
+                },
+                {
                   "long": "--help",
                   "short": "-h",
                   "description": "display help for command"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "login",
+          "aliases": [],
+          "description": "Sign in to an MCP server that uses OAuth, in a browser, and store the token every postman mcp command then sends to it",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--scope",
+              "valueType": "string",
+              "valueName": "scopes",
+              "description": "Space-separated scopes to request (default: what the server asks for)"
+            },
+            {
+              "long": "--client-id",
+              "valueType": "string",
+              "valueName": "id",
+              "description": "Use a client registered with the authorization server, instead of registering one dynamically"
+            },
+            {
+              "long": "--client-secret",
+              "valueType": "string",
+              "valueName": "secret",
+              "description": "The --client-id client's secret, if it has one"
+            },
+            {
+              "long": "--callback-port",
+              "valueType": "string",
+              "valueName": "port",
+              "description": "Receive the sign-in on this port of 127.0.0.1, to match a registered redirect URI http://127.0.0.1:<port>/callback"
+            },
+            {
+              "long": "--no-browser",
+              "description": "Print the sign-in link to stderr instead of opening a browser. In a terminal, also accepts the URL the browser was redirected to, pasted, for a browser on another machine"
+            },
+            {
+              "long": "--header",
+              "short": "-H",
+              "valueType": "file",
+              "valueName": "key:value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Add an HTTP header to the sign-in's first request to the server, in key:value format. Repeatable. (default: [])"
+            },
+            {
+              "long": "--insecure",
+              "short": "-k",
+              "description": "Disable TLS certificate verification"
+            },
+            {
+              "long": "--timeout-request",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Time limit for each request in ms (default: 60000, 0 for none)"
+            },
+            {
+              "long": "--debug",
+              "description": "Print each OAuth request's method, URL without its query, and status to stderr"
+            },
+            {
+              "long": "--request",
+              "valueType": "file",
+              "valueName": "path|id",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "A saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+            },
+            {
+              "long": "--url",
+              "valueType": "string",
+              "valueName": "url",
+              "description": "The MCP server URL"
+            },
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Resolve {{variables}} from a local environment file"
+            },
+            {
+              "long": "--env-var",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+            },
+            {
+              "long": "--json",
+              "description": "Print the result as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "logout",
+          "aliases": [],
+          "description": "Remove the credentials postman mcp login stored for an MCP server, and revoke them at its authorization server",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--all",
+              "description": "Remove every stored sign-in"
+            },
+            {
+              "long": "--yes",
+              "short": "-y",
+              "description": "With --all, skip the confirmation; required when there is no terminal"
+            },
+            {
+              "long": "--no-revoke",
+              "description": "Only remove the credentials from this machine; do not revoke them"
+            },
+            {
+              "long": "--insecure",
+              "short": "-k",
+              "description": "Disable TLS certificate verification for the revocation"
+            },
+            {
+              "long": "--timeout-request",
+              "valueType": "number",
+              "valueName": "ms",
+              "description": "Time limit for each revocation request in ms (default: 60000, 0 for none)"
+            },
+            {
+              "long": "--debug",
+              "description": "Print each revocation request's method, URL without its query, and status to stderr"
+            },
+            {
+              "long": "--request",
+              "valueType": "file",
+              "valueName": "path|id",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "A saved local-mode MCP request ($kind: mcp-request): a .request.yaml path, or the id of an MCP request in postman/collections/"
+            },
+            {
+              "long": "--url",
+              "valueType": "string",
+              "valueName": "url",
+              "description": "The MCP server URL"
+            },
+            {
+              "long": "--environment",
+              "short": "-e",
+              "valueType": "file",
+              "valueName": "path",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Resolve {{variables}} from a local environment file"
+            },
+            {
+              "long": "--env-var",
+              "valueType": "file",
+              "valueName": "key=value",
+              "patterns": [
+                "*.pem",
+                "*.crt",
+                "*.key"
+              ],
+              "description": "Set an environment variable for {{variable}} resolution. Repeatable. (default: [])"
+            },
+            {
+              "long": "--json",
+              "description": "Print the result as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "credentials",
+          "aliases": [],
+          "description": "List the sign-ins postman mcp login stored: server, issuer, client, scopes, expiry and whether they refresh. Never shows a token or secret",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--json",
+              "description": "Print the sign-ins as JSON"
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
             }
           ]
         }
