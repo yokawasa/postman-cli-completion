@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.90.0",
-  "introspectedAt": "2026-11-14T05:53:41Z",
+  "postmanCliVersion": "1.91.0",
+  "introspectedAt": "2026-11-18T06:55:46Z",
   "global": {
     "flags": [
       {
@@ -8893,6 +8893,24 @@
               "description": "display help for command"
             }
           ]
+        },
+        {
+          "name": "datasets",
+          "aliases": [],
+          "description": "Search for datasets by name or keyword.",
+          "positionals": [
+            {
+              "name": "query",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
         }
       ]
     },
@@ -8988,12 +9006,12 @@
           "description": "Specify the region for authentication. Use \"eu\" for EU region."
         },
         {
-          "long": "--migrate-guest-workspace",
-          "description": "Copy this repository's local work into a new workspace in the account you sign in to, even after the previous session has ended (for example after a logout)."
+          "long": "--claim",
+          "description": "Move the work from your temporary session on this machine into the team you sign in to, without asking. Needed to move it when there is no terminal to ask in (an agent, CI, a pipe)."
         },
         {
-          "long": "--no-migrate-guest-workspace",
-          "description": "Do not copy local work into the account you sign in to. By default local work is copied."
+          "long": "--no-claim",
+          "description": "Don't move the work from your temporary session on this machine, and don't ask. By default you are asked once you have signed in."
         },
         {
           "long": "--verbose",
@@ -12335,6 +12353,10 @@
             }
           ],
           "flags": [
+            {
+              "long": "--https",
+              "description": "Use HTTPS for the local listener; accepts self-signed certificates."
+            },
             {
               "long": "--workspace",
               "short": "-w",
