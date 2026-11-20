@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.91.0",
-  "introspectedAt": "2026-11-18T06:55:46Z",
+  "postmanCliVersion": "1.93.0",
+  "introspectedAt": "2026-11-20T06:44:43Z",
   "global": {
     "flags": [
       {
@@ -1676,6 +1676,46 @@
               "valueType": "string",
               "valueName": "folder",
               "description": "Write a YAML-based run report to the given folder. Creates a paired `<prefix>.collection-run-summary.yaml` (refreshed during the run) and streaming `<prefix>.collection-run-executions.yaml`, where prefix defaults to `<collection-slug>-<timestamp>`. Gotcha: --output streams run data to file, which keeps large runs from buffering an entire report in memory."
+            },
+            {
+              "long": "--upload-request-bodies",
+              "description": "[Optional] Upload request bodies with run data. Type: boolean, Default value: false"
+            },
+            {
+              "long": "--no-upload-request-bodies",
+              "description": "Do not upload request bodies with run data"
+            },
+            {
+              "long": "--upload-response-bodies",
+              "description": "[Optional] Upload response bodies with run data. Type: boolean, Default value: false"
+            },
+            {
+              "long": "--no-upload-response-bodies",
+              "description": "Do not upload response bodies with run data"
+            },
+            {
+              "long": "--upload-headers",
+              "description": "[Optional] Upload request and response headers with run data. The values of authorization, proxy-authorization, cookie, set-cookie, x-api-key, x-auth-token and x-access-token are always replaced with [redacted]. Matching is by exact header name, so a vendor-specific auth header is not covered. Type: boolean, Default value: false"
+            },
+            {
+              "long": "--no-upload-headers",
+              "description": "Do not upload request or response headers with run data"
+            },
+            {
+              "long": "--upload-payloads-on-failure-only",
+              "description": "[Optional] Only upload payloads for requests that errored, failed an assertion, or returned a 4xx/5xx. Recommended for large runs. Type: boolean, Default value: false"
+            },
+            {
+              "long": "--no-upload-payloads-on-failure-only",
+              "description": "Upload payloads for all requests, not just failures"
+            },
+            {
+              "long": "--upload-all-headers-and-bodies",
+              "description": "[Optional] Upload request and response headers, as well as request and response bodies, with run data. Overrides the individual --upload-* flags. Type: boolean, Default value: false"
+            },
+            {
+              "long": "--no-upload-all-headers-and-bodies",
+              "description": "Do not apply the --upload-all-headers-and-bodies override; the individual --upload-* flags decide"
             },
             {
               "long": "--iteration-count",
@@ -4740,7 +4780,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Start a mock using its path if it lives in your repository, or its id if it lives in Postman cloud (fetched and run locally).",
+          "description": "Start a mock using its path if it lives in your repository, or its id or <slug>.mock.<teamDomain> if it lives in Postman cloud (fetched and run locally).",
           "positionals": [
             {
               "name": "mockIdOrPath",
@@ -6326,6 +6366,77 @@
               "valueType": "string",
               "valueName": "script",
               "description": "Script run once the call has ended. Inline JavaScript or @path. pm.response holds the status, metadata and messages; pm.test() results are reported."
+            },
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ]
+        },
+        {
+          "name": "graphql",
+          "aliases": [],
+          "description": "Send a GraphQL query, mutation, or subscription, or inspect its schema. Uses the same GraphQL runtime as the Postman workbench.",
+          "positionals": [
+            {
+              "name": "urlOrFile",
+              "valueType": "string"
+            }
+          ],
+          "flags": [
+            {
+              "long": "--url",
+              "valueType": "string",
+              "valueName": "url",
+              "description": "Override the saved endpoint URL. Supports {{variables}}."
+            },
+            {
+              "long": "--query",
+              "valueType": "string",
+              "valueName": "query",
+              "description": "GraphQL document, inline, @path, or - for stdin. Overrides the saved query."
+            },
+            {
+              "long": "--variables",
+              "valueType": "string",
+              "valueName": "json",
+              "description": "Variables, inline JSON, @path, or - for stdin. Overrides saved variables."
+            },
+            {
+              "long": "--operation-name",
+              "valueType": "string",
+              "valueName": "name",
+              "description": "Operation to execute when a document contains multiple operations."
+            },
+            {
+              "long": "--introspect",
+              "description": "Print the schema as SDL instead of executing a query. Scripts are skipped."
+            },
+            {
+              "long": "--schema",
+              "valueType": "file",
+              "valueName": "pathOrUrl",
+              "patterns": [
+                "*.json"
+              ],
+              "description": "Import an SDL or introspection JSON schema from a file or HTTP(S) URL. Used for query validation, or with --introspect to inspect the imported schema."
+            },
+            {
+              "long": "--script-before-query",
+              "valueType": "string",
+              "valueName": "script",
+              "description": "Before-query JavaScript, inline or @path. Supports pm.* APIs."
+            },
+            {
+              "long": "--script-after-response",
+              "valueType": "string",
+              "valueName": "script",
+              "description": "After-response JavaScript, inline or @path. pm.test() assertions affect the exit code."
+            },
+            {
+              "long": "--json",
+              "description": "Print response JSON, or newline-delimited response and summary events for streams. With --introspect, print introspection JSON."
             },
             {
               "long": "--help",
@@ -8107,6 +8218,185 @@
               "long": "--help",
               "short": "-h",
               "description": "display help for command"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "agent",
+      "description": "Manage CLI discovery hints for coding agents and plugins.",
+      "flags": [
+        {
+          "long": "--help",
+          "short": "-h",
+          "description": "display help for command"
+        }
+      ],
+      "subcommands": [
+        {
+          "name": "discovery-hints",
+          "aliases": [],
+          "description": "Manage CLI discovery hints for coding agents in global Claude Code and Codex instructions.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "add",
+              "aliases": [],
+              "description": "Add CLI discovery hints for agents and remember this choice.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print machine-readable results."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "status",
+              "aliases": [],
+              "description": "Inspect CLI discovery hints for agents.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print machine-readable results."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "remove",
+              "aliases": [],
+              "description": "Remove CLI discovery hints for agents and remember this choice.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print machine-readable results."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "plugins",
+          "aliases": [],
+          "description": "Install, inspect, or remove Postman plugins in coding agents.",
+          "positionals": [],
+          "flags": [
+            {
+              "long": "--help",
+              "short": "-h",
+              "description": "display help for command"
+            }
+          ],
+          "subcommands": [
+            {
+              "name": "install",
+              "aliases": [],
+              "description": "install Postman plugins.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--agent",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Limit changes to one agent: antigravity, claude-code, codex, copilot, cursor, factory, kimi, opencode, pi."
+                },
+                {
+                  "long": "--yes",
+                  "short": "-y",
+                  "description": "Confirm plugin changes without prompting."
+                },
+                {
+                  "long": "--dry-run",
+                  "description": "Preview changes without modifying agent settings."
+                },
+                {
+                  "long": "--timeout",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Plugin installer timeout in milliseconds. (default: \"300000\")"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "status",
+              "aliases": [],
+              "description": "status Postman plugins.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--json",
+                  "description": "Print machine-readable plugin status."
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
+            },
+            {
+              "name": "remove",
+              "aliases": [],
+              "description": "remove Postman plugins.",
+              "positionals": [],
+              "flags": [
+                {
+                  "long": "--agent",
+                  "valueType": "string",
+                  "valueName": "id",
+                  "description": "Limit changes to one agent: antigravity, claude-code, codex, copilot, cursor, factory, kimi, opencode, pi."
+                },
+                {
+                  "long": "--yes",
+                  "short": "-y",
+                  "description": "Confirm plugin changes without prompting."
+                },
+                {
+                  "long": "--dry-run",
+                  "description": "Preview changes without modifying agent settings."
+                },
+                {
+                  "long": "--timeout",
+                  "valueType": "number",
+                  "valueName": "ms",
+                  "description": "Plugin installer timeout in milliseconds. (default: \"300000\")"
+                },
+                {
+                  "long": "--help",
+                  "short": "-h",
+                  "description": "display help for command"
+                }
+              ]
             }
           ]
         }
@@ -11383,7 +11673,7 @@
         {
           "name": "run",
           "aliases": [],
-          "description": "Serve a simulation's mocks on one local port, routing each by its routeKey. Pass a .sim.yaml path (local) or a Postman simulation id (fetched and run locally).",
+          "description": "Serve a simulation's mocks on one local port, routing each by its routeKey. Pass a .sim.yaml path (local), a Postman simulation id, or <slug>.mock.<teamDomain> (fetched and run locally).",
           "positionals": [
             {
               "name": "simIdOrPath",
@@ -11464,6 +11754,12 @@
             {
               "long": "--verbose",
               "description": "Show request and response headers and bodies for each request. By default each request prints one line, plus any applied scenario or error."
+            },
+            {
+              "long": "--max-live-mocks",
+              "valueType": "string",
+              "valueName": "count",
+              "description": "How many of the simulation's mocks may run at once. Each mock starts on its first request and stays running; once this many are running, starting another stops the least recently used idle one first, and it starts again on its next request. A mock holding data is never stopped, so a simulation whose mocks all hold data can refuse a request with 503 at this limit. Defaults to what this machine's memory allows."
             },
             {
               "long": "--proxy",
