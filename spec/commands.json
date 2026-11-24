@@ -1,6 +1,6 @@
 {
-  "postmanCliVersion": "1.93.0",
-  "introspectedAt": "2026-11-20T06:44:43Z",
+  "postmanCliVersion": "1.93.1",
+  "introspectedAt": "2026-11-24T09:23:41Z",
   "global": {
     "flags": [
       {
@@ -1669,7 +1669,7 @@
               "patterns": [
                 "*.json"
               ],
-              "description": "Specify an Id or path to a file containing Postman Globals"
+              "description": "Specify a path to a file containing Postman Globals, or a workspace id to load that workspace's cloud globals"
             },
             {
               "long": "--output",
